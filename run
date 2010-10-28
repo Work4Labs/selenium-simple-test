@@ -33,12 +33,12 @@ sleep 3
 
 cd src/testproject
 python manage.py runserver &
-django_pid=$!
 wait_until_django_up
 cd -
 
 python src/runtests.py
 
-kill $django_pid
 kill $selenium_pid
+kill $(ps aux | grep '[p]ython manage.py' | awk '{print $2}')
+
 
