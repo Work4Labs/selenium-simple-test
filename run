@@ -1,9 +1,9 @@
 #! /bin/bash
 
 
-SCRIPT_DIR=$(readlink -f $(dirname $0))
-TOP_LEVEL_DIR=$(readlink -f $(dirname $SCRIPT_DIR))
-CURRENT_DIR=$(readlink -f $(pwd))
+SCRIPT_DIR=$(dirname $0)
+TOP_LEVEL_DIR=$($(dirname $SCRIPT_DIR))
+CURRENT_DIR=$($(pwd))
 SRC_DIR=$CURRENT_DIR/src
 
 
@@ -18,9 +18,6 @@ export PYTHONPATH=$PYTHONPATH
 # make sure we are in the project folder
 if [ "$TOP_LEVEL_DIR" != "$CURRENT_DIR" ]; then
     echo "This script has to be run from the project root folder."
-    echo "Please follow these steps:"
-    echo "cd $TOP_LEVEL_DIR"
-    echo "./scripts/test"
     exit 2
 fi
 
