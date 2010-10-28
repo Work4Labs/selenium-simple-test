@@ -5,5 +5,5 @@ from django.template import Context, loader
 
 def index(request):
     t = loader.get_template('index.html')
-    c = Context({})
+    c = Context({'title': 'The Page Title'})
     return HttpResponse(t.render(c))

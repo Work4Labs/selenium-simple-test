@@ -1,3 +1,82 @@
+<html>
+<head>
+    <link rel="stylesheet" href="style.css" />
+    <title>{{ title }}</title>
+</head>
+
+<body>
+
+
 <h2>Foo bar baz</h2>
 
 <p>Some text here</p>
+
+
+
+  <form method="post" action="">
+
+    <p>
+      Mode:<br />
+      <label><input type="radio" name="mode" value="setup" checked="1" /> Setup</label><br />
+      <label><input type="radio" name="mode" value="immediate" /> Immediate</label><br />
+    </p>
+
+    <p>
+    Also request:
+    <table>
+      <tr>
+        <td><input type="checkbox" name="sreg" id="id_sreg" /></td>
+        <td><label for="id_sreg">SREG data</label></td>
+      </tr>
+      <tr>
+        <td />
+
+        <td>
+          <table>
+            <tr>
+              <td><input type="checkbox" name="sreg_country" id="id_sreg_country" /></td>
+              <td><label for="id_sreg_country">Country</label></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="sreg_dob" id="id_sreg_dob" /></td>
+
+              <td><label for="id_sreg_dob">Date of Birth</label></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="sreg_gender" id="id_sreg_gender" /></td>
+              <td><label for="id_sreg_gender">Gender</label></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="sreg_language" id="id_sreg_language" /></td>
+
+              <td><label for="id_sreg_language">Language</label></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="sreg_nickname" id="id_sreg_nickname" /></td>
+              <td><label for="id_sreg_nickname">Nickname</label></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="sreg_postalcode" id="id_sreg_postalcode" /></td>
+
+              <td><label for="id_sreg_postalcode">Postal Code</label></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="sreg_timezone" id="id_sreg_timezone" /></td>
+              <td><label for="id_sreg_timezone">Time Zone</label></td>
+            </tr>
+          </table>
+        </td>
+
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="teams" id="id_teams" /></td>
+        <td><label for="id_teams">Teams data</label></td>
+      </tr>
+    </table>
+    </p>
+
+    <input type="submit" value="Begin" />
+
+  </form>
+</body>
+</html>
