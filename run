@@ -2,31 +2,22 @@
 
 
 SCRIPT_DIR=$(dirname $0)
-TOP_LEVEL_DIR=$($(dirname $SCRIPT_DIR))
-CURRENT_DIR=$($(pwd))
-SRC_DIR=$CURRENT_DIR/src
 
+cd $SCRIPT_DIR
 
 if [ "$PYTHONPATH" != "" ]; then
-    PYTHONPATH="$PYTHONPATH:$SRC_DIR"
+    PYTHONPATH="$PYTHONPATH:src"
 else
-    PYTHONPATH="$SRC_DIR"
+    PYTHONPATH="src"
 fi
 export PYTHONPATH=$PYTHONPATH
-
-
-# make sure we are in the project folder
-if [ "$TOP_LEVEL_DIR" != "$CURRENT_DIR" ]; then
-    echo "This script has to be run from the project root folder."
-    exit 2
-fi
 
 
 export DJANGO_SETTINGS_MODULE="testproject.settings"
 
 
 function django_is_up() {
-    wget -q -O /dev/null "http://localhost:8000/admin/"
+    wget -q -O /dev/null "http://localhost:8000/"
 }
 
 function wait_until_django_up() {
@@ -34,10 +25,11 @@ function wait_until_django_up() {
     until django_is_up; do sleep 0.2; done
     echo "django found. Continuing..."
 }
-function django_is_up() {
-    wget -q -O /dev/null "http://localhost:8000/"
-}
 
+java -jar selenium-server-standalone-2.0a4.jar &
+selenium_pid=$!
+
+sleep 3
 
 cd src/testproject
 python manage.py runserver &
@@ -45,12 +37,8 @@ django_pid=$!
 wait_until_django_up
 cd -
 
-#java -jar selenium-server-standalone-2.0a4.jar &
-#selenium_pid=$!
-
-
 python src/runtests.py
 
 kill $django_pid
-#kill $selenium_pid
+kill $selenium_pid
 
