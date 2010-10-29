@@ -9,7 +9,8 @@ from selenium.common.exceptions import (
 
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
-    'is_radio', 'set_base_url', 'reset_base_url'
+    'is_radio', 'set_base_url', 'reset_base_url', 'is_checkbox', 
+    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set'
 ]
 
 browser = None
@@ -75,29 +76,30 @@ def is_checkbox(chk_name):
     assert elem_type == 'checkbox', msg
     return checkbox
     
-
-def checkbox_value_is(chk_name, val):
+# Asserts that the value 'is' what the test says it is
+def checkbox_value_is(chk_name, value):
     checkbox = is_checkbox(chk_name)
-    chk_value = checkbox.is_selected()
-    msg = 'Checkbox: %r - Has Value: %r' % (chk_name, chk_value)
-    assert chk_value == val, msg
+    real = checkbox.is_selected()
+    msg = 'Checkbox: %r - Has Value: %r' % (chk_name, real)
+    if real != value:
+        _raise(msg)
 
 
 def checkbox_toggle(chk_name):
     checkbox = is_checkbox(chk_name)
-    chk_value = checkbox_value_is(chk_name)
+    before = checkbox.is_selected()
     checkbox.toggle()
-    chk_toggle = checkbox_value_is(chk_name)
-    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (chk_name, chk_value)
-    if chk_value == chk_toggle:
+    after = checkbox.is_selected()
+    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (chk_name, before)
+    if before == after:
         print msg
-    assert chk_value != chk_toggle, msg
+    assert before != after, msg
 
 
 def checkbox_set(chk_name, new_value):
     checkbox = is_checkbox(chk_name)
     # There is no method to 'unset' a checkbox in the browser object
-    current_value = checkbox_value_is(chk_name)
+    current_value = checkbox.is_selected()
     if new_value != current_value:
         checkbox_toggle(chk_name)
 
