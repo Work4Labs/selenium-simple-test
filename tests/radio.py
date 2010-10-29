@@ -8,7 +8,7 @@ fails(is_radio, 'headline')
 
 radio_value_is('radio_with_id_1', True)
 fails(radio_value_is, 'radio_with_id_1', False)
-fails(radion_value_is, 'headline', True)
+fails(radio_value_is, 'headline', True)
 
 radio_value_is('radio_with_id_2', False)
 fails(radio_value_is, 'radio_with_id_2', True)
