@@ -1,11 +1,17 @@
-functest requires the Python selenium package. Running the tests requires
-django 1.1.2 installed.
+functest requires the Python selenium package and the selenium 2a7 Java server.
 
-The easiest way to do this is to create a 'virtualenv', which is an isolated
-python environment that allows you to install packages without installing them
-into your system. See requirements.txt for the packages you will need to
-install. Once you have created and activated your virtualenv you install
-packages with 'pip'. For example:
+Running the tests requires django 1.1.2 installed.
+
+Download the selenium Java package (jar) from:
+
+  http://selenium.googlecode.com/files/selenium-server-standalone-2.0a7.jar
+
+The easiest way to install the python dependencies is to create a
+'virtualenv', which is an isolated python environment that allows you to
+install packages without installing them into your system. See
+requirements.txt for the packages you will need to install. Once you have
+created and activated your virtualenv you install packages with 'pip'. For
+example:
 
 * pip install selenium
 * pip install django==1.1.2
