@@ -45,6 +45,42 @@ def goto(url=''):
     browser.get(url)
 
 
+def is_checkbox(chk_name):
+    checkbox = browser.find_element_by_id(chk_name)
+    elem_type = checkbox.get_attribute('type')
+    msg = 'Element ID: %r. Should be element of type: checkbox'
+    if elem_type != 'checkbox':
+        print msg
+    assert elem_type == 'checkbox', msg
+    return checkbox
+    
+
+def checkbox_value_is(chk_name, val):
+    checkbox = is_checkbox(chk_name)
+    chk_value = checkbox.is_selected()
+    msg = 'Checkbox: %r - Has Value: %r' % (chk_name, chk_value)
+    assert chk_value == val, msg
+
+
+def checkbox_toggle(chk_name):
+    checkbox = is_checkbox(chk_name)
+    chk_value = checkbox_value_is(chk_name)
+    checkbox.toggle()
+    chk_toggle = checkbox_value_is(chk_name)
+    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (chk_name, chk_value)
+    if chk_value == chk_toggle:
+        print msg
+    assert chk_value != chk_toggle, msg
+
+
+def checkbox_set(chk_name, new_value):
+    checkbox = is_checkbox(chk_name)
+    # There is no method to 'unset' a checkbox in the browser object
+    current_value = checkbox_value_is(chk_name)
+    if new_value != current_value:
+        checkbox_toggle(chk_name)
+
+
 def title_is(title):
     real_title = browser.get_title()
     msg = 'Title is: %r. Should be: %r' % (real_title, title)
@@ -92,3 +128,4 @@ def fails(action, *args, **kwargs):
     msg = 'Action %r did not fail' % action.__name__
     _print(msg)
     raise AssertionError(msg)
+
