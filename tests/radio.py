@@ -23,3 +23,8 @@ radio_value_is('radio_with_id_2', True)
 
 fails(radio_select, 'does not exist')
 fails(radio_select, 'headline')
+
+has_text('label1', 'First')
+fails(has_text, 'label1', 'the wrong text')
+fails(has_text, 'does not exist', 'does not matter')
+fails(has_text, 'radio_with_id_1', 'has no text')

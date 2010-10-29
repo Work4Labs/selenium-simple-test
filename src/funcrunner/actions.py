@@ -10,7 +10,7 @@ from selenium.common.exceptions import (
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select'
+    'radio_select', 'has_text'
 ]
 
 browser = None
@@ -183,3 +183,11 @@ def radio_select(the_id):
     elem = is_radio(the_id)
     elem.set_selected()
 
+
+def has_text(the_id, text):
+    elem = _get_elem(the_id)
+    real = elem.get_text()
+    msg = 'Element %r should have had text: %r\nIt has: %r' % (the_id, text,
+                                                                real)
+    if real != text:
+        _raise(msg)
