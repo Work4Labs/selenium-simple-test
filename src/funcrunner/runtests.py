@@ -2,7 +2,7 @@ import os
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
-from .actions import start, stop
+from .actions import start, stop, reset_base_url
 
 
 __unittest = True
@@ -28,6 +28,7 @@ def get_suite():
 def get_case(entry):
     path = os.path.join('tests', entry)
     def setUp(self):
+        reset_base_url()
         start()
     def tearDown(self):
         stop()

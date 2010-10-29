@@ -1,24 +1,25 @@
 <html>
 <head>
-    <link rel="stylesheet" href="style.css" />
     <title>{{ title }}</title>
 </head>
 
 <body>
 
 
-<h2>Foo bar baz</h2>
+  <h2 id="headline">Foo bar baz</h2>
 
-<p>Some text here</p>
+  <p>Some text here</p>
 
 
 
   <form method="post" action="">
 
     <p>
-      Mode:<br />
-      <label><input type="radio" name="mode" value="setup" checked="1" /> Setup</label><br />
-      <label><input type="radio" name="mode" value="immediate" /> Immediate</label><br />
+      Radio buttons with id:<br />
+      <label><input type="radio" name="radio_with_id" value="first" checked="1"
+              id="radio_with_id_1" /> First</label><br />
+      <label><input type="radio" name="radio_with_id" value="second"
+              id="radio_with_id_2" /> Second</label><br />
     </p>
 
     <p>
