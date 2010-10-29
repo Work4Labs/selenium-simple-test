@@ -9,7 +9,8 @@ from selenium.common.exceptions import (
 
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
-    'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is'
+    'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
+    'radio_select'
 ]
 
 browser = None
@@ -74,7 +75,7 @@ def is_checkbox(chk_name):
         print msg
     assert elem_type == 'checkbox', msg
     return checkbox
-    
+
 
 def checkbox_value_is(chk_name, val):
     checkbox = is_checkbox(chk_name)
@@ -176,4 +177,9 @@ def radio_value_is(the_id, value):
     msg = 'Radio %r should be set to: %s.' % (the_id, value)
     if value != selected:
         _raise(msg)
+
+
+def radio_select(the_id):
+    elem = is_radio(the_id)
+    elem.set_selected()
 
