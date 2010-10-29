@@ -6,6 +6,9 @@ Download the selenium Java package (jar) from:
 
   http://selenium.googlecode.com/files/selenium-server-standalone-2.0a7.jar
 
+You should place this file in the top level of the project directory (the same
+directory as this file).
+
 The easiest way to install the python dependencies is to create a
 'virtualenv', which is an isolated python environment that allows you to
 install packages without installing them into your system. See
@@ -20,7 +23,7 @@ To experiment you can do the following:
 
 * Start the selenium server:
 
-  java -jar selenium-server-standalone-2.0a4.jar -trustAllSSLCertificates
+  java -jar selenium-server-standalone-2.0a7.jar -trustAllSSLCertificates
 
 * From another terminal window activate the virtualenv (from inside the
   virtualenv directory):
