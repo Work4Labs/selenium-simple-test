@@ -110,17 +110,25 @@ def fails(action, *args, **kwargs):
     _raise(msg)
 
 
-def is_radio(the_id):
+def _get_elem(the_id):
     try:
-        elem = browser.find_element_by_id(the_id)
+        return browser.find_element_by_id(the_id)
     except NoSuchElementException:
         msg = 'Element %r does not exist' % the_id
         _raise(msg)
 
-    msg = 'Element %r is not a radio button' % the_id
+
+def _elem_is_type(elem, name, elem_type):
+    msg = 'Element %r is not a %r' % (name, elem_type)
     try:
-        elem_type = elem.get_attribute('type')
+        result = elem.get_attribute('type')
     except NoSuchAttributeException:
         _raise(msg)
-    if not elem_type == 'radio':
+    if not result == elem_type:
         _raise(msg)
+
+
+def is_radio(the_id):
+    elem = _get_elem(the_id)
+    _elem_is_type(elem, the_id, 'radio')
+
