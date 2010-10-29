@@ -36,7 +36,7 @@ python manage.py runserver &
 wait_until_django_up
 cd -
 
-python src/runtests.py
+python src/runtests.py "$@"
 
 kill $selenium_pid
 kill $(ps aux | grep '[p]ython manage.py' | awk '{print $2}')

@@ -1,4 +1,5 @@
 import os
+import sys
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
@@ -12,14 +13,17 @@ __all__ = ['runtests']
 
 def runtests():
     runner = TextTestRunner(verbosity=2)
-    suite = get_suite()
+    suite = get_suite(sys.argv[1:])
     runner.run(suite)
 
 
-def get_suite():
+def get_suite(argv):
+    args = set(argv)
     suite = TestSuite()
     for entry in os.listdir('tests'):
         if not entry.endswith('.py'):
+            continue
+        if args and entry[:-3] not in args:
             continue
         suite.addTest(get_case(entry))
     return suite
