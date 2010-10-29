@@ -5,7 +5,7 @@ from selenium.remote import connect
 
 
 __all__ = [
-    'start', 'stop', 'title_is', 'goto', 'waitfor'
+    'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is'
 ]
 
 browser = None
@@ -31,12 +31,16 @@ def stop():
     browser = None
 
 
-def goto(url=''):
+def _fix_url(url):
     if url.startswith('/'):
         url = url[1:]
-    if not url.startswith('http:'):
+    if not url.startswith('http'):
         url = DEFAULT_URL + url
+    return url
 
+
+def goto(url=''):
+    url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
 
@@ -48,6 +52,15 @@ def title_is(title):
         print msg
 
     assert title == real_title, msg
+
+
+def url_is(url):
+    url = _fix_url(url)
+    real_url = browser.get_current_url()
+    msg = 'Url is: %r\nShould be: %r' % (real_url, url)
+    if not url == real_url:
+        print msg
+    assert url == real_url, msg
 
 """
 # Example action using waitfor
@@ -69,3 +82,13 @@ def waitfor(condition, msg='', timeout=5, poll=0.1):
             _print(error)
             raise AssertionError(error)
         time.sleep(poll)
+
+
+def fails(action, *args, **kwargs):
+    try:
+        action(*args, **kwargs)
+    except AssertionError:
+        return
+    msg = 'Action %r did not fail' % action.__name__
+    _print(msg)
+    raise AssertionError(msg)
