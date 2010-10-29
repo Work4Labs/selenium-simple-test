@@ -9,7 +9,7 @@ from selenium.common.exceptions import (
 
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
-    'is_radio', 'set_base_url', 'reset_base_url'
+    'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is'
 ]
 
 browser = None
@@ -131,4 +131,13 @@ def _elem_is_type(elem, name, elem_type):
 def is_radio(the_id):
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'radio')
+    return elem
+
+
+def radio_value_is(the_id, value):
+    elem = is_radio(the_id)
+    selected = elem.is_selected()
+    msg = 'Radio %r should be set to: %s.' % (the_id, value)
+    if value != selected:
+        _raise(msg)
 
