@@ -19,8 +19,6 @@ def selenium_is_up():
     try:
         b = connect(FIREFOX)
     except:
-        import traceback
-        traceback.print_exc()
         return False
     b.close()
     return True
