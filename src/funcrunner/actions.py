@@ -201,12 +201,10 @@ def get_element(tag=None, css_class=None, id=None, **kwargs):
     if id is not None:
         selector_string += ('#%s' % (id,))
 
-    attributes = []
-    if kwargs is not None:
-        for key, value in kwargs.items():
-            attributes.append('[%s=%r]' % (key, value))
+    selector_string += ''.join(['[%s=%r]' % (key, value) for
+                                key, value in kwargs.items()])
 
-    if not selector_string and not attributes:
+    if not selector_string:
         msg = "Could not identify element: no arguments provided"
         _raise(msg)
     elements = browser._find_elements_by("css selector", selector_string)
