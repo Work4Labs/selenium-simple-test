@@ -1,0 +1,7 @@
+Notes, issues and questions
+===========================
+
+Tests will fail if the test doesn't goto a url first, an easy thing to forget.
+Should the check functions all fail with a useful error message if they are
+called before goto has been called?
+

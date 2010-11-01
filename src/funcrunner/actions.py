@@ -5,12 +5,13 @@ from selenium.remote import connect
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException
 )
+from selenium.remote.webelement import WebElement
 
 
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select', 'has_text', 'is_checkbox',
+    'radio_select', 'has_text', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set'
 ]
 
@@ -68,14 +69,10 @@ def goto(url=''):
     browser.get(url)
 
 
-def is_checkbox(chk_name):
-    checkbox = browser.find_element_by_id(chk_name)
-    elem_type = checkbox.get_attribute('type')
-    msg = 'Element ID: %r. Should be element of type: checkbox'
-    if elem_type != 'checkbox':
-        print msg
-    assert elem_type == 'checkbox', msg
-    return checkbox
+def is_checkbox(the_id):
+    elem = _get_elem(the_id)
+    _elem_is_type(elem, the_id, 'checkbox')
+    return elem
 
 
 # Asserts that the value 'is' what the test says it is
@@ -94,9 +91,7 @@ def checkbox_toggle(chk_name):
     after = checkbox.is_selected()
     msg = 'Checkbox: %r - was not toggled, value remains: %r' % (chk_name, before)
     if before == after:
-        print msg
-    assert before != after, msg
-
+        _raise(msg)
 
 def checkbox_set(chk_name, new_value):
     checkbox = is_checkbox(chk_name)
@@ -151,6 +146,8 @@ def fails(action, *args, **kwargs):
 
 
 def _get_elem(the_id):
+    if isinstance(the_id, WebElement):
+        return the_id
     try:
         return browser.find_element_by_id(the_id)
     except NoSuchElementException:
@@ -194,3 +191,16 @@ def has_text(the_id, text):
                                                                 real)
     if real != text:
         _raise(msg)
+
+def get_element(tag=None):
+    selector_string = ''
+    if tag is not None:
+        selector_string = tag
+    if not selector_string:
+        msg = "Could not identify element: no arguments provided"
+        _raise(msg)
+    elements = browser._find_elements_by("css selector", selector_string)
+    if len(elements) != 1:
+        msg = "Couldn't identify element: %s elements found" % (len(elements),)
+        _raise(msg)
+    return elements[0]
