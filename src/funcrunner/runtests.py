@@ -25,7 +25,7 @@ def selenium_is_up():
 
 
 def runtests():
-    waitfor(selenium_is_up, timeout=15, poll=1,
+    waitfor(selenium_is_up, timeout=15, poll=1.5,
             msg='selenium to start')
 
     runner = TextTestRunner(verbosity=2)
