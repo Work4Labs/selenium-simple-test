@@ -24,3 +24,10 @@ get_element(css_class="unique_class", id="some_id")
 get_element(css_class="unique_class", id="some_id", tag="p")
 fails(get_element, css_class="some_class")
 fails(get_element, css_class="foobar")
+
+# checking arbitrary attributes
+get_element(value="unique")
+fails(get_element, value="first")
+
+elem = get_element(type='radio', name='radio_with_id', checked="1")
+is_radio(elem)

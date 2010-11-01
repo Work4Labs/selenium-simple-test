@@ -1,9 +1,13 @@
 import os
 import sys
+import time
+
+from selenium import FIREFOX
+from selenium.remote import connect
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
-from .actions import start, stop, reset_base_url
+from .actions import start, stop, reset_base_url, waitfor
 
 
 __unittest = True
@@ -11,7 +15,17 @@ __unittest = True
 __all__ = ['runtests']
 
 
+def selenium_is_up():
+    try:
+        connect(FIREFOX)
+    except:
+        return False
+    return True
+
+
 def runtests():
+    waitfor(selenium_is_up, timeout=15, poll=1)
+
     runner = TextTestRunner(verbosity=2)
     suite = get_suite(sys.argv[1:])
     runner.run(suite)

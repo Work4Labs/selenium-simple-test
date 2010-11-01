@@ -192,7 +192,7 @@ def has_text(the_id, text):
     if real != text:
         _raise(msg)
 
-def get_element(tag=None, css_class=None, id=None):
+def get_element(tag=None, css_class=None, id=None, **kwargs):
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -201,7 +201,12 @@ def get_element(tag=None, css_class=None, id=None):
     if id is not None:
         selector_string += ('#%s' % (id,))
 
-    if not selector_string:
+    attributes = []
+    if kwargs is not None:
+        for key, value in kwargs.items():
+            attributes.append('[%s=%r]' % (key, value))
+
+    if not selector_string and not attributes:
         msg = "Could not identify element: no arguments provided"
         _raise(msg)
     elements = browser._find_elements_by("css selector", selector_string)
