@@ -73,7 +73,7 @@ def is_checkbox(the_id):
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'checkbox')
     return elem
-
+    
 
 # Asserts that the value 'is' what the test says it is
 def checkbox_value_is(chk_name, value):
@@ -92,6 +92,7 @@ def checkbox_toggle(chk_name):
     msg = 'Checkbox: %r - was not toggled, value remains: %r' % (chk_name, before)
     if before == after:
         _raise(msg)
+
 
 def checkbox_set(chk_name, new_value):
     checkbox = is_checkbox(chk_name)
