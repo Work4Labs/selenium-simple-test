@@ -29,7 +29,7 @@ function wait_until_django_up() {
 java -jar selenium-server-standalone-2.0a7.jar -trustAllSSLCertificates &
 selenium_pid=$!
 
-sleep 3
+sleep 5
 
 cd src/testproject
 python manage.py runserver &

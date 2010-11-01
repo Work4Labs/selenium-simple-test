@@ -192,10 +192,15 @@ def has_text(the_id, text):
     if real != text:
         _raise(msg)
 
-def get_element(tag=None):
+def get_element(tag=None, css_class=None, id=None):
     selector_string = ''
     if tag is not None:
         selector_string = tag
+    if css_class is not None:
+        selector_string += ('.%s' % (css_class,))
+    if id is not None:
+        selector_string += ('#%s' % (id,))
+
     if not selector_string:
         msg = "Could not identify element: no arguments provided"
         _raise(msg)
