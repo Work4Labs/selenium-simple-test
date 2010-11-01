@@ -17,9 +17,10 @@ __all__ = ['runtests']
 
 def selenium_is_up():
     try:
-        connect(FIREFOX)
+        b = connect(FIREFOX)
     except:
         return False
+    b.close()
     return True
 
 
