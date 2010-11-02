@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # Example:
     # (r'^testproject/', include('testproject.foo.urls')),
     (r'simple', include('testproject.simple.urls')),
+    (r'begin', 'simple.views.begin'),
     (r'', 'simple.views.index'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
