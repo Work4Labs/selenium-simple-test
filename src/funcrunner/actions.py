@@ -93,6 +93,7 @@ def checkbox_toggle(chk_name):
     if before == after:
         _raise(msg)
 
+
 def checkbox_set(chk_name, new_value):
     checkbox = is_checkbox(chk_name)
     # There is no method to 'unset' a checkbox in the browser object
@@ -191,6 +192,7 @@ def has_text(the_id, text):
                                                                 real)
     if real != text:
         _raise(msg)
+
 
 def get_element(tag=None, css_class=None, id=None, **kwargs):
     selector_string = ''
