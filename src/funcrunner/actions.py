@@ -12,7 +12,7 @@ __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'has_text', 'is_checkbox', 'get_element',
-    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set',
+    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link'
     'is_button', 'button_click',
 ]
 
@@ -103,6 +103,20 @@ def checkbox_set(chk_name, new_value):
     if new_value != current_value:
         checkbox_toggle(chk_name)
 
+
+def is_link(the_id):
+    link = _get_elem(the_id)
+    try:
+        href = link.get_attribute('href')        
+    except AttributeError:
+        msg = 'Element %r is not a link' % the_id
+        _raise(msg)
+    
+
+#def link_follow(the_id):
+#    link = _get_elem(the_id)
+#    link.click()
+    
 
 def title_is(title):
     real_title = browser.get_title()
