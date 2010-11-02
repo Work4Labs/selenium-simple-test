@@ -109,8 +109,8 @@ def is_link(the_id):
     try:
         href = link.get_attribute('href')        
     except AttributeError:
-        return
-    msg = 'Element %r is a link referring to url: %r' % (the_id, href)
+        msg = 'Element %r is not a link' % the_id
+        _raise(msg)
     
 
 #def link_follow(the_id):
