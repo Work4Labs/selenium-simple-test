@@ -12,7 +12,7 @@ __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'has_text', 'is_checkbox', 'get_element',
-    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link'
+    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click',
 ]
 
