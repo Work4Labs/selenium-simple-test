@@ -108,7 +108,7 @@ def is_link(the_id):
     link = _get_elem(the_id)
     try:
         href = link.get_attribute('href')        
-    except AttributeError:
+    except NoSuchAttributeException:
         msg = 'Element %r is not a link' % the_id
         _raise(msg)
     
