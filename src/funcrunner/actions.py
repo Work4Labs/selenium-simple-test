@@ -13,7 +13,7 @@ __all__ = [
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'has_text', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set',
-    'is_button', 'click_button'
+    'is_button', 'button_click',
 ]
 
 
@@ -224,6 +224,6 @@ def is_button(the_id):
     return elem
 
 
-def click_button(the_id):
+def button_click(the_id):
     button = is_button(the_id)
     button.click()

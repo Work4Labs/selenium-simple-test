@@ -8,6 +8,6 @@ fails(is_button, 'foobar')
 
 is_button(get_element(value="Begin", tag="input"))
 
-click_button('mainform')
+button_click('mainform')
 url_is('/begin')
 title_is('The Next Page')
