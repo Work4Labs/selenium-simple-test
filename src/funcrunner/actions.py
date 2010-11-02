@@ -13,7 +13,7 @@ __all__ = [
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'has_text', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
-    'is_button', 'button_click',
+    'is_button', 'button_click', 'link_click'
 ]
 
 
@@ -111,12 +111,19 @@ def is_link(the_id):
     except NoSuchAttributeException:
         msg = 'Element %r is not a link' % the_id
         _raise(msg)
-    
+    return link
 
-#def link_follow(the_id):
-#    link = _get_elem(the_id)
-#    link.click()
-    
+def link_click(the_id):
+    link = is_link(the_id)
+    link_url = link.get_attribute('href')
+    link.click()
+    url_is(link_url)
+# Code for use with future wait_for (possibly also update url_is to return a boolean)
+#    def url_match():
+#        return browser.get_current_url() == link_url 
+#    
+#    waitfor(url_match, 'Page to load - Current URL: %r - Link URL: %r' % (browser.get_current_url(), link_url))
+
 
 def title_is(title):
     real_title = browser.get_title()
