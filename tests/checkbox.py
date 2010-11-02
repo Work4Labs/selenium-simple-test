@@ -17,6 +17,21 @@ checkbox_value_is(get_element(id='id_sreg_country'), False)
 fails(checkbox_value_is, 'id_sreg_country', True)
 
 checkbox_toggle('id_sreg_country')
+checkbox_value_is('id_sreg_country', True)
+
+checkbox_toggle('id_sreg_country')
+checkbox_value_is('id_sreg_country', False)
+
+# restore checkbox to True for next tests
+checkbox_toggle('id_sreg_country')
+
 checkbox_set('id_sreg_country', False)
+checkbox_value_is('id_sreg_country', False)
+
 checkbox_set('id_sreg_country', True)
+checkbox_value_is('id_sreg_country', True)
+
+# check doesn't fail when setting check box to
+# the same value as it already is
 checkbox_set('id_sreg_country', True)
+checkbox_value_is('id_sreg_country', True)

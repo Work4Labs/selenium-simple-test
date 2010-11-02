@@ -51,13 +51,15 @@ def runtests():
 
 def get_suite(argv):
     args = set(argv)
+
     suite = TestSuite()
     for entry in os.listdir('tests'):
         if not entry.endswith('.py'):
             continue
         if args and entry[:-3] not in args:
             continue
-        argv.pop(entry[:-3])
+        if args:
+            argv.remove(entry[:-3])
         suite.addTest(get_case(entry))
     if argv:
         print 'The following tests were not found: %s' % (
