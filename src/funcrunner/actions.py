@@ -12,8 +12,10 @@ __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'has_text', 'is_checkbox', 'get_element',
-    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set'
+    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set',
+    'is_button'
 ]
+
 
 browser = None
 
@@ -214,3 +216,9 @@ def get_element(tag=None, css_class=None, id=None, **kwargs):
         msg = "Couldn't identify element: %s elements found" % (len(elements),)
         _raise(msg)
     return elements[0]
+
+
+def is_button(the_id):
+    elem = _get_elem(the_id)
+    _elem_is_type(elem, the_id, 'submit')
+    return elem
