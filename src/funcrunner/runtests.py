@@ -14,6 +14,14 @@ __unittest = True
 
 __all__ = ['runtests']
 
+USAGE = """runtests [testname]
+
+Calling runtests without any arguments runs all tests.
+Calling runtests with testname(s) will just run those
+tests. The testnames should not include the '.py' at
+the end of the filename.
+"""
+
 
 def selenium_is_up():
     try:
@@ -25,11 +33,19 @@ def selenium_is_up():
 
 
 def runtests():
+    args = sys.argv[1:]
+    if '-h' in args or '--help' in args:
+        print USAGE
+        sys.exit(0)
+
+    # find tests before waiting for selenium
+    # as finding tests can fail
+    suite = get_suite(args)
+
     waitfor(selenium_is_up, timeout=15, poll=1.5,
             msg='selenium to start')
 
     runner = TextTestRunner(verbosity=2)
-    suite = get_suite(sys.argv[1:])
     runner.run(suite)
 
 
@@ -41,7 +57,13 @@ def get_suite(argv):
             continue
         if args and entry[:-3] not in args:
             continue
+        argv.pop(entry[:-3])
         suite.addTest(get_case(entry))
+    if argv:
+        print 'The following tests were not found: %s' % (
+            ' '.join(argv)
+        )
+        sys.exit(1)
     return suite
 
 

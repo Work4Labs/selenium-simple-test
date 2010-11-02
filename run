@@ -34,6 +34,7 @@ python manage.py runserver &
 wait_until_django_up
 cd -
 
+echo
 python src/runtests.py "$@"
 
 kill $selenium_pid
