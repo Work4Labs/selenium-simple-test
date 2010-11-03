@@ -107,7 +107,7 @@ def checkbox_set(chk_name, new_value):
 
 def is_textfield(the_id):
     elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'text')
+    _elem_is_type(elem, the_id, 'text', 'password')
     return elem
 
 
@@ -195,14 +195,14 @@ def _get_elem(the_id):
         msg = 'Element %r does not exist' % the_id
         _raise(msg)
 
-
-def _elem_is_type(elem, name, elem_type):
+# Takes an optional 2nd input type for cases where types are similar
+def _elem_is_type(elem, name, elem_type, opt_elem_type='none'):
     msg = 'Element %r is not a %r' % (name, elem_type)
     try:
         result = elem.get_attribute('type')
     except NoSuchAttributeException:
         _raise(msg)
-    if not result == elem_type:
+    if not result == elem_type and not result == opt_elem_type :
         _raise(msg)
 
 
