@@ -11,7 +11,7 @@ from selenium.remote.webelement import WebElement
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select', 'has_text', 'is_checkbox', 'get_element',
+    'radio_select', 'text_is', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write'
@@ -123,7 +123,7 @@ def textfield_write(the_id, new_text):
 def is_link(the_id):
     link = _get_elem(the_id)
     try:
-        href = link.get_attribute('href')        
+        href = link.get_attribute('href')
     except NoSuchAttributeException:
         msg = 'Element %r is not a link' % the_id
         _raise(msg)
@@ -137,8 +137,8 @@ def link_click(the_id):
     url_is(link_url)
 # Code for use with future wait_for (possibly also update url_is to return a boolean)
 #    def url_match():
-#        return browser.get_current_url() == link_url 
-#    
+#        return browser.get_current_url() == link_url
+#
 #    waitfor(url_match, 'Page to load - Current URL: %r - Link URL: %r' % (browser.get_current_url(), link_url))
 
 
@@ -225,7 +225,7 @@ def radio_select(the_id):
     elem.set_selected()
 
 
-def has_text(the_id, text):
+def text_is(the_id, text):
     elem = _get_elem(the_id)
     real = elem.get_text()
     msg = 'Element %r should have had text: %r\nIt has: %r' % (the_id, text,
