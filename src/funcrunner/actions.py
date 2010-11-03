@@ -11,7 +11,7 @@ from selenium.remote.webelement import WebElement
 __all__ = [
     'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select', 'has_text', 'is_checkbox', 'get_element',
+    'radio_select', 'text_is', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write'
@@ -107,7 +107,7 @@ def checkbox_set(chk_name, new_value):
 
 def is_textfield(the_id):
     elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'text')
+    _elem_is_type(elem, the_id, 'text', 'password')
     return elem
 
 
@@ -195,14 +195,14 @@ def _get_elem(the_id):
         msg = 'Element %r does not exist' % the_id
         _raise(msg)
 
-
-def _elem_is_type(elem, name, elem_type):
+# Takes an optional 2nd input type for cases where types are similar
+def _elem_is_type(elem, name, elem_type, opt_elem_type='none'):
     msg = 'Element %r is not a %r' % (name, elem_type)
     try:
         result = elem.get_attribute('type')
     except NoSuchAttributeException:
         _raise(msg)
-    if not result == elem_type:
+    if not result == elem_type and not result == opt_elem_type :
         _raise(msg)
 
 
@@ -225,7 +225,7 @@ def radio_select(the_id):
     elem.set_selected()
 
 
-def has_text(the_id, text):
+def text_is(the_id, text):
     elem = _get_elem(the_id)
     real = elem.get_text()
     msg = 'Element %r should have had text: %r\nIt has: %r' % (the_id, text,
