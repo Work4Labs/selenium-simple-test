@@ -13,7 +13,8 @@ __all__ = [
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'has_text', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
-    'is_button', 'button_click', 'link_click'
+    'is_button', 'button_click', 'link_click', 'is_textfield',
+    'textfield_write'
 ]
 
 
@@ -104,6 +105,21 @@ def checkbox_set(chk_name, new_value):
         checkbox_toggle(chk_name)
 
 
+def is_textfield(the_id):
+    elem = _get_elem(the_id)
+    _elem_is_type(elem, the_id, 'text')
+    return elem
+
+
+def textfield_write(the_id, new_text):
+    textfield = is_textfield(the_id)
+    textfield.send_keys(new_text)
+    current_text = textfield.get_value()
+    msg = 'Textfield: %r - did not write' % the_id
+    if current_text != new_text:
+        _raise(msg)
+
+
 def is_link(the_id):
     link = _get_elem(the_id)
     try:
@@ -112,6 +128,7 @@ def is_link(the_id):
         msg = 'Element %r is not a link' % the_id
         _raise(msg)
     return link
+
 
 def link_click(the_id):
     link = is_link(the_id)
