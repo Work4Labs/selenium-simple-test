@@ -123,7 +123,7 @@ def textfield_write(the_id, new_text):
 def is_link(the_id):
     link = _get_elem(the_id)
     try:
-        href = link.get_attribute('href')        
+        href = link.get_attribute('href')
     except NoSuchAttributeException:
         msg = 'Element %r is not a link' % the_id
         _raise(msg)
@@ -137,8 +137,8 @@ def link_click(the_id):
     url_is(link_url)
 # Code for use with future wait_for (possibly also update url_is to return a boolean)
 #    def url_match():
-#        return browser.get_current_url() == link_url 
-#    
+#        return browser.get_current_url() == link_url
+#
 #    waitfor(url_match, 'Page to load - Current URL: %r - Link URL: %r' % (browser.get_current_url(), link_url))
 
 
