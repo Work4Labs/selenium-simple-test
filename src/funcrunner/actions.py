@@ -120,12 +120,12 @@ def textfield_write(the_id, new_text):
         _raise(msg)
 
 
-def is_link(the_id):
-    link = _get_elem(the_id)
+def is_link(id_or_linktext):
+    link = _get_elem(id_or_linktext)
     try:
         href = link.get_attribute('href')
     except NoSuchAttributeException:
-        msg = 'Element %r is not a link' % the_id
+        msg = 'The text %r is not part of a Link or a Link ID' % id_or_linktext
         _raise(msg)
     return link
 
@@ -186,16 +186,40 @@ def fails(action, *args, **kwargs):
     _raise(msg)
 
 
-def _get_elem(the_id):
-    if isinstance(the_id, WebElement):
-        return the_id
+def _get_elem_by_text(link_text):
     try:
-        return browser.find_element_by_id(the_id)
+        return browser.find_element_by_partial_link_text(link_text), True
     except NoSuchElementException:
-        msg = 'Element %r does not exist' % the_id
-        _raise(msg)
+        msg = 'No link containing the text: %r exists' % link_text
+        return msg, False
 
-# Takes an optional 2nd input type for cases where types are similar
+
+def _get_elem_by_id(the_id):
+    if isinstance(the_id, WebElement):
+        return the_id, True
+    try:
+        return browser.find_element_by_id(the_id), 1
+    except NoSuchElementException:
+        msg = 'Element with id: %r does not exist' % the_id
+        return msg, False 
+
+
+# Attempts to get an element first using id, then by using 
+#   partial link text 
+def _get_elem(id_or_linktext):
+    id_obj, id_result = _get_elem_by_id(id_or_linktext)
+    if id_result:
+        return id_obj
+    link_obj, linktext_result = _get_elem_by_text(id_or_linktext)
+    if linktext_result:
+        return link_obj
+    msg = 'Could not retrieve the element:\n    ' + id_obj + '\n    ' \
+          + link_obj
+    _raise(msg)
+
+
+# Takes an optional 2nd input type for cases like textfield & password
+#    where types are similar
 def _elem_is_type(elem, name, elem_type, opt_elem_type='none'):
     msg = 'Element %r is not a %r' % (name, elem_type)
     try:
@@ -227,11 +251,23 @@ def radio_select(the_id):
 
 def text_is(the_id, text):
     elem = _get_elem(the_id)
-    real = elem.get_text()
-    msg = 'Element %r should have had text: %r\nIt has: %r' % (the_id, text,
-                                                                real)
+    try:
+        real = elem.get_text()
+    except:
+        real = 'selenium.common.exceptions.InvalidElementState' + \
+               'Exception: Element does not have a value attribute'    
+    try:
+        real2 = elem.get_value()
+    except:
+        real2 = 'selenium.common.exceptions.InvalidElementState' + \
+                'Exception: Element does not have a value attribute'
+
+    msg = 'Element %r should have had text: %r\n    ' \
+        'get_text() returns: %r\n    get_value() returns: %r' \
+        % (the_id, text, real, real2)
     if real != text:
-        _raise(msg)
+        if real2 != text:
+            _raise(msg)
 
 
 def get_element(tag=None, css_class=None, id=None, **kwargs):
