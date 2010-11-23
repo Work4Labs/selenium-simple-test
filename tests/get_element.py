@@ -31,3 +31,13 @@ fails(get_element, value="first")
 
 elem = get_element(type='radio', name='radio_with_id', checked="1")
 is_radio(elem)
+
+# finding by text
+elem = get_element(tag='h2', text='Foo bar baz')
+text_is(elem, 'Foo bar baz')
+elem = get_element(text='Foo bar baz')
+text_is(elem, 'Foo bar baz')
+
+
+# should fail for a partial match
+fails(get_element, text='Foo bar')

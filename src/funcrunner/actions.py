@@ -3,7 +3,8 @@ import time
 from selenium import FIREFOX
 from selenium.remote import connect
 from selenium.common.exceptions import (
-    NoSuchElementException, NoSuchAttributeException
+    NoSuchElementException, NoSuchAttributeException,
+    InvalidElementStateException
 )
 from selenium.remote.webelement import WebElement
 
@@ -135,6 +136,7 @@ def link_click(the_id):
     link_url = link.get_attribute('href')
     link.click()
     url_is(link_url)
+
 # Code for use with future wait_for (possibly also update url_is to return a boolean)
 #    def url_match():
 #        return browser.get_current_url() == link_url
@@ -186,37 +188,34 @@ def fails(action, *args, **kwargs):
     _raise(msg)
 
 
+"""
 def _get_elem_by_text(link_text):
     try:
         return browser.find_element_by_partial_link_text(link_text), True
     except NoSuchElementException:
         msg = 'No link containing the text: %r exists' % link_text
         return msg, False
+"""
 
-
-def _get_elem_by_id(the_id):
+def _get_elem(the_id):
     if isinstance(the_id, WebElement):
-        return the_id, True
+        return the_id
     try:
-        return browser.find_element_by_id(the_id), 1
+        return browser.find_element_by_id(the_id)
     except NoSuchElementException:
         msg = 'Element with id: %r does not exist' % the_id
-        return msg, False 
+        _raise(msg)
 
-
-# Attempts to get an element first using id, then by using 
-#   partial link text 
-def _get_elem(id_or_linktext):
-    id_obj, id_result = _get_elem_by_id(id_or_linktext)
-    if id_result:
-        return id_obj
+"""
+# Attempts to get an element by partial link text
+def _get_elem_by_linktext(linktext):
     link_obj, linktext_result = _get_elem_by_text(id_or_linktext)
     if linktext_result:
         return link_obj
-    msg = 'Could not retrieve the element:\n    ' + id_obj + '\n    ' \
-          + link_obj
+    msg = ('Could not retrieve the element:\n    %s\n    %s'
+           % (linktext, link_obj))
     _raise(msg)
-
+"""
 
 # Takes an optional 2nd input type for cases like textfield & password
 #    where types are similar
@@ -226,7 +225,7 @@ def _elem_is_type(elem, name, elem_type, opt_elem_type='none'):
         result = elem.get_attribute('type')
     except NoSuchAttributeException:
         _raise(msg)
-    if not result == elem_type and not result == opt_elem_type :
+    if not result in (elem_type, opt_elem_type):
         _raise(msg)
 
 
@@ -249,28 +248,33 @@ def radio_select(the_id):
     elem.set_selected()
 
 
+def _get_text(elem):
+    try:
+        return elem.get_text()
+    except InvalidElementStateException:
+        try:
+            return elem.get_value()
+        except InvalidElementStateException:
+            pass
+    return None
+
+
 def text_is(the_id, text):
     elem = _get_elem(the_id)
-    try:
-        real = elem.get_text()
-    except:
-        real = 'selenium.common.exceptions.InvalidElementState' + \
-               'Exception: Element does not have a value attribute'    
-    try:
-        real2 = elem.get_value()
-    except:
-        real2 = 'selenium.common.exceptions.InvalidElementState' + \
-                'Exception: Element does not have a value attribute'
+    real = _get_text(elem)
+    if real is None:
+        msg = "Element %r has no text attribute"
+        _raise(msg)
 
-    msg = 'Element %r should have had text: %r\n    ' \
-        'get_text() returns: %r\n    get_value() returns: %r' \
-        % (the_id, text, real, real2)
     if real != text:
-        if real2 != text:
-            _raise(msg)
+        msg = 'Text should be %r.\nIt is %r.' % (text, real)
 
 
-def get_element(tag=None, css_class=None, id=None, **kwargs):
+def _check_text(elem, text):
+    return _get_text(elem) == text
+
+
+def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -281,11 +285,17 @@ def get_element(tag=None, css_class=None, id=None, **kwargs):
 
     selector_string += ''.join(['[%s=%r]' % (key, value) for
                                 key, value in kwargs.items()])
+    if text is not None and not selector_string:
+        elements = browser.find_elements_by_xpath('//*[text() = %r]' % text)
+    else:
+        if not selector_string:
+            msg = "Could not identify element: no arguments provided"
+            _raise(msg)
+        elements = browser._find_elements_by("css selector", selector_string)
 
-    if not selector_string:
-        msg = "Could not identify element: no arguments provided"
-        _raise(msg)
-    elements = browser._find_elements_by("css selector", selector_string)
+    if text is not None:
+        # if text was specified, filter elements
+        elements = [element for element in elements if _check_text(element, text)]
     if len(elements) != 1:
         msg = "Couldn't identify element: %s elements found" % (len(elements),)
         _raise(msg)
