@@ -1,3 +1,4 @@
+import re
 import time
 
 from selenium import FIREFOX
@@ -15,7 +16,7 @@ __all__ = [
     'radio_select', 'text_is', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
-    'textfield_write'
+    'textfield_write', 'url_contains'
 ]
 
 
@@ -131,11 +132,15 @@ def is_link(id_or_linktext):
     return link
 
 
-def link_click(the_id):
+def link_click(the_id, check=False):
     link = is_link(the_id)
     link_url = link.get_attribute('href')
     link.click()
-    url_is(link_url)
+
+    # some links do redirects - so we
+    # don't check by default
+    if check:
+        url_is(link_url)
 
 # Code for use with future wait_for (possibly also update url_is to return a boolean)
 #    def url_match():
@@ -157,6 +162,13 @@ def url_is(url):
     msg = 'Url is: %r\nShould be: %r' % (real_url, url)
     if not url == real_url:
         _raise(msg)
+
+
+def url_contains(url):
+    real_url = browser.get_current_url()
+    if not re.search(url, real_url):
+        _raise('url is %r. Does not contain %r' % (real_url, url))
+
 
 """
 # Example action using waitfor
