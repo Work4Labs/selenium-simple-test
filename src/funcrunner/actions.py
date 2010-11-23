@@ -16,7 +16,7 @@ __all__ = [
     'radio_select', 'text_is', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
-    'textfield_write', 'url_contains'
+    'textfield_write', 'url_contains', 'sleep'
 ]
 
 
@@ -26,6 +26,7 @@ BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
 
+sleep = time.sleep
 
 def _raise(msg):
     _print(msg)
