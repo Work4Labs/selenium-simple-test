@@ -1,3 +1,6 @@
+Functional testing with functest
+================================
+
 functest requires the Python selenium package and the selenium 2a7 Java server.
 
 Running the tests requires django 1.1.2 installed.
@@ -19,7 +22,38 @@ example:
 * pip install selenium
 * pip install django==1.1.2
 
-To experiment you can do the following:
+The test django project doesn't have a database so once you have the dependencies
+installed you can execute ``./run`` to run the tests.
+
+
+Running tests against pay.uec
+=============================
+
+We are using the payments project on uec to drive use cases for ``functest``.
+
+It assumes you have the following line in your ``/etc/hosts`` and are connected
+to the canonical VPN::
+
+  10.55.56.104 pay.uec
+
+Change directory into ``uec-pay``. The tests require a username (email) and
+password to login to SSO. Create a file ``passwords.py`` in the ``uec-pay``
+directory, with the following contents::
+
+  username = 'my.username@canonical.com'
+  password = 'mypassword'
+
+(``passwords.py`` is ignored by bazaar so you can't accidentally check it
+into the repository.)
+
+You can then execute ``./run`` to run the tests against pay.uec. Currently
+all it does is login via SSO.
+
+
+Experimenting with Selenium and Python
+======================================
+
+To experiment with Selenium you can do the following:
 
 * Start the selenium server:
 
@@ -41,6 +75,16 @@ To experiment you can do the following:
   b = connect(FIREFOX)
   b.get('http://www.google.com')
 
+
+
+Handling invalid SSL certificates
+=================================
+
+.. note::
+
+  SSO staging now has a valid ssl certificate, so the problem
+  described below is no longer blocking us. These notes kept for
+  future reference.
 
 We should be able to get round the invalid ssl certificate problem either by
 creating a custom firefox profile and running selenium with that, or by
