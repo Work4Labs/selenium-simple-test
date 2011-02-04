@@ -158,9 +158,9 @@ def checkbox_set(chk_name, new_value):
 
 def is_textfield(the_id):
     """
-    Assert that the element is a textfield or password box. Takes an id or an
-    element object. Raises a failure exception if the element specified
-    doesn't exist or isn't a textfield."""
+    Assert that the element is a textfield, textarea or password box. Takes an
+    id or an element object. Raises a failure exception if the element
+    specified doesn't exist or isn't a textfield."""
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'text', 'password', 'textarea')
     return elem
