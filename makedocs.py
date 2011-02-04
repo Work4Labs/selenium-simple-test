@@ -21,8 +21,12 @@ with open(os.path.join(this_dir, 'actions.txt'), 'w') as h:
     for entry in actions.__all__:
         member = getattr(actions, entry)
         doc = getattr(member, '__doc__', '')
+
         if not doc:
             continue
+        if doc.startswith('\n'):
+            doc = doc[1:]
+
         _write(entry)
         _write('-' * len(entry))
         h.write('\n')
@@ -35,5 +39,6 @@ with open(os.path.join(this_dir, 'actions.txt'), 'w') as h:
             _write('::')
             spec_text = inspect.formatargspec(*spec)
             h.write('    ' + entry + spec_text + '\n\n')
+
         _write(doc)
         _write('\n')

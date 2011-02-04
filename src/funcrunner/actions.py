@@ -107,13 +107,20 @@ def goto(url=''):
 
 
 def is_checkbox(the_id):
+    """
+    Assert that the element is a checkbox. Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist or isn't
+    a checkbox."""
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'checkbox')
     return elem
 
 
-# Asserts that the value 'is' what the test says it is
 def checkbox_value_is(chk_name, value):
+    """
+    Assert checkbox value. Takes an element id or object plus either True or
+    False. Raises a failure exception if the element specified doesn't exist
+    or isn't a checkbox."""
     checkbox = is_checkbox(chk_name)
     real = checkbox.is_selected()
     msg = 'Checkbox: %r - Has Value: %r' % (chk_name, real)
@@ -122,6 +129,9 @@ def checkbox_value_is(chk_name, value):
 
 
 def checkbox_toggle(chk_name):
+    """
+    Toggle the checkbox value. Takes an element id or object. Raises a failure
+    exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = is_checkbox(chk_name)
     before = checkbox.is_selected()
     checkbox.toggle()
@@ -130,8 +140,10 @@ def checkbox_toggle(chk_name):
     if before == after:
         _raise(msg)
 
-
 def checkbox_set(chk_name, new_value):
+    """
+    Set a checkbox to a specific value, either True or False. Raises a failure
+    exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = is_checkbox(chk_name)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
@@ -140,12 +152,18 @@ def checkbox_set(chk_name, new_value):
 
 
 def is_textfield(the_id):
+    """
+    Assert that the element is a textfield or password box. Takes an id or an
+    element object. Raises a failure exception if the element specified
+    doesn't exist or isn't a textfield."""
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'text', 'password')
     return elem
 
 
 def textfield_write(the_id, new_text):
+    """
+    Set the specified text into the textfield."""
     textfield = is_textfield(the_id)
     textfield.send_keys(new_text)
     current_text = textfield.get_value()
@@ -154,8 +172,10 @@ def textfield_write(the_id, new_text):
         _raise(msg)
 
 
-def is_link(id_or_linktext):
-    link = _get_elem(id_or_linktext)
+def is_link(the_id):
+    """
+    Assert that the element is a link."""
+    link = _get_elem(the_id)
     try:
         href = link.get_attribute('href')
     except NoSuchAttributeException:
@@ -165,6 +185,10 @@ def is_link(id_or_linktext):
 
 
 def link_click(the_id, check=False):
+    """
+    Click the specified link. As some links do redirects the location you end
+    up at is not checked by default. If you pass in `check=True` then this
+    action asserts that the resulting url is the link url."""
     link = is_link(the_id)
     link_url = link.get_attribute('href')
     link.click()
@@ -182,6 +206,7 @@ def link_click(the_id, check=False):
 
 
 def title_is(title):
+    """Assert the page title is as specified."""
     real_title = browser.get_title()
     msg = 'Title is: %r. Should be: %r' % (real_title, title)
     if not real_title == title:
@@ -189,6 +214,8 @@ def title_is(title):
 
 
 def url_is(url):
+    """Assert the current url is as specified. Can be an absolute url or
+    relative to the base url."""
     url = _fix_url(url)
     real_url = browser.get_current_url()
     msg = 'Url is: %r\nShould be: %r' % (real_url, url)
@@ -197,6 +224,7 @@ def url_is(url):
 
 
 def url_contains(url):
+    """Assert the current url *contains* the specified text."""
     real_url = browser.get_current_url()
     if not re.search(url, real_url):
         _raise('url is %r. Does not contain %r' % (real_url, url))
@@ -212,6 +240,29 @@ def wait_for_title_to_change(title):
 """
 
 def waitfor(condition, msg='', timeout=5, poll=0.1):
+    """
+    Wait for an action to pass. Useful for checking the results of actions that
+    may take some time to complete. This action takes a condition function
+    and calls it until it returns True. The maximum amount of time it will wait
+    is specified as the timeout (default 5 seconds). The function is called at
+    intervals specified by the poll argument (default every 0.1 seconds).
+
+    If it fails, the condition function never returns True before the timeout,
+    then any msg you supply will be added to the failure message.
+
+    An example action using waitfor::
+
+        def wait_for_title_to_change(title):
+            def title_changed():
+                return browser.get_title() == title
+
+            waitfor(title_changed, 'title to change')
+
+    XXXX Note that test scripts shouldn't use the browser object directly,
+    so if waitfor is to be used in test scripts (instead of for building
+    actions) it should be changed to catch assertion errors instead of condition
+    functions that return True or False.
+    """
     start = time.time()
     max_time = time.time() + timeout
     while True:
@@ -224,6 +275,14 @@ def waitfor(condition, msg='', timeout=5, poll=0.1):
 
 
 def fails(action, *args, **kwargs):
+    """
+    This action is particularly useful for *testing* other actions, by
+    checking that they fail when they should do. `fails` takes a function
+    (usually an action) and any arguments and keyword arguments to call the
+    function with. If calling the function raises an AssertionError then
+    `fails` succeeds. If the function does *not* raise an AssertionError then
+    this action raises the appropriate failure exception. Alll other
+    exceptions will be propagated normally."""
     try:
         action(*args, **kwargs)
     except AssertionError:
@@ -231,15 +290,6 @@ def fails(action, *args, **kwargs):
     msg = 'Action %r did not fail' % action.__name__
     _raise(msg)
 
-
-"""
-def _get_elem_by_text(link_text):
-    try:
-        return browser.find_element_by_partial_link_text(link_text), True
-    except NoSuchElementException:
-        msg = 'No link containing the text: %r exists' % link_text
-        return msg, False
-"""
 
 def _get_elem(the_id):
     if isinstance(the_id, WebElement):
@@ -250,16 +300,6 @@ def _get_elem(the_id):
         msg = 'Element with id: %r does not exist' % the_id
         _raise(msg)
 
-"""
-# Attempts to get an element by partial link text
-def _get_elem_by_linktext(linktext):
-    link_obj, linktext_result = _get_elem_by_text(id_or_linktext)
-    if linktext_result:
-        return link_obj
-    msg = ('Could not retrieve the element:\n    %s\n    %s'
-           % (linktext, link_obj))
-    _raise(msg)
-"""
 
 # Takes an optional 2nd input type for cases like textfield & password
 #    where types are similar
@@ -274,12 +314,15 @@ def _elem_is_type(elem, name, elem_type, opt_elem_type='none'):
 
 
 def is_radio(the_id):
+    """Assert the specified element is a radio button"""
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'radio')
     return elem
 
 
 def radio_value_is(the_id, value):
+    """Assert the specified element is a radio button with the specified value;
+    True for selected and False for unselected."""
     elem = is_radio(the_id)
     selected = elem.is_selected()
     msg = 'Radio %r should be set to: %s.' % (the_id, value)
@@ -288,6 +331,7 @@ def radio_value_is(the_id, value):
 
 
 def radio_select(the_id):
+    """Select the specified radio button."""
     elem = is_radio(the_id)
     elem.set_selected()
 
