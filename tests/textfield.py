@@ -19,7 +19,6 @@ textfield_write('text_1', "I pity the Foobar..")
 text_is('text_1', "I pity the Foobar..")
 
 # check with empty text
-import pdb;pdb.set_trace()
 textfield_write('text_1', "")
 text_is('text_1', "")
 
