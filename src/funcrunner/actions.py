@@ -2,7 +2,19 @@
 The standard actions
 ====================
 
-Tests comprise of scripts in
+Tests comprise of scripts in a "tests" directory. Test scripts drive the browser
+through selenium by importing and using actions.
+
+The standard set of actions are imported by starting the test scripts with::
+
+    from funcrunner.actions import *
+
+
+Actions that work on page elements usually take either an element id or an
+element object as their first argument. If the element you are working with
+doesn't have a specific id you can get the element object with the
+`get_element` action. `get_element` allows you to find an element by its
+tagname, text, class or other attributes. See the `get_element` documentation.
 """
 
 import re
@@ -41,11 +53,15 @@ def _raise(msg):
 
 
 def set_base_url(url):
+    """Set the url used for relative arguments to the `goto` action."""
     global BASE_URL
     BASE_URL = url
 
 
 def reset_base_url():
+    """
+    Restore the base url to the default. This is called automatically for
+    you when a test script completes."""
     global BASE_URL
     BASE_URL = __DEFAULT_BASE_URL__
 
@@ -56,12 +72,16 @@ def _print(text):
 
 
 def start():
+    """
+    Starts Firefox with a new browser session. Called for you at the start of
+    each test script."""
     global browser
     _print('Starting browser')
     browser = connect(FIREFOX)
 
 
 def stop():
+    """Stops Firefox and ends the browser session."""
     global browser
     _print('Stopping browser')
     browser.close()
@@ -77,6 +97,10 @@ def _fix_url(url):
 
 
 def goto(url=''):
+    """
+    Goto a specific URL. If the url provided is a relative url it will be added
+    to the base url. You can change the base url for the test with
+    `set_base_url`."""
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
