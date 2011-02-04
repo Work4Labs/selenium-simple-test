@@ -262,14 +262,20 @@ def radio_select(the_id):
 
 
 def _get_text(elem):
+    text = None
     try:
-        return elem.get_text()
+        text = elem.get_text()
     except InvalidElementStateException:
-        try:
-            return elem.get_value()
-        except InvalidElementStateException:
-            pass
-    return None
+        pass
+    if text:
+        # Note that some elements (like textfields) return empty string
+        # for get_text() and we still need to call get_value()
+        return text
+    try:
+        text = elem.get_value()
+    except InvalidElementStateException:
+        pass
+    return text
 
 
 def text_is(the_id, text):

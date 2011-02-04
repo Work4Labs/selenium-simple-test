@@ -5,3 +5,5 @@ selenium-server-standalone-2.0b1.jar
 selenium.log
 uec-pay/selenium.log
 staging-pay/passwords.py
+action.txt
+actions.txt
