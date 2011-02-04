@@ -1,7 +1,7 @@
 Functional testing with functest
 ================================
 
-functest requires the Python selenium package and the selenium 2a7 Java server.
+functest requires the Python selenium package and the Selenium 2b1 Java server.
 
 Running the tests requires django 1.1.2 installed.
 
@@ -49,6 +49,9 @@ into the repository.)
 
 You can then execute ``./run`` to run the tests against pay.
 
+The tests depend on being able to create new payments with the testconsumer,
+which require you to be a member of the ``isd-hackers`` group.
+
 
 Experimenting with Selenium and Python
 ======================================
@@ -57,7 +60,7 @@ To experiment with Selenium you can do the following:
 
 * Start the selenium server:
 
-  java -jar selenium-server-standalone-2.0a7.jar -trustAllSSLCertificates
+  java -jar selenium-server-standalone-2.0b1.jar -trustAllSSLCertificates
 
 * From another terminal window activate the virtualenv (from inside the
   virtualenv directory):
