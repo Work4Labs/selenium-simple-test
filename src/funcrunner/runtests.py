@@ -53,6 +53,10 @@ def get_suite(argv):
     args = set(argv)
     argv = set(argv)
 
+    test_directory = os.path.abspath(os.path.join(os.curdir, 'tests'))
+    if not test_directory in sys.path:
+        sys.path.append(test_directory)
+
     suite = TestSuite()
     for entry in os.listdir('tests'):
         if not entry.endswith('.py'):
