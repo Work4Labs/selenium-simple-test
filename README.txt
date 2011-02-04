@@ -29,19 +29,16 @@ You can do this automatically from the requirements.txt file with:
 The test django project doesn't have a database so once you have the dependencies
 installed you can execute ``./run`` to run the tests.
 
+During test runs selenium output is diverted to a file "selenium.log".
 
-Running tests against pay.uec
-=============================
 
-We are using the payments project on uec to drive use cases for ``functest``.
+Running tests against pay on staging
+====================================
 
-It assumes you have the following line in your ``/etc/hosts`` and are connected
-to the canonical VPN::
+We are using the payments project to drive use cases for ``functest``.
 
-  10.55.56.104 pay.uec
-
-Change directory into ``uec-pay``. The tests require a username (email) and
-password to login to SSO. Create a file ``passwords.py`` in the ``uec-pay``
+Change directory into ``staging-pay``. The tests require a username (email) and
+password to login to SSO. Create a file ``passwords.py`` in the ``staging-pay``
 directory, with the following contents::
 
   username = 'my.username@canonical.com'
@@ -50,8 +47,7 @@ directory, with the following contents::
 (``passwords.py`` is ignored by bazaar so you can't accidentally check it
 into the repository.)
 
-You can then execute ``./run`` to run the tests against pay.uec. Currently
-all it does is login via SSO.
+You can then execute ``./run`` to run the tests against pay.
 
 
 Experimenting with Selenium and Python

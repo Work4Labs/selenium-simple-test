@@ -1,6 +1,6 @@
 from funcrunner.actions import *
 
-# passwords.py must exist in the uec-pay directory
+# passwords.py must exist in the staging-pay directory
 from passwords import username, password
 
 set_base_url('https://staging.pay.ubuntu.com/')
