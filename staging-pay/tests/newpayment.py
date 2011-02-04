@@ -19,3 +19,6 @@ item_description="""A funky foobar
 With several lines of description
 like this"""
 textfield_write('1-item_description', item_description)
+
+
+sleep(30)

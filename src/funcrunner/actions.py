@@ -162,7 +162,7 @@ def is_textfield(the_id):
     element object. Raises a failure exception if the element specified
     doesn't exist or isn't a textfield."""
     elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'text', 'password')
+    _elem_is_type(elem, the_id, 'text', 'password', 'textarea')
     return elem
 
 
@@ -314,13 +314,14 @@ def _get_elem(the_id):
 
 # Takes an optional 2nd input type for cases like textfield & password
 #    where types are similar
-def _elem_is_type(elem, name, elem_type, opt_elem_type='none'):
-    msg = 'Element %r is not a %r' % (name, elem_type)
+def _elem_is_type(elem, name, *elem_types):
     try:
         result = elem.get_attribute('type')
     except NoSuchAttributeException:
+        msg = "Element has no type attribute"
         _raise(msg)
-    if not result in (elem_type, opt_elem_type):
+    if not result in elem_types:
+        msg = 'Element %r is not one of %r' % (name, elem_types)
         _raise(msg)
 
 
