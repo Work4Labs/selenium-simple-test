@@ -2,8 +2,11 @@
 The standard actions
 ====================
 
-Tests comprise of scripts in a "tests" directory. Test scripts drive the browser
-through selenium by importing and using actions.
+Tests comprise of python scripts in a "tests" directory. Files whose names
+begin with an underscore will *not* be executed as test scripts.
+
+Test scripts drive the browser through selenium by importing and using
+actions.
 
 The standard set of actions are imported by starting the test scripts with::
 
@@ -181,7 +184,7 @@ def is_link(the_id):
     try:
         href = link.get_attribute('href')
     except NoSuchAttributeException:
-        msg = 'The text %r is not part of a Link or a Link ID' % id_or_linktext
+        msg = 'The text %r is not part of a Link or a Link ID' % the_id
         _raise(msg)
     return link
 

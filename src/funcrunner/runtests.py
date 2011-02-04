@@ -51,6 +51,7 @@ def runtests():
 
 def get_suite(argv):
     args = set(argv)
+    argv = set(argv)
 
     suite = TestSuite()
     for entry in os.listdir('tests'):
@@ -58,6 +59,11 @@ def get_suite(argv):
             continue
         if args and entry[:-3] not in args:
             continue
+        elif not args:
+            if entry.startswith('_'):
+                # ignore entries that start with an underscore unless
+                # they are explcitly specified
+                continue
         if args:
             argv.remove(entry[:-3])
         suite.addTest(get_case(entry))
