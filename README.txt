@@ -22,6 +22,10 @@ example:
 * pip install selenium
 * pip install django==1.1.2
 
+You can do this automatically from the requirements.txt file with:
+
+* pip install -r requirements.txt
+
 The test django project doesn't have a database so once you have the dependencies
 installed you can execute ``./run`` to run the tests.
 

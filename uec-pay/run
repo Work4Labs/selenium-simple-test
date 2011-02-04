@@ -4,7 +4,7 @@ SCRIPT_DIR=$(dirname $0)
 
 cd $SCRIPT_DIR
 
-java -jar ../selenium-server-standalone-2.0a7.jar -trustAllSSLCertificates &
+java -jar ../selenium-server-standalone-2.0b1.jar -trustAllSSLCertificates &>selenium.log &
 selenium_pid=$!
 
 python ../src/runtests.py "$@"
