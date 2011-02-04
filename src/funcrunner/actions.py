@@ -166,13 +166,19 @@ def is_textfield(the_id):
     return elem
 
 
-def textfield_write(the_id, new_text):
+def textfield_write(the_id, new_text, check=True):
     """
-    Set the specified text into the textfield."""
+    Set the specified text into the textfield. If the text fails to write (the
+    textfield contents after writing are different to the specified text) this
+    function will fail. You can switch off the checking by passing
+    `check=False`."""
     textfield = is_textfield(the_id)
+    textfield.clear()
     textfield.send_keys(new_text)
+    if not check:
+        return
     current_text = textfield.get_value()
-    msg = 'Textfield: %r - did not write' % the_id
+    msg = 'Textfield: %r - did not write. Text was: %r' % (the_id, current_text)
     if current_text != new_text:
         _raise(msg)
 

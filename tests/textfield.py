@@ -18,9 +18,13 @@ fails(is_textfield, 'radio_with_id_1')
 textfield_write('text_1', "I pity the Foobar..")
 text_is('text_1', "I pity the Foobar..")
 
+textfield_write('text_1', "Overwriting")
+text_is('text_1', "Overwriting")
+
+textfield_write('text_1', "No checking", check=False)
+text_is('text_1', "No checking")
+
 # check with empty text
-textfield_write('text_1', "a")
-text_is('text_1', "a")
 textfield_write('text_1', "")
 text_is('text_1', "")
 
