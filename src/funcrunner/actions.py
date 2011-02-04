@@ -281,6 +281,7 @@ def text_is(the_id, text):
 
     if real != text:
         msg = 'Text should be %r.\nIt is %r.' % (text, real)
+        _raise(msg)
 
 
 def _check_text(elem, text):
