@@ -42,7 +42,7 @@ def runtests():
     # as finding tests can fail
     suite = get_suite(args)
 
-    waitfor(selenium_is_up, timeout=15, poll=1.5,
+    waitfor(selenium_is_up, timeout=25, poll=1.5,
             msg='selenium to start')
 
     runner = TextTestRunner(verbosity=2)
