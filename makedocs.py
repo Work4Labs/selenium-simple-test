@@ -18,7 +18,7 @@ with open(os.path.join(this_dir, 'actions.txt'), 'w') as h:
             continue
         h.write(entry)
         h.write('\n')
-        h.write('=' * len(entry))
+        h.write('-' * len(entry))
         h.write('\n\n')
         h.write(doc)
         h.write('\n\n')

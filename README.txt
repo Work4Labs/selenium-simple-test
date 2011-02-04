@@ -38,6 +38,14 @@ just the test for the radio button you do:
 
 This runs the test file ``tests/radio.py``.
 
+Tests are made up of scripts in a 'tests' directory. These scripts are created
+by composing actions that drive selenium. You generate the documentation for
+the standard actions by running:
+
+  ``python makedocs.py``
+
+This generates the text file "actions.txt".
+
 
 Running tests against pay on staging
 ====================================

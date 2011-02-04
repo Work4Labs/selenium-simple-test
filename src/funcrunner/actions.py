@@ -1,3 +1,10 @@
+"""
+The standard actions
+====================
+
+Tests comprise of scripts in
+"""
+
 import re
 import time
 
