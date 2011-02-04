@@ -11,12 +11,15 @@ sys.path.append(os.path.join(this_dir, 'src'))
 from funcrunner import actions
 
 with open(os.path.join(this_dir, 'actions.txt'), 'w') as h:
-    def _write(entry):
-        entry = textwrap.dedent(entry or '')
-        h.write(entry)
+    def _write(text):
+        if text.strip() and text.startswith('\n'):
+            text = text[1:]
+        text = textwrap.dedent(text or '')
+        h.write(text)
         h.write('\n')
 
     _write(actions.__doc__)
+    _write('\n')
 
     for entry in actions.__all__:
         member = getattr(actions, entry)
@@ -24,8 +27,6 @@ with open(os.path.join(this_dir, 'actions.txt'), 'w') as h:
 
         if not doc:
             continue
-        if doc.startswith('\n'):
-            doc = doc[1:]
 
         _write(entry)
         _write('-' * len(entry))

@@ -81,7 +81,9 @@ def start():
 
 
 def stop():
-    """Stops Firefox and ends the browser session."""
+    """
+    Stops Firefox and ends the browser session. Called automatically for you at
+    the end of each test script."""
     global browser
     _print('Stopping browser')
     browser.close()
@@ -354,6 +356,7 @@ def _get_text(elem):
 
 
 def text_is(the_id, text):
+    """Assert the specified element has the specified text."""
     elem = _get_elem(the_id)
     real = _get_text(elem)
     if real is None:
@@ -370,6 +373,17 @@ def _check_text(elem, text):
 
 
 def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+    """
+    This function will find and return an element by any of several
+    attributes. If the element cannot be found from the attributes you
+    provide, or the attributes match more than one element, the call will fail
+    with an exception.
+
+    Finding elements is useful for checking that the element exists, and also
+    for passing to other actions that work with element objects.
+
+    You can specify as many or as few attributes as you like, so long as they
+    uniquely identify one element."""
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -398,11 +412,13 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
 
 def is_button(the_id):
+    """Assert that the specified element is a button."""
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'submit')
     return elem
 
 
 def button_click(the_id):
+    """Click the specified button."""
     button = is_button(the_id)
     button.click()
