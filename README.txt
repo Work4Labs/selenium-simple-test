@@ -31,6 +31,13 @@ installed you can execute ``./run`` to run the tests.
 
 During test runs selenium output is diverted to a file "selenium.log".
 
+An individual test (file) can be run with just the name of the test. E.g. to run
+just the test for the radio button you do:
+
+  ``./run radio``
+
+This runs the test file ``tests/radio.py``.
+
 
 Running tests against pay on staging
 ====================================
