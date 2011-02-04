@@ -7,7 +7,7 @@ Running the tests requires django 1.1.2 installed.
 
 Download the selenium Java package (jar) from:
 
-  http://selenium.googlecode.com/files/selenium-server-standalone-2.0a7.jar
+  http://selenium.googlecode.com/files/selenium-server-standalone-2.0b1.jar
 
 You should place this file in the top level of the project directory (the same
 directory as this file).
