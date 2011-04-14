@@ -1,35 +1,21 @@
 Functional testing with functest
 ================================
 
-functest requires the Python selenium package and the Selenium 2b1 Java server.
+Running the tests requires django 1.1.2 installed:
 
-Running the tests requires django 1.1.2 installed.
+    * $ sudo pip install django==1.1.2
 
-Download the selenium Java package (jar) from:
+It also requires selenium 2.0b4 or greater.
 
-  http://selenium.googlecode.com/files/selenium-server-standalone-2.0b1.jar
-
-You should place this file in the top level of the project directory (the same
-directory as this file).
-
-The easiest way to install the python dependencies is to create a
-'virtualenv', which is an isolated python environment that allows you to
-install packages without installing them into your system. See
-requirements.txt for the packages you will need to install. Once you have
-created and activated your virtualenv you install packages with 'pip'. For
-example:
-
-* pip install selenium
-* pip install django==1.1.2
+    * $ sudo pip install selenium==2.0b4dev
 
 You can do this automatically from the requirements.txt file with:
 
-* pip install -r requirements.txt
+    * sudo pip install -r requirements.txt
+
 
 The test django project doesn't have a database so once you have the dependencies
 installed you can execute ``./run`` to run the tests.
-
-During test runs selenium output is diverted to a file "selenium.log".
 
 An individual test (file) can be run with just the name of the test. E.g. to run
 just the test for the radio button you do:
@@ -45,6 +31,7 @@ the standard actions by running:
   ``python makedocs.py``
 
 This generates the text file "actions.txt".
+
 
 
 Running tests against pay on staging
@@ -68,30 +55,15 @@ The tests depend on being able to create new payments with the testconsumer,
 which require you to be a member of the ``isd-hackers`` group.
 
 
+
 Experimenting with Selenium and Python
 ======================================
 
 To experiment with Selenium you can do the following:
-
-* Start the selenium server:
-
-  java -jar selenium-server-standalone-2.0b1.jar -trustAllSSLCertificates
-
-* From another terminal window activate the virtualenv (from inside the
-  virtualenv directory):
-
-  source bin/activate
-
-* Start the python interactive interpreter:
-
-  python
-
-* Execute the following code:
-
-  from selenium import FIREFOX
-  from selenium.remote import connect
-  b = connect(FIREFOX)
-  b.get('http://www.google.com')
+    
+    from selenium import webdriver
+    b = webdriver.Firefox()
+    b.get('http://www.google.com')
 
 
 

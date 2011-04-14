@@ -177,7 +177,7 @@ def textfield_write(the_id, new_text, check=True):
     textfield.send_keys(new_text)
     if not check:
         return
-    current_text = textfield.value
+    current_text = textfield.get_attribute('value')
     msg = 'Textfield: %r - did not write. Text was: %r' % (the_id, current_text)
     if current_text != new_text:
         _raise(msg)
@@ -386,17 +386,9 @@ def _get_text(elem):
         # for text and we still need to call value
         return text
     try:
-        text = elem.value
+        text = elem.get_attribute('value')
     except InvalidElementStateException:
         pass
-    except WebDriverException as e:
-        # some elements like a <td> might have no text and value and fall 
-        # through to here.  Webdriver throws a generic exception, so
-        # we check its args.
-        if 'Element does not have a value attribute' in e.args:
-            pass
-        else:
-            raise
     return text
 
 

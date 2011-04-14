@@ -1,2 +1,2 @@
 django==1.1.2
-selenium==2.0b3
+selenium==2.0b4dev
