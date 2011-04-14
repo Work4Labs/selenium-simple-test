@@ -27,7 +27,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException
+    InvalidElementStateException, WebDriverException
 )
 
 
@@ -389,6 +389,14 @@ def _get_text(elem):
         text = elem.value
     except InvalidElementStateException:
         pass
+    except WebDriverException as e:
+        # some elements like a <td> might have no text and value and fall 
+        # through to here.  Webdriver throws a generic exception, so
+        # we check its args.
+        if 'Element does not have a value attribute' in e.args:
+            pass
+        else:
+            raise
     return text
 
 
