@@ -2,9 +2,6 @@ import os
 import sys
 import time
 
-from selenium import FIREFOX
-from selenium.remote import connect
-
 from unittest import TestSuite, TextTestRunner, TestCase
 
 from .actions import start, stop, reset_base_url, waitfor
@@ -23,14 +20,6 @@ the end of the filename.
 """
 
 
-def selenium_is_up():
-    try:
-        b = connect(FIREFOX)
-    except:
-        return False
-    b.close()
-    return True
-
 
 def runtests():
     args = sys.argv[1:]
@@ -38,13 +27,8 @@ def runtests():
         print USAGE
         sys.exit(0)
 
-    # find tests before waiting for selenium
-    # as finding tests can fail
     suite = get_suite(args)
-
-    waitfor(selenium_is_up, timeout=25, poll=1.5,
-            msg='selenium to start')
-
+   
     runner = TextTestRunner(verbosity=2)
     runner.run(suite)
 
