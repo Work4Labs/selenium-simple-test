@@ -23,13 +23,12 @@ tagname, text, class or other attributes. See the `get_element` documentation.
 import re
 import time
 
-from selenium import FIREFOX
-from selenium.remote import connect
+from selenium import webdriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
     InvalidElementStateException
 )
-from selenium.remote.webelement import WebElement
 
 
 __all__ = [
@@ -38,7 +37,8 @@ __all__ = [
     'radio_select', 'text_is', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
-    'textfield_write', 'url_contains', 'sleep'
+    'textfield_write', 'url_contains', 'sleep', 'is_select', 
+    'select_value_is', 'set_select' 
 ]
 
 
@@ -80,7 +80,7 @@ def start():
     each test script."""
     global browser
     _print('Starting browser')
-    browser = connect(FIREFOX)
+    browser = webdriver.Firefox()
 
 
 def stop():
@@ -177,7 +177,7 @@ def textfield_write(the_id, new_text, check=True):
     textfield.send_keys(new_text)
     if not check:
         return
-    current_text = textfield.get_value()
+    current_text = textfield.value
     msg = 'Textfield: %r - did not write. Text was: %r' % (the_id, current_text)
     if current_text != new_text:
         _raise(msg)
@@ -187,11 +187,10 @@ def is_link(the_id):
     """
     Assert that the element is a link."""
     link = _get_elem(the_id)
-    try:
-        href = link.get_attribute('href')
-    except NoSuchAttributeException:
+    href = link.get_attribute('href')
+    if href is None:
         msg = 'The text %r is not part of a Link or a Link ID' % the_id
-        _raise(msg)
+        _raise(msg)  
     return link
 
 
@@ -218,7 +217,7 @@ def link_click(the_id, check=False):
 
 def title_is(title):
     """Assert the page title is as specified."""
-    real_title = browser.get_title()
+    real_title = browser.title
     msg = 'Title is: %r. Should be: %r' % (real_title, title)
     if not real_title == title:
         _raise(msg)
@@ -228,7 +227,7 @@ def url_is(url):
     """Assert the current url is as specified. Can be an absolute url or
     relative to the base url."""
     url = _fix_url(url)
-    real_url = browser.get_current_url()
+    real_url = browser.current_url
     msg = 'Url is: %r\nShould be: %r' % (real_url, url)
     if not url == real_url:
         _raise(msg)
@@ -236,7 +235,7 @@ def url_is(url):
 
 def url_contains(url):
     """Assert the current url *contains* the specified text."""
-    real_url = browser.get_current_url()
+    real_url = browser.current_url
     if not re.search(url, real_url):
         _raise('url is %r. Does not contain %r' % (real_url, url))
 
@@ -245,7 +244,7 @@ def url_contains(url):
 # Example action using waitfor
 def wait_for_title_to_change(title):
     def title_changed():
-        return browser.get_title() == title
+        return browser.title == title
 
     waitfor(title_changed, 'title to change')
 """
@@ -265,7 +264,7 @@ def waitfor(condition, msg='', timeout=5, poll=0.1):
 
         def wait_for_title_to_change(title):
             def title_changed():
-                return browser.get_title() == title
+                return browser.title == title
 
             waitfor(title_changed, 'title to change')
 
@@ -325,12 +324,41 @@ def _elem_is_type(elem, name, *elem_types):
         _raise(msg)
 
 
+def is_select(the_id):
+    """Assert the specified element is a select drop-list"""
+    elem = _get_elem(the_id)
+    _elem_is_type(elem, the_id, 'select-one')
+    return elem
+
+
+def set_select(the_id, text_in):
+    """Set the select drop list to a text value provided to the function"""
+    elem = is_select(the_id)
+    for element in elem.find_elements_by_tag_name('option'):
+        if element.text == text_in:
+            element.select()
+            return
+    msg = 'The following option could not be found in the list: %s' % text_in 
+    _raise(msg)
+    
+
+def select_value_is(the_id, text_in):
+    """Assert the specified element is a select list with the specified value"""
+    elem = is_select(the_id)
+    # Because there is no way to connect the current text of a select element we have to use 'value' 
+    current = elem.get_attribute('value')
+    for element in elem.find_elements_by_tag_name("option"):
+        if text_in == element.text and current == element.get_attribute('value'):
+            return 
+    msg = 'The option is not currently set to the following expected value: %s' % text_in 
+    _raise(msg)
+    
+
 def is_radio(the_id):
     """Assert the specified element is a radio button"""
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'radio')
     return elem
-
 
 def radio_value_is(the_id, value):
     """Assert the specified element is a radio button with the specified value;
@@ -341,25 +369,24 @@ def radio_value_is(the_id, value):
     if value != selected:
         _raise(msg)
 
-
 def radio_select(the_id):
     """Select the specified radio button."""
     elem = is_radio(the_id)
-    elem.set_selected()
+    elem.select()
 
 
 def _get_text(elem):
     text = None
     try:
-        text = elem.get_text()
+        text = elem.text
     except InvalidElementStateException:
         pass
     if text:
         # Note that some elements (like textfields) return empty string
-        # for get_text() and we still need to call get_value()
+        # for text and we still need to call value
         return text
     try:
-        text = elem.get_value()
+        text = elem.value
     except InvalidElementStateException:
         pass
     return text
@@ -410,7 +437,7 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
         if not selector_string:
             msg = "Could not identify element: no arguments provided"
             _raise(msg)
-        elements = browser._find_elements_by("css selector", selector_string)
+        elements = browser.find_elements_by_css_selector(selector_string)
 
     if text is not None:
         # if text was specified, filter elements

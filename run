@@ -10,11 +10,10 @@ if [ "$PYTHONPATH" != "" ]; then
 else
     PYTHONPATH="src"
 fi
+
 export PYTHONPATH=$PYTHONPATH
 
-
 export DJANGO_SETTINGS_MODULE="testproject.settings"
-
 
 function django_is_up() {
     wget -q -O /dev/null "http://localhost:8000/"
@@ -26,9 +25,6 @@ function wait_until_django_up() {
     echo "django found. Continuing..."
 }
 
-java -jar selenium-server-standalone-2.0b1.jar -trustAllSSLCertificates &>selenium.log &
-selenium_pid=$!
-
 cd src/testproject
 python manage.py runserver &
 wait_until_django_up
@@ -37,7 +33,6 @@ cd -
 echo
 python src/runtests.py "$@"
 
-kill $selenium_pid
 kill $(ps aux | grep '[p]ython manage.py' | awk '{print $2}')
 
 
