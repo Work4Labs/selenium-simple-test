@@ -63,21 +63,27 @@ footer = """\
 
 
 about_text = """
-Functional testing with functest
-================================
 
-Selenium Simple Test (SST) is a functional web test framework that uses a simple 
-Python DSL to generate GUI level tests.
+<p>
+Selenium Simple Test (SST) is a web test framework that uses a simple 
+Python DSL to generate functional GUI tests.
+</p>
 
+<p>
 Tests are made up of scripts, created by composing actions that drive a browser
-via selenium.
+via selenium.  You have the flexibilty of the full Python language, along with
+a convenient set of functions of simplify web testing.
+</p>
 
+<p>
+At runtime, scripts are converted to a standard Python unittest suite and executed.
+</p>
 
+<h2>Functional testing with SST</h2>
 
+<h3>Example test script</h3>
 
-Example test script
-===================
-
+<pre>
     from funcrunner.actions import *
 
 
@@ -95,7 +101,9 @@ Example test script
     url_contains('IBM')
     
     
-    
+</pre>    
+
+<h1>Actions</h1>
 """
 
 
@@ -115,7 +123,7 @@ with open(os.path.join(this_dir, 'selenium-simple-test.html'), 'w') as h:
     
     _write('<hr />')
     
-    _write('<pre>{0}</pre>'.format(about_text))
+    _write(about_text)
     
     _write('<pre>{0}</pre>'.format(actions.__doc__))
     
