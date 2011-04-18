@@ -79,7 +79,7 @@ def start():
     Starts Firefox with a new browser session. Called for you at the start of
     each test script."""
     global browser
-    _print('Starting browser')
+    _print('\nStarting browser')
     browser = webdriver.Firefox()
 
 
