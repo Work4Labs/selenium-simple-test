@@ -1,4 +1,4 @@
-Functional testing with Selenium-Sim-ple-Test (SST)
+Functional testing with Selenium-Simple-Test (SST)
 ===================================================
 
 Running the tests requires django 1.1.2 installed:
