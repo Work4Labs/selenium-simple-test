@@ -32,7 +32,7 @@ from selenium.common.exceptions import (
 
 
 __all__ = [
-    'start', 'stop', 'title_is', 'goto', 'waitfor', 'fails', 'url_is',
+    'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
     'radio_select', 'text_is', 'is_checkbox', 'get_element',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
@@ -145,6 +145,7 @@ def checkbox_toggle(chk_name):
     if before == after:
         _raise(msg)
 
+
 def checkbox_set(chk_name, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
@@ -223,6 +224,14 @@ def title_is(title):
         _raise(msg)
 
 
+def title_contains(title):
+    """Assert the page title containts the specified text."""
+    real_title = browser.title
+    msg = 'Title is: %r. Does not contain %r' % (real_title, title)
+    if not re.search(title, real_title):
+        _raise(msg)
+        
+        
 def url_is(url):
     """Assert the current url is as specified. Can be an absolute url or
     relative to the base url."""
@@ -234,7 +243,7 @@ def url_is(url):
 
 
 def url_contains(url):
-    """Assert the current url *contains* the specified text."""
+    """Assert the current url contains the specified text."""
     real_url = browser.current_url
     if not re.search(url, real_url):
         _raise('url is %r. Does not contain %r' % (real_url, url))

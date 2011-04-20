@@ -1,5 +1,5 @@
-Functional testing with functest
-================================
+Functional testing with Selenium-Sim-ple-Test (SST)
+===================================================
 
 Running the tests requires django 1.1.2 installed:
 
@@ -34,27 +34,6 @@ This generates the text file "actions.txt".
 
 
 
-Running tests against pay on staging
-====================================
-
-We are using the payments project to drive use cases for ``functest``.
-
-Change directory into ``staging-pay``. The tests require a username (email) and
-password to login to SSO. Create a file ``passwords.py`` in the ``staging-pay``
-directory, with the following contents::
-
-  username = 'my.username@canonical.com'
-  password = 'mypassword'
-
-(``passwords.py`` is ignored by bazaar so you can't accidentally check it
-into the repository.)
-
-You can then execute ``./run`` to run the tests against pay.
-
-The tests depend on being able to create new payments with the testconsumer,
-which require you to be a member of the ``isd-hackers`` group.
-
-
 
 Experimenting with Selenium and Python
 ======================================
@@ -64,6 +43,7 @@ To experiment with Selenium you can do the following:
     from selenium import webdriver
     b = webdriver.Firefox()
     b.get('http://www.google.com')
+
 
 
 
