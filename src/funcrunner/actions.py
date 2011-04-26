@@ -38,7 +38,7 @@ __all__ = [
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'sleep', 'is_select', 
-    'select_value_is', 'set_select' 
+    'select_value_is', 'set_select', 'get_link_url'
 ]
 
 
@@ -194,6 +194,12 @@ def is_link(the_id):
         _raise(msg)  
     return link
 
+def get_link_url(the_id):
+    """
+    Return the URL from a link."""
+    link = is_link(the_id)
+    link_url = link.get_attribute('href')
+    return link_url
 
 def link_click(the_id, check=False):
     """
