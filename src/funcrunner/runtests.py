@@ -5,8 +5,6 @@ import time
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
-import HTMLTestRunner
-
 from .actions import start, stop, reset_base_url, waitfor
 
 
@@ -20,6 +18,7 @@ __all__ = ['runtests']
 def runtests(test_names, test_dir='tests', run_report=False):
     suite = get_suite(test_names, test_dir)
     if run_report:
+        import HTMLTestRunner
         fp = file('results.html', 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(stream=fp, title='SST Test Report', verbosity=2)
     else:
