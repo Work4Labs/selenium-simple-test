@@ -6,11 +6,11 @@ import textwrap
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.join(this_dir, 'src'))
+sys.path.append(os.path.join(this_dir, '../src'))
 
 from funcrunner import actions
 
-with open(os.path.join(this_dir, 'actions.txt'), 'w') as h:
+with open(os.path.join(this_dir, 'sst_actions.txt'), 'w') as h:
     def _write(text):
         if text.strip() and text.startswith('\n'):
             text = text[1:]

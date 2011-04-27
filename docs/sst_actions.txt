@@ -346,3 +346,12 @@ set_select
 Set the select drop list to a text value provided to the function
 
 
+get_link_url
+------------
+
+::
+    get_link_url(the_id)
+
+Return the URL from a link.
+
+

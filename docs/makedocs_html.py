@@ -7,7 +7,7 @@ import textwrap
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.append(os.path.join(this_dir, 'src'))
+sys.path.append(os.path.join(this_dir, '../src'))
 
 from funcrunner import actions
    
@@ -108,7 +108,7 @@ At runtime, scripts are converted to a standard Python unittest suite and execut
 
 
 
-with open(os.path.join(this_dir, 'selenium-simple-test.html'), 'w') as h:
+with open(os.path.join(this_dir, 'sst_doc.html'), 'w') as h:
     def _write(text):
         h.write(text)
         h.write('\n')
