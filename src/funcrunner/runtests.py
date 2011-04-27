@@ -103,7 +103,15 @@ def get_data(csv_path):
                 fields = line.rstrip().split('^')
                 row = {}
                 for header, field in zip(headers, fields):
-                    row[header] = eval(repr(field))
+                    try:
+                        value = eval(field)
+                    except NameError:
+                        value = field
+                        if value.lower() == 'false':
+                            value = False
+                        if value.lower() == 'true':
+                            value = True
+                    row[header] = value
                 rows.append(row)
     print 'found %s rows' % len(rows)
     return rows
