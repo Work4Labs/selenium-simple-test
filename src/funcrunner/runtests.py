@@ -1,8 +1,11 @@
+
 import os
 import sys
 import time
 
 from unittest import TestSuite, TextTestRunner, TestCase
+
+import HTMLTestRunner
 
 from .actions import start, stop, reset_base_url, waitfor
 
@@ -11,45 +14,31 @@ __unittest = True
 
 __all__ = ['runtests']
 
-USAGE = """runtests [testname]
-
-- Calling runtests without any arguments runs all tests.
-
-- Calling runtests with testname(s) will just run those
-tests. The testnames should not include the '.py' at
-the end of the filename.
-
-- You may optionally create a data file for data-driven 
-testing.  Create a '^' delimited txt data file with the same 
-name as the test, plus the '.csv' extension.  This will 
-run a test using each row in the data file (1st row of data
-file is variable name mappings)
-"""
 
 
 
-def runtests():
-    args = sys.argv[1:]
-    if '-h' in args or '--help' in args:
-        print USAGE
-        sys.exit(0)
-
-    suite = get_suite(args)
-   
-    runner = TextTestRunner(verbosity=2)
+def runtests(test_names, test_dir='tests', run_report=False):
+    suite = get_suite(test_names, test_dir)
+    if run_report:
+        fp = file('results.html', 'wb')
+        runner = HTMLTestRunner.HTMLTestRunner(stream=fp, title='SST Test Report', verbosity=2)
+    else:
+        runner = TextTestRunner(verbosity=2)
     runner.run(suite)
+    
 
 
-def get_suite(argv):
-    args = set(argv)
-    argv = set(argv)
+def get_suite(test_names, test_dir):
+    args = set(test_names)
+    argv = set(test_names)
 
-    test_directory = os.path.abspath(os.path.join(os.curdir, 'tests'))
-    if not test_directory in sys.path:
-        sys.path.append(test_directory)
+    test_path = os.path.abspath(os.path.join(os.curdir, test_dir))
+    if not test_path in sys.path:
+        sys.path.append(test_path)
 
     suite = TestSuite()
-    for entry in os.listdir('tests'):
+    
+    for entry in os.listdir(test_dir):
         if not entry.endswith('.py'):
             continue
         if args and entry[:-3] not in args:
@@ -61,12 +50,12 @@ def get_suite(argv):
                 continue
         if args:
             argv.remove(entry[:-3])
-        path = os.path.join('tests', entry.replace('.py', '.csv'))
-        if os.path.isfile(path):
-            for row in get_data(path):  # reading the csv file now
-                suite.addTest(get_case(entry, row))  # row is a dictionary of variables
+        csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
+        if os.path.isfile(csv_path):
+            for row in get_data(csv_path):  # reading the csv file now
+                suite.addTest(get_case(test_dir, entry, row))  # row is a dictionary of variables
         else:
-            suite.addTest(get_case(entry))
+            suite.addTest(get_case(test_dir, entry))
     if argv:
         print 'The following tests were not found: %s' % (
             ' '.join(argv)
@@ -76,9 +65,9 @@ def get_suite(argv):
     
     
 
-def get_case(entry, context=None):
+def get_case(test_dir, entry, context=None):
     context = context or {}
-    path = os.path.join('tests', entry)
+    path = os.path.join(test_dir, entry)
     def setUp(self):
         reset_base_url()
         start()
@@ -99,7 +88,7 @@ def get_case(entry, context=None):
 
 
 
-def get_data(path):
+def get_data(csv_path):
     """
     Return a list of data dicts for parameterized testing.
     
@@ -107,8 +96,8 @@ def get_data(path):
       rows beneath that are filled with data values
     """
     rows = []
-    print 'Reading data from %s...' % path,
-    with open(path) as f:
+    print 'Reading data from %s...' % csv_path,
+    with open(csv_path) as f:
         headers = f.readline().rstrip().split('^')
         for line in f:
             if not line.startswith('#'):
@@ -121,6 +110,6 @@ def get_data(path):
                         field = True
                     row[header] = field
                 rows.append(row)
-    print ' found %s rows' % len(rows)
+    print 'found %s rows' % len(rows)
     return rows
 
