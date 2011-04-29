@@ -7,7 +7,6 @@ assert('password1' in dir())
 assert('list_field' in dir())
 assert(len(list_field) > 1)
 assert((list_field[0] == 1) or (list_field[0] == 'a'))
-
 assert isinstance(should_pass, bool)
     
 goto('/')

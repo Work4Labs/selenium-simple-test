@@ -50,6 +50,7 @@ VERBOSE = True
 
 sleep = time.sleep
 
+
 def _raise(msg):
     _print(msg)
     raise AssertionError(msg)
@@ -194,12 +195,14 @@ def is_link(the_id):
         _raise(msg)  
     return link
 
+
 def get_link_url(the_id):
     """
     Return the URL from a link."""
     link = is_link(the_id)
     link_url = link.get_attribute('href')
     return link_url
+
 
 def link_click(the_id, check=False):
     """
@@ -214,6 +217,7 @@ def link_click(the_id, check=False):
     # don't check by default
     if check:
         url_is(link_url)
+
 
 # Code for use with future wait_for (possibly also update url_is to return a boolean)
 #    def url_match():
@@ -374,6 +378,7 @@ def is_radio(the_id):
     elem = _get_elem(the_id)
     _elem_is_type(elem, the_id, 'radio')
     return elem
+
 
 def radio_value_is(the_id, value):
     """Assert the specified element is a radio button with the specified value;
