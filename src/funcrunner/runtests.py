@@ -73,7 +73,7 @@ def get_case(test_dir, entry, context=None):
     def tearDown(self):
         stop()
     def test(self):
-        if context is not None:
+        if context:
             print 'Loading data row %s' % context['_row_num']
         with open(path) as h:
             source = h.read() + '\n'

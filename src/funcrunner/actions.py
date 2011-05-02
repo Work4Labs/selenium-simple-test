@@ -23,12 +23,18 @@ tagname, text, class or other attributes. See the `get_element` documentation.
 import re
 import time
 
-from selenium import webdriver
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import (
-    NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException
-)
+try:
+    from selenium import webdriver
+    from selenium.webdriver.remote.webelement import WebElement
+    from selenium.common.exceptions import (
+        NoSuchElementException, NoSuchAttributeException,
+        InvalidElementStateException, WebDriverException
+    )
+except ImportError as e:
+    import sys
+    print 'Error importing Selenium/Webdriver.  Selenium 2.x python bindings are required.'
+    print e
+    sys.exit(1)
 
 
 __all__ = [
