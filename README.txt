@@ -1,37 +1,64 @@
 Functional testing with Selenium-Simple-Test (SST)
 ===================================================
 
-Running the tests requires django 1.1.2 installed:
+
+Requirements:
+=============
+
+- Python 2.6+
+
+- SST requires selenium 2.0b4dev or newer:
+
+    * $ sudo pip install selenium==2.0b4dev
+    
+    
+- Running the self-tests requires django 1.1.2:
 
     * $ sudo pip install django==1.1.2
 
-It also requires selenium 2.0b4 or greater.
 
-    * $ sudo pip install selenium==2.0b4dev
-
-You can do this automatically from the requirements.txt file with:
+- You can intall these automatically from the requirements.txt file with:
 
     * sudo pip install -r requirements.txt
 
 
-The test django project doesn't have a database so once you have the dependencies
-installed you can execute ``./run`` to run the tests.
 
-An individual test (file) can be run with just the name of the test. E.g. to run
-just the test for the radio button you do:
+Running Tests
+=============
 
-  ``./run radio``
+By default, tests are located in the "/tests" directory under selenium-simple-test.
+(you may change this by passing the -d <dir> command-line option)
 
-This runs the test file ``tests/radio.py``.
+You can run all tests in this directory by running:
 
-Tests are made up of scripts in a 'tests' directory. These scripts are created
-by composing actions that drive selenium. You generate the documentation for
-the standard actions by running:
+    "./run.py"
+    or
+    "python run.py"
 
-  ``python makedocs.py``
+An individual test (file) can be run with just the name of the test. 
 
-This generates the text file "actions.txt".
+    "./run.py googlefinance"
 
+This runs the test file "tests/googlefinance.py".
+
+
+
+Command Line Options (for run.py)
+=================================
+
+Options:
+  -h, --help   show this help message and exit
+  -d DIR_NAME  directory of test case files
+  -r           generate html report instead of console output
+  -s           launch django server for local SST framework tests
+  
+  
+
+Self-Tests (SST Framework Tests)
+================================
+SST includes a set of self-tests that include a django project used as the application 
+under test.  The test django project doesn't have a database, so once you have the 
+dependencies installed you can execute "./run -d selftests -s" to run the tests.
 
 
 
@@ -45,24 +72,3 @@ To experiment with Selenium you can do the following:
     b.get('http://www.google.com')
 
 
-
-
-Handling invalid SSL certificates
-=================================
-
-.. note::
-
-  SSO staging now has a valid ssl certificate, so the problem
-  described below is no longer blocking us. These notes kept for
-  future reference.
-
-We should be able to get round the invalid ssl certificate problem either by
-creating a custom firefox profile and running selenium with that, or by
-creating a custom firefox launcher.
-
-http://garbuz.com/2010/07/31/running-selenium-with-custom-firefox-profile/
-http://mogotest.com/blog/2010/04/13/how-to-accept-self-signed-ssl-certificates-in-selenium/
-
-Official selenium documentation on untrusted SSL certificates:
-
-https://code.google.com/p/selenium/wiki/UntrustedSSLCertificates
