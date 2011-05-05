@@ -35,6 +35,9 @@ header = """\
             font-size: 13px;
             padding-left: 8px;
         }
+        a {
+            text-decoration: none;
+        }
         h1 {
             font-size: 20px;
             background: #FF9966;
@@ -127,14 +130,32 @@ with open(os.path.join(this_dir, 'sst_doc.html'), 'w') as h:
     
     _write('<pre>{0}</pre>'.format(actions.__doc__))
     
-    for entry in actions.__all__:
+    _write('<h3>Actions - Table Of Contents </h3>')
+    
+    _write('<ul>')
+
+    for entry in sorted(actions.__all__):
         member = getattr(actions, entry)
         doc = getattr(member, '__doc__', '')
 
         if not doc:
             continue
         
-        _write('<h2>{0}</h2>'.format(entry))
+        _write('<li><a href="#{0}">{0}</a></li>'.format(entry))
+            
+    _write('</ul>')
+        
+    _write('<hr />')
+
+
+    for entry in sorted(actions.__all__):
+        member = getattr(actions, entry)
+        doc = getattr(member, '__doc__', '')
+
+        if not doc:
+            continue
+        
+        _write('<span id="{0}"><h2>{0}</h2></span>'.format(entry))
 
         try:
             spec = inspect.getargspec(member)

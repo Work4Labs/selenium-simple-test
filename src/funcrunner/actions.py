@@ -1,7 +1,5 @@
-"""
-The standard actions
-====================
 
+"""
 Tests comprise of python scripts in a "tests" directory. Files whose names
 begin with an underscore will *not* be executed as test scripts.
 
@@ -19,6 +17,7 @@ doesn't have a specific id you can get the element object with the
 `get_element` action. `get_element` allows you to find an element by its
 tagname, text, class or other attributes. See the `get_element` documentation.
 """
+
 
 import re
 import time
@@ -40,11 +39,11 @@ except ImportError as e:
 __all__ = [
     'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select', 'text_is', 'is_checkbox', 'get_element',
+    'radio_select', 'text_is', 'is_checkbox', 'get_element', 'get_elements',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'sleep', 'is_select', 
-    'select_value_is', 'set_select', 'get_link_url'
+    'select_value_is', 'set_select', 'get_link_url', 'exists_element'
 ]
 
 
@@ -435,18 +434,15 @@ def _check_text(elem, text):
     return _get_text(elem) == text
 
 
-def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+
+def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     """
-    This function will find and return an element by any of several
-    attributes. If the element cannot be found from the attributes you
-    provide, or the attributes match more than one element, the call will fail
-    with an exception.
+    This function will find and return all matching elements by any of several
+    attributes. If the elements cannot be found from the attributes you
+    provide, the call will fail with an exception.
 
-    Finding elements is useful for checking that the element exists, and also
-    for passing to other actions that work with element objects.
-
-    You can specify as many or as few attributes as you like, so long as they
-    uniquely identify one element."""
+    You can specify as many or as few attributes as you like."""
+    
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -461,17 +457,53 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
         elements = browser.find_elements_by_xpath('//*[text() = %r]' % text)
     else:
         if not selector_string:
-            msg = "Could not identify element: no arguments provided"
+            msg = 'Could not identify element: no arguments provided'
             _raise(msg)
         elements = browser.find_elements_by_css_selector(selector_string)
 
     if text is not None:
         # if text was specified, filter elements
         elements = [element for element in elements if _check_text(element, text)]
-    if len(elements) != 1:
-        msg = "Couldn't identify element: %s elements found" % (len(elements),)
+    
+    if len(elements) == 0:
+        msg = 'Could not identify elements: 0 elements found'
         _raise(msg)
+    
+    return elements
+    
+    
+def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+    """
+    This function will find and return an element by any of several
+    attributes. If the element cannot be found from the attributes you
+    provide, or the attributes match more than one element, the call will fail
+    with an exception.
+
+    Finding elements is useful for checking that the element exists, and also
+    for passing to other actions that work with element objects.
+
+    You can specify as many or as few attributes as you like, so long as they
+    uniquely identify one element."""
+    
+    elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+    
+    if len(elements) != 1:
+        msg = 'Could not identify element: %s elements found' % len(elements)
+        _raise(msg)
+        
     return elements[0]
+    
+
+def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+    """
+    This function will find if an element exists by any of several
+    attributes. If the element cannot be found from the attributes you
+    provide, the call will fail with an exception.
+
+    You can specify as many or as few attributes as you like."""
+    
+    elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+    return True
 
 
 def is_button(the_id):
