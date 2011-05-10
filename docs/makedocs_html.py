@@ -75,7 +75,7 @@ Python DSL to generate functional GUI tests.
 <p>
 Tests are made up of scripts, created by composing actions that drive a browser
 via selenium.  You have the flexibilty of the full Python language, along with
-a convenient set of functions of simplify web testing.
+a convenient set of functions to simplify web testing.
 </p>
 
 <p>

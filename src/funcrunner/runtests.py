@@ -101,6 +101,8 @@ def get_data(csv_path):
     row_num = 0
     with open(csv_path) as f:
         headers = f.readline().rstrip().split('^')
+        headers = [header.replace('"', '') for header in headers]
+        headers = [header.replace("'", '') for header in headers]    
         for line in f:
             row = {}
             row_num += 1
