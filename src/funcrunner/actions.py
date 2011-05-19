@@ -1,9 +1,9 @@
 
 """
-Tests comprise of python scripts in a "tests" directory. Files whose names
+Tests are comprised of Python scripts in a "tests" directory. Files whose names
 begin with an underscore will *not* be executed as test scripts.
 
-Test scripts drive the browser through selenium by importing and using
+Test scripts drive the browser through selenium/webdriver by importing and using
 actions.
 
 The standard set of actions are imported by starting the test scripts with::
@@ -34,7 +34,8 @@ except ImportError as e:
     print 'Error importing Selenium/Webdriver.  Selenium 2.x python bindings are required.'
     print e
     sys.exit(1)
-
+ 
+ 
 
 __all__ = [
     'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails', 'url_is',
@@ -53,7 +54,6 @@ BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
 
-sleep = time.sleep
 
 
 def _raise(msg):
@@ -97,6 +97,15 @@ def stop():
     _print('Stopping browser')
     browser.close()
     browser = None
+
+
+def sleep(secs):
+    """
+    Delay execution for a given number of seconds. The argument may be a floating 
+    point number for subsecond precision."""
+    time.sleep(secs)
+    return
+        
 
 
 def _fix_url(url):
@@ -248,7 +257,8 @@ def title_contains(title):
         
         
 def url_is(url):
-    """Assert the current url is as specified. Can be an absolute url or
+    """
+    Assert the current url is as specified. Can be an absolute url or
     relative to the base url."""
     url = _fix_url(url)
     real_url = browser.current_url
@@ -263,15 +273,6 @@ def url_contains(url):
     if not re.search(url, real_url):
         _raise('url is %r. Does not contain %r' % (real_url, url))
 
-
-"""
-# Example action using waitfor
-def wait_for_title_to_change(title):
-    def title_changed():
-        return browser.title == title
-
-    waitfor(title_changed, 'title to change')
-"""
 
 def waitfor(condition, msg='', timeout=5, poll=0.1):
     """
@@ -292,7 +293,7 @@ def waitfor(condition, msg='', timeout=5, poll=0.1):
 
             waitfor(title_changed, 'title to change')
 
-    XXXX Note that test scripts shouldn't use the browser object directly,
+    Note that test scripts shouldn't use the browser object directly,
     so if waitfor is to be used in test scripts (instead of for building
     actions) it should be changed to catch assertion errors instead of condition
     functions that return True or False.
@@ -386,13 +387,15 @@ def is_radio(the_id):
 
 
 def radio_value_is(the_id, value):
-    """Assert the specified element is a radio button with the specified value;
+    """
+    Assert the specified element is a radio button with the specified value;
     True for selected and False for unselected."""
     elem = is_radio(the_id)
     selected = elem.is_selected()
     msg = 'Radio %r should be set to: %s.' % (the_id, value)
     if value != selected:
         _raise(msg)
+
 
 def radio_select(the_id):
     """Select the specified radio button."""
