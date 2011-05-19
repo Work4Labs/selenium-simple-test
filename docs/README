@@ -1,0 +1,7 @@
+to build the SST docs:
+
+- install sphinx ($sudo apt-get install python-sphinx)
+- run 'make_rst.py', which will produce the .rst docs
+- go up to the main sst directory and run: $ sphinx-build -b html docs sst_docs
+
+this will produce HTML documentation in the sst_docs directory.  Open index.html with your browser.

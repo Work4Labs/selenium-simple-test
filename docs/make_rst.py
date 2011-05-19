@@ -1,0 +1,251 @@
+#!/usr/bin/env python
+
+# run this script to create an index.rst file for inout to Sphinx.
+#
+# from the command line run `sphinx-build` against the docs directory:
+# $ sphinx-build -b html docs sst_docs
+
+
+import inspect
+import os
+import sys
+import textwrap
+
+this_dir = os.path.abspath(os.path.dirname(__file__))
+
+sys.path.append(os.path.join(this_dir, '../src'))
+
+from funcrunner import actions
+
+
+index_text = """
+
+==============================
+    SST - selenium-simple-test
+==============================
+
+  
+--------------------------------------------
+    Automated Web Test Framework with Python
+--------------------------------------------
+
+selenium-simple-test (SST) is a web test framework that uses a simple 
+Python DSL to generate functional GUI tests.
+
+Tests are made up of scripts, created by composing actions that drive a browser 
+via selenium/webdriver.  You have the flexibilty of the full Python language, 
+along with a convenient set of functions to simplify web testing.
+
+SST consists of:
+
+ * a set of convenient actions (functions) in Python
+ * test case loader (converts to xUnit style cases)
+ * test runner (unittest)
+ * data parameterization/injection
+ * HTML report output
+    
+At runtime, scripts are converted to a standard Python unittest suite and executed.
+
+
+------------
+    Download
+------------
+
+Coming soon!
+
+--------
+    Code
+--------
+    
+* https://launchpad.net/selenium-simple-test
+
+-----------
+    License
+-----------
+
+SST is Free Open Source Software, licensed under the **GNU GPLv3**
+
+
+--------------------------------------------------
+    Quickstart for Selenium2/Webdriver from Python
+--------------------------------------------------
+
+SST depends on Selenium, so first make sure Selenium/Webdriver is working in your system.
+
+ * install selenium package (Python bindings) with pip, easy_install, or however you wish:
+ 
+  * sudo pip install selenium==2.0b4dev
+  * http://pypi.python.org/pypi/selenium/2.0b4dev
+
+ * make sure it works.
+ 
+  * create a script containing the following wedbriver code, and run it:
+  
+  ::
+   
+    #!/usr/bin/env python
+    from selenium import webdriver
+    browser = webdriver.Firefox()
+    browser.get('http://www.ubuntu.com/')
+
+ * this should open your Firefox browser and navigate to the Ubuntu homepage.
+
+
+-----------------------
+Example SST test script
+-----------------------
+
+a sample test case in SST::
+
+    from funcrunner.actions import *
+
+    goto('http://www.ubuntu.com/')
+    title_contains('Ubuntu homepage')
+    
+    
+--------------------------------
+Running your first test with SST
+--------------------------------
+
+create a .py file in the 'selenium-simple-test/tests' directory, and add your code.
+
+then call your test from the command line, using run.py (located inside your 'selenium-simple-test' direcrory)::
+
+    $./run.py mytest.py
+    or
+    $ python run.py mytest.py
+
+
+------------------------
+    Running the examples
+------------------------
+
+SST ships with a few trivial example scripts.  You can run them like this::
+
+    $./run.py -d examples   
+
+
+--------------------------
+    Running the self-tests
+--------------------------
+
+SST ships with a set of self-tests based on a test Django project.
+
+You can run the suite of self tests (and the test django server) like this::
+
+    $./run.py -d selftests -s 
+
+
+--------------------
+Command Line Options
+--------------------
+
+Usage: run.py [testname] 
+
+* Calling run.py without any arguments runs all tests in the local 'test' directory.
+
+* Calling run.py with testname(s) as arguments will just run those tests. The testnames should not include the '.py' at the end of the filename.
+
+* You may optionally create a data file for data-driven testing.  Create a '^' delimited txt data file with the same name as the test, plus the '.csv' extension.  This will run a test using each row in the data file (1st row of data file is variable name mapping)
+
+
+Options:
+  -h, --help   show this help message and exit
+  -d DIR_NAME  directory of test case files
+  -r           generate html report instead of console output
+  -s           launch django server for local SST framework tests
+
+
+
+-----------------
+    Related Links
+-----------------
+
+* `Python Unittest <http://foo.com>`_
+
+
+---------------------
+    Actions Reference
+---------------------
+
+.. toctree::
+   :maxdepth: 2
+   
+   actions
+   
+"""
+
+
+
+
+
+
+with open(os.path.join(this_dir, 'index.rst'), 'w') as h:    
+    h.write(index_text)
+    
+
+
+with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
+    def _write(text):
+        if text.strip() and text.startswith('\n'):
+            text = text[1:]
+        text = textwrap.dedent(text or '')
+        h.write(text)
+        h.write('\n')
+    
+    foo = """
+=====================
+    Actions Reference
+=====================
+
+"""
+    h.write(foo)
+    
+    
+    _write(actions.__doc__)
+    _write('\n')
+    
+    for entry in sorted(actions.__all__):
+        member = getattr(actions, entry)
+        doc = getattr(member, '__doc__', '')
+
+        if not doc:
+            continue
+
+        _write(entry)
+        _write('-' * len(entry))
+        h.write('\n')
+
+        try:
+            spec = inspect.getargspec(member)
+        except TypeError:
+            pass
+        else:
+            _write('::')
+            spec_text = inspect.formatargspec(*spec)
+            h.write('\n   ' + entry + spec_text + '\n\n')
+
+        _write(doc)
+        h.write('\n')
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
