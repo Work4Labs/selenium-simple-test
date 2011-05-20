@@ -15,15 +15,27 @@ __all__ = ['runtests']
 
 
 
-def runtests(test_names, test_dir='tests', run_report=False):
+def runtests(test_names, test_dir='tests', report_format='console'):
     suite = get_suite(test_names, test_dir)
-    if run_report:
+    
+    if report_format == 'console':
+        runner = TextTestRunner(verbosity=2)
+        runner.run(suite)
+        
+    if report_format == 'html':
         import HTMLTestRunner
         fp = file('results.html', 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(stream=fp, title='SST Test Report', verbosity=2)
-    else:
-        runner = TextTestRunner(verbosity=2)
-    runner.run(suite)
+        runner.run(suite)
+        
+    if report_format == 'xml':
+        import junitxml
+        fp = file('results.xml', 'wb')
+        result = junitxml.JUnitXmlResult(fp)
+        result.startTestRun()
+        suite.run(result)
+        result.stopTestRun()
+
     
 
 
@@ -37,7 +49,13 @@ def get_suite(test_names, test_dir):
 
     suite = TestSuite()
     
-    for entry in os.listdir(test_dir):
+    try:
+        listdir = os.listdir(test_dir)
+    except OSError:
+        print 'The test directory was not found'
+        sys.exit(1)
+    
+    for entry in listdir:
         if not entry.endswith('.py'):
             continue
         if args and entry[:-3] not in args:

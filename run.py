@@ -39,7 +39,7 @@ def main():
     
     print '----------------------------------------------------------------------'
 
-    funcrunner.runtests(args, test_dir=cmd_opts.dir_name, run_report=cmd_opts.run_report)
+    funcrunner.runtests(args, test_dir=cmd_opts.dir_name, report_format=cmd_opts.report_format)
 
     print '----------------------------------------------------------------------'
 
@@ -78,9 +78,9 @@ def get_opts():
     parser.add_option('-d', dest='dir_name', 
                       default='tests', 
                       help='directory of test case files')
-    parser.add_option('-r', dest='run_report', 
-                      default=False, action='store_true', 
-                      help='generate html report instead of console output')
+    parser.add_option('-r', dest='report_format', 
+                      default='console', 
+                      help='results report format (html, xml)')
     parser.add_option('-s', dest='launch_server', 
                       default=False, action='store_true', 
                       help='launch django server for local SST framework tests')
