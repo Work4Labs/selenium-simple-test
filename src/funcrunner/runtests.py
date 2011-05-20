@@ -43,7 +43,11 @@ def runtests(test_names, test_dir='tests', report_format='console'):
         runner.run(suite)
         
     if report_format == 'xml':
-        import junitxml
+        try:
+            import junitxml
+        except ImportError:
+            print 'Please install junitxml to use XML output'
+            sys.exit(1)
         fp = file('results.xml', 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
