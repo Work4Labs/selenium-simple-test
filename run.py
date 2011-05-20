@@ -92,7 +92,7 @@ def get_opts():
                       help='directory of test case files')
     parser.add_option('-r', dest='report_format', 
                       default='console', 
-                      help='results report format (html, xml)')
+                      help='results report format (html, xml, console)')
     parser.add_option('-s', dest='launch_server', 
                       default=False, action='store_true', 
                       help='launch django server for local SST framework tests')
