@@ -1,20 +1,26 @@
-Functional testing with Selenium-Simple-Test (SST)
-===================================================
+Selenium-Simple-Test (SST)
+==========================
 
 
 Requirements:
 =============
 
-- Python 2.6+
+- Python 2.6/2.7
 
 - SST requires selenium 2.0b4dev or newer:
 
     * $ sudo pip install selenium==2.0b4dev
     
     
+- Outputting XML reports requires junitxml:
+
+    * $ sudo pip install junitxml==0.6
+
+
 - Running the self-tests requires django 1.1.2:
 
     * $ sudo pip install django==1.1.2
+    
 
 
 - You can intall these automatically from the requirements.txt file with:
@@ -37,9 +43,9 @@ You can run all tests in this directory by running:
 
 An individual test (file) can be run with just the name of the test. 
 
-    "./run.py googlefinance"
+    "./run.py mytest"
 
-This runs the test file "tests/googlefinance.py".
+This runs the test file "tests/mytest.py".
 
 
 
@@ -47,10 +53,10 @@ Command Line Options (for run.py)
 =================================
 
 Options:
-  -h, --help   show this help message and exit
-  -d DIR_NAME  directory of test case files
-  -r           generate html report instead of console output
-  -s           launch django server for local SST framework tests
+  -h, --help        show this help message and exit
+  -d DIR_NAME       directory of test case files
+  -r REPORT_FORMAT  results report format (html, xml, console)
+  -s                launch django server for local SST framework tests
   
   
 
