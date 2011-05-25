@@ -712,7 +712,9 @@ class HTMLTestRunner(Template_mixin):
             else:
                 name = "%s.%s" % (cls.__module__, cls.__name__)
             doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
-            desc = doc and '%s: %s' % (name, doc) or name
+            # cmg hack - only print test name, not full class path
+            #desc = doc and '%s: %s' % (name, doc) or name
+            desc = name.split('.')[-1]
 
             row = self.REPORT_CLASS_TMPL % dict(
                 style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or 'passClass',
@@ -774,7 +776,7 @@ class HTMLTestRunner(Template_mixin):
             script = script,
             status = self.STATUS[n],
         )
-        rows.append(row)
+        rows.append(row)        
         if not has_output:
             return
 

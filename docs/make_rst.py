@@ -85,7 +85,7 @@ SST depends on Selenium, so first make sure Selenium/Webdriver is working in you
 
  * make sure it works.
  
-  * create a script containing the following wedbriver code, and run it:
+  * create a script containing the following webdriver code, and run it:
   
   ::
    
