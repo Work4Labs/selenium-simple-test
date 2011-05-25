@@ -38,7 +38,7 @@ along with a convenient set of functions to simplify web testing.
 
 SST consists of:
 
- * a set of convenient actions (functions) in Python
+ * convenient actions (functions) in Python
  * test case loader (converts to xUnit style cases)
  * test runner (unittest)
  * data parameterization/injection
@@ -61,9 +61,9 @@ Coming soon!
 * `Browse the Source (Trunk) <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
 * get a copy of the trunk:
 
-::
+    ::
 
-    bzr branch lp:selenium-simple-test
+        bzr branch lp:selenium-simple-test
 
 -----------
     License
@@ -72,11 +72,27 @@ Coming soon!
 SST is Free Open Source Software, licensed under the **GNU LGPLv3**
 
 
+-------------------------------
+    Quickstart on Ubuntu/Debian
+-------------------------------
+
+This should be everything you need to get up and running on a fresh install of Ubuntu:
+
+::
+
+    $ sudo apt-get install python-pip
+    $ sudo apt-get install bzr
+    $ bzr branch lp:selenium-simple-test
+    $ cd selenium-simple-test
+    $ sudo pip install -r requirements.txt
+    $ ./run.py -d examples
+
+
 --------------------------------------------------
     Quickstart for Selenium2/Webdriver from Python
 --------------------------------------------------
 
-SST depends on Selenium, so first make sure Selenium/Webdriver is working in your system.
+SST depends on Selenium (2.x), so first make sure Selenium/Webdriver is working on your system.
 
  * install selenium package (Python bindings) with pip, easy_install, or however you wish:
  
@@ -165,15 +181,18 @@ Options:
     Related Links
 -----------------
 
-* `Python Unittest <http://foo.com>`_
+* `Python Unittest <http://docs.python.org/library/unittest.html>`_
+* `Selenium Project Home <http://selenium.googlecode.com>`_
+* `Selenium WebDriver (from 'Architecture of Open Source Applications') <http://www.aosabook.org/en/selenium.html>`_
 
+----
 
 ---------------------
     Actions Reference
 ---------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    
    actions
    
