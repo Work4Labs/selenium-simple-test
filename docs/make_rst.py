@@ -80,8 +80,7 @@ This should be everything you need to get up and running on a fresh install of U
 
 ::
 
-    $ sudo apt-get install python-pip
-    $ sudo apt-get install bzr
+    $ sudo apt-get install bzr python-pip
     $ bzr branch lp:selenium-simple-test
     $ cd selenium-simple-test
     $ sudo pip install -r requirements.txt
@@ -159,7 +158,7 @@ You can run the suite of self tests (and the test django server) like this::
 
 
 --------------------
-Command Line Options
+Command line options
 --------------------
 
 Usage: run.py [testname] 
@@ -177,8 +176,44 @@ Options:
   -s                launch django server for local SST framework tests
   
 
+-------------------------
+    Organizing your tests
+-------------------------
+
+for logical organization of tests, you can use directories in your filesystem.  SST will recursively walk your directory tree and gather all tests for execution.
+
+for example, a simple test setup might look like::
+
+    /selenium-simple-test
+        /mytests
+            foo.py
+        
+and you would call this from the command line::
+
+    $./run.py -d mytests
+    
+
+a more complex setup might look like::
+
+    /selenium-simple-test
+        /mytests
+            /project_foo
+                /feature_foo
+                    foo.py
+            /project_bar
+                feature_bar.py
+                feature_baz.py
+        
+and you would still call this from the command like::
+
+    $./run.py -d mytests
+    
+SST will find all of the tests in subdirectories and execute them.
+
+
+
 -----------------
-    Related Links
+    Related links
 -----------------
 
 * `Python Unittest <http://docs.python.org/library/unittest.html>`_
@@ -188,7 +223,7 @@ Options:
 ----
 
 ---------------------
-    Actions Reference
+    Actions reference
 ---------------------
 
 .. toctree::
