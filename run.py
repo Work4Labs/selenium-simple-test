@@ -23,7 +23,6 @@ import urllib
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/src'))
 import funcrunner
 
-from easyprocess import Proc
 from pyvirtualdisplay import Display
 
 
@@ -53,13 +52,12 @@ def main():
     print \
         '----------------------------------------------------------------------'
     if cmd_opts.xserver_headless:
-        print 'Starting Virtual Display'
+        print '\n Starting Virtual Display \n'
         Display(visible=0, size=(800, 600)).start()
-        Proc(funcrunner.runtests(args, \
-            test_dir=cmd_opts.dir_name,
-            report_format=cmd_opts.report_format)).call().stdout
-        print 'Stopping Virtual Display'
-        Display.stop()
+        funcrunner.runtests(args, \
+            test_dir=cmd_opts.dir_name, report_format=cmd_opts.report_format)
+        print '\n Stopping Virtual Display \n'
+        os.system("kill $(ps aux | grep 'Xvfb' | awk '{print $2}')")
     else:
         funcrunner.runtests(args, \
             test_dir=cmd_opts.dir_name, report_format=cmd_opts.report_format)
