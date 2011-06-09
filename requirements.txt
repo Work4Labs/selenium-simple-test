@@ -1,3 +1,5 @@
 selenium==2.0rc2
 junitxml==0.6
 django==1.1.2
+pyscreenshot
+pyvirtualdisplay

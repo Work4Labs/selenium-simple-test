@@ -21,13 +21,24 @@ Requirements:
 
     * $ sudo pip install django==1.1.2
     
+- Running headless requires pyvirtualdisplay
+
+    * $ sudo pip install pyvirtualdisplay
+
+- Capturing screenshots from the virtualdisplay requires pyscreenshot
+
+    * $ sudo pip install pyscreenshot
 
 
 - You can intall these automatically from the requirements.txt file with:
 
     * sudo pip install -r requirements.txt
 
+Other requirements for headless tests:
+    sudo apt-get install xvfb xserver-xephyr
 
+Other requirements for screenshots
+    sudo apt-get install python-imaging scrot
 
 Running Tests
 =============
