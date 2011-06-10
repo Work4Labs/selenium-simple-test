@@ -107,7 +107,6 @@ def get_case(test_dir, entry, br_webdriver, context=None):
     path = os.path.join(test_dir, entry)
     def setUp(self):
         reset_base_url()
-        print('br_webdriver is: '); print br_webdriver
         start(br_webdriver)
     def tearDown(self):
         stop()
