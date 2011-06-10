@@ -29,8 +29,9 @@ __all__ = ['runtests']
 
 
 
-def runtests(test_names, test_dir='tests', report_format='console'):
-    suites = (get_suite(test_names, root) for root, _, _ in os.walk(test_dir))
+def runtests(test_names, test_dir='tests', report_format='console', 
+              br_webdriver='Firefox'):
+    suites = (get_suite(test_names, root, br_webdriver) for root, _, _ in os.walk(test_dir))
     alltests = TestSuite(suites)
     
     if report_format == 'console':
@@ -58,7 +59,7 @@ def runtests(test_names, test_dir='tests', report_format='console'):
     
 
 
-def get_suite(test_names, test_dir):
+def get_suite(test_names, test_dir, br_webdriver):
     args = set(test_names)
     argv = set(test_names)
 
@@ -89,9 +90,9 @@ def get_suite(test_names, test_dir):
         csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             for row in get_data(csv_path):  # reading the csv file now
-                suite.addTest(get_case(test_dir, entry, row))  # row is a dictionary of variables
+                suite.addTest(get_case(test_dir, entry, br_webdriver, row))  # row is a dictionary of variables
         else:
-            suite.addTest(get_case(test_dir, entry))
+            suite.addTest(get_case(test_dir, entry, br_webdriver))
     if argv:
         print 'The following tests were not found: %s' % (
             ' '.join(argv)
@@ -101,12 +102,13 @@ def get_suite(test_names, test_dir):
     
     
 
-def get_case(test_dir, entry, context=None):
+def get_case(test_dir, entry, br_webdriver, context=None):
     context = context or {}
     path = os.path.join(test_dir, entry)
     def setUp(self):
         reset_base_url()
-        start()
+        print('br_webdriver is: '); print br_webdriver
+        start(br_webdriver)
     def tearDown(self):
         stop()
     def test(self):

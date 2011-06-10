@@ -51,7 +51,9 @@ def main():
     
     print '----------------------------------------------------------------------'
 
-    funcrunner.runtests(args, test_dir=cmd_opts.dir_name, report_format=cmd_opts.report_format)
+    funcrunner.runtests(args, test_dir=cmd_opts.dir_name, 
+        report_format=cmd_opts.report_format, 
+        br_webdriver=cmd_opts.br_webdriver)
 
     print '----------------------------------------------------------------------'
 
@@ -96,6 +98,10 @@ def get_opts():
     parser.add_option('-s', dest='launch_server', 
                       default=False, action='store_true', 
                       help='launch django server for local SST framework tests')
+    parser.add_option('-b', dest='br_webdriver',
+                      default='Firefox',
+                      help='select webdriver (Firefox, Chrome, \
+                      InternetExplorer, HtmlUnit) Defaults to Firefox')
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
     

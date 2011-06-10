@@ -94,13 +94,13 @@ def _print(text):
         print text
 
 
-def start():
+def start(br_webdriver):
     """
     Starts Firefox with a new browser session. Called for you at the start of
     each test script."""
     global browser
-    _print('\nStarting browser')
-    browser = webdriver.Firefox()
+    _print('\nStarting browser:'); print br_webdriver
+    browser = getattr(webdriver, str(br_webdriver))()
 
 
 def stop():
