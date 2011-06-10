@@ -5,27 +5,28 @@ Selenium-Simple-Test (SST)
 Requirements:
 =============
 
-- Python 2.6/2.7
+- Python 2.6 or 2.7
 
-- SST requires selenium 2.0b4dev or newer:
+- Selenium 2.0rc2 (or newer):
+    * $ sudo pip install selenium==2.0rc2
 
-    * $ sudo pip install selenium==2.0b4dev
-    
-    
-- Outputting XML reports requires junitxml:
-
+- [optional] XML reports requires junitxml:
     * $ sudo pip install junitxml==0.6
 
-
-- Running the self-tests requires django 1.1.2:
-
+- [optional] Running the self-tests requires django 1.1.2:
     * $ sudo pip install django==1.1.2
     
+- [optional] Running headless xserver requires pyvirtualdisplay*:
+    * $ sudo pip install pyvirtualdisplay
 
 
-- You can intall these automatically from the requirements.txt file with:
+- You can intall all of these automatically from the requirements.txt file with:
+    * $ sudo pip install -r requirements.txt
 
-    * sudo pip install -r requirements.txt
+
+- Other requirements for running with headless xserver:
+    * $ sudo apt-get install xvfb xserver-xephyr
+
 
 
 
@@ -49,22 +50,13 @@ This runs the test file "tests/mytest.py".
 
 
 
-Command Line Options (for run.py)
-=================================
-
-Options:
-  -h, --help        show this help message and exit
-  -d DIR_NAME       directory of test case files
-  -r REPORT_FORMAT  results report format (html, xml, console)
-  -s                launch django server for local SST framework tests
-  
-  
 
 Self-Tests (SST Framework Tests)
 ================================
 SST includes a set of self-tests that include a django project used as the application 
 under test.  The test django project doesn't have a database, so once you have the 
 dependencies installed you can execute "./run -d selftests -s" to run the tests.
+
 
 
 

@@ -150,40 +150,40 @@ def is_checkbox(the_id):
     return elem
 
 
-def checkbox_value_is(chk_name, value):
+def checkbox_value_is(the_id, value):
     """
     Assert checkbox value. Takes an element id or object plus either True or
     False. Raises a failure exception if the element specified doesn't exist
     or isn't a checkbox."""
-    checkbox = is_checkbox(chk_name)
+    checkbox = is_checkbox(the_id)
     real = checkbox.is_selected()
-    msg = 'Checkbox: %r - Has Value: %r' % (chk_name, real)
+    msg = 'Checkbox: %r - Has Value: %r' % (the_id, real)
     if real != value:
         _raise(msg)
 
 
-def checkbox_toggle(chk_name):
+def checkbox_toggle(the_id):
     """
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    checkbox = is_checkbox(chk_name)
+    checkbox = is_checkbox(the_id)
     before = checkbox.is_selected()
     checkbox.toggle()
     after = checkbox.is_selected()
-    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (chk_name, before)
+    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (the_id, before)
     if before == after:
         _raise(msg)
 
 
-def checkbox_set(chk_name, new_value):
+def checkbox_set(the_id, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    checkbox = is_checkbox(chk_name)
+    checkbox = is_checkbox(the_id)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
     if new_value != current_value:
-        checkbox_toggle(chk_name)
+        checkbox_toggle(the_id)
 
 
 def is_textfield(the_id):
