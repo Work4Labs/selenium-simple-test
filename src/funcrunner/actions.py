@@ -94,13 +94,14 @@ def _print(text):
         print text
 
 
-def start():
+def start(browser_type='Firefox'):
     """
-    Starts Firefox with a new browser session. Called for you at the start of
-    each test script."""
+    Starts Browser with a new session. Called for you at
+    the start of each test script."""
     global browser
-    _print('\nStarting browser')
-    browser = webdriver.Firefox()
+    _print('\nStarting browser:'); 
+    #browser = webdriver.Firefox()
+    browser = getattr(webdriver, browser_type)()
 
 
 def stop():
@@ -120,7 +121,6 @@ def sleep(secs):
     time.sleep(secs)
     return
         
-
 
 def _fix_url(url):
     if url.startswith('/'):
