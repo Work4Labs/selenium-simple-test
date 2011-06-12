@@ -99,7 +99,7 @@ def start(browser_type='Firefox'):
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
-    _print('\nStarting browser:'); 
+    _print('\nStarting %s:' % browser_type); 
     #browser = webdriver.Firefox()
     browser = getattr(webdriver, browser_type)()
 
