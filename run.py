@@ -90,6 +90,7 @@ def run_django():
         except IOError:
             time.sleep(0.2)
     print 'django found. continuing...'
+    return
 
 
 
@@ -101,12 +102,12 @@ def get_opts():
     parser.add_option('-r', dest='report_format',
                       default='console',
                       help='results report format (html, xml, console)')
+    parser.add_option('-b', dest='browser_type',
+                      default='Firefox',
+                      help='select webdriver (Firefox, Chrome, InternetExplorer, etc)')
     parser.add_option('-s', dest='launch_server',
                       default=False, action='store_true',
                       help='launch django server for local SST framework tests')
-    parser.add_option('-b', dest='browser_type',
-                      default='Firefox',
-                      help='select webdriver (Firefox, Chrome, InternetExplorer, HtmlUnit)')
     parser.add_option('-x', dest='xserver_headless',
                       default=False, action='store_true',
                       help='run tests in headless xserver')
