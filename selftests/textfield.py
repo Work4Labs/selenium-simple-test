@@ -1,12 +1,15 @@
 from funcrunner.actions import *
 
+
+# password functionality is so close to textfield that
+# we will include it with common textfield use
+
+
 goto('/')
 
 is_textfield('text_1')
 is_textfield(get_element(id='text_1'))
 
-#password functionality is so close to textfield that
-#    we will include it with common textfield use
 is_textfield('pass_1')
 is_textfield(get_element(id='pass_1'))
 
@@ -28,11 +31,11 @@ text_is('text_1', "No checking")
 textfield_write('text_1', "")
 text_is('text_1', "")
 
-#checks the password field to see if it is editable
+# checks the password field to see if it is editable
 textfield_write('pass_1', "qaT3st")
 text_is('pass_1', "qaT3st")
 fails(text_is, 'pass_1', 'fake_text')
 
-#fails for element that exists but is not editable
-fails(textfield_write, 'text_2', "I pity the Foobar..")
+# fails for element that exists but is not editable
+fails(textfield_write, 'text_2', "I pity the Foobar..")  # TODO: this line line is failing in Chrome
 fails(text_is, 'text_2', "I pity the Foobar..")
