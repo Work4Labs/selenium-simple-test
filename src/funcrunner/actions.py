@@ -110,7 +110,8 @@ def stop():
     the end of each test script."""
     global browser
     _print('Stopping browser')
-    browser.close()
+    #browser.close()
+    browser.quit()  # quit calls close() and does cleanup
     browser = None
 
 
