@@ -7,8 +7,8 @@ Requirements:
 
 - Python 2.6 or 2.7
 
-- Selenium 2.0rc2 (or newer):
-    * $ sudo pip install selenium==2.0rc2
+- Selenium 2.0rc3 (or newer):
+    * $ sudo pip install selenium==2.0rc3
 
 - [optional] XML reports requires junitxml:
     * $ sudo pip install junitxml==0.6
@@ -39,8 +39,6 @@ By default, tests are located in the "/tests" directory under selenium-simple-te
 You can run all tests in this directory by running:
 
     "./run.py"
-    or
-    "python run.py"
 
 An individual test (file) can be run with just the name of the test. 
 
