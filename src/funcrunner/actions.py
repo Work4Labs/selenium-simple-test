@@ -169,7 +169,7 @@ def checkbox_toggle(the_id):
     exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = is_checkbox(the_id)
     before = checkbox.is_selected()
-    checkbox.toggle()
+    checkbox.click()
     after = checkbox.is_selected()
     msg = 'Checkbox: %r - was not toggled, value remains: %r' % (the_id, before)
     if before == after:
@@ -376,7 +376,7 @@ def set_select(the_id, text_in):
     elem = is_select(the_id)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
-            element.select()
+            element.click()
             return
     msg = 'The following option could not be found in the list: %s' % text_in 
     _raise(msg)
@@ -415,7 +415,7 @@ def radio_value_is(the_id, value):
 def radio_select(the_id):
     """Select the specified radio button."""
     elem = is_radio(the_id)
-    elem.select()
+    elem.click()
 
 
 def _get_text(elem):
