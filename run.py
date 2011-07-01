@@ -20,7 +20,7 @@ import sys
 import time
 import urllib
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/src'))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/src')
 import funcrunner
 
 
