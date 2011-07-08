@@ -7,8 +7,8 @@ Requirements:
 
 - Python 2.6 or 2.7
 
-- Selenium 2.0rc3 (or newer):
-    * $ sudo pip install selenium==2.0rc3
+- Selenium 2.0.0:
+    * $ sudo pip install selenium==2.0.0
 
 - [optional] XML reports requires junitxml:
     * $ sudo pip install junitxml==0.6
@@ -16,16 +16,13 @@ Requirements:
 - [optional] Running the self-tests requires django 1.1.2:
     * $ sudo pip install django==1.1.2
     
-- [optional] Running headless xserver requires pyvirtualdisplay*:
+- [optional] Running headless X-server requires pyvirtualdisplay:
+    * $ sudo apt-get install xvfb xserver-xephyr
     * $ sudo pip install pyvirtualdisplay
 
 
 - You can intall all of these automatically from the requirements.txt file with:
     * $ sudo pip install -r requirements.txt
-
-
-- Other requirements for running with headless xserver:
-    * $ sudo apt-get install xvfb xserver-xephyr
 
 
 
