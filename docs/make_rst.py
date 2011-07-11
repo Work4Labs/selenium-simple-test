@@ -95,8 +95,8 @@ SST depends on Selenium (2.x), so first make sure Selenium/Webdriver is working 
 
  * install selenium package (Python bindings) with pip, easy_install, or however you wish:
  
-  * sudo pip install selenium==2.0b4dev
-  * http://pypi.python.org/pypi/selenium/2.0b4dev
+  * sudo pip install selenium
+  * http://pypi.python.org/pypi/selenium
 
  * make sure it works.
  
