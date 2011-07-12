@@ -32,7 +32,6 @@ def runtests(
         browser_type='Firefox'
     ):
     if test_dir == 'selftests':
-        print 'whoopee'
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
 
