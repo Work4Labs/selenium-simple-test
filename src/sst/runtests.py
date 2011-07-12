@@ -37,6 +37,10 @@ def runtests(
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
 
+    if not os.path.isdir(test_dir):
+        msg = 'Specified directory %r does not exist' % (test_dir,)
+        raise IOError(msg)
+
     suites = (get_suite(test_names, root, browser_type) for root, _, _ in os.walk(test_dir))
     alltests = TestSuite(suites)
 
