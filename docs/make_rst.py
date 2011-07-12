@@ -15,7 +15,7 @@ this_dir = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.append(os.path.join(this_dir, '../src'))
 
-from funcrunner import actions
+from sst import actions
 
 
 index_text = """
@@ -24,16 +24,16 @@ index_text = """
     SST - selenium-simple-test
 ==============================
 
-  
+
 --------------------------------------------
     Automated Web Test Framework with Python
 --------------------------------------------
 
-selenium-simple-test (SST) is a web test framework that uses a simple 
+selenium-simple-test (SST) is a web test framework that uses a simple
 Python DSL to generate functional GUI tests.
 
-Tests are made up of scripts, created by composing actions that drive a browser 
-via selenium/webdriver.  You have the flexibilty of the full Python language, 
+Tests are made up of scripts, created by composing actions that drive a browser
+via selenium/webdriver.  You have the flexibilty of the full Python language,
 along with a convenient set of functions to simplify web testing.
 
 SST consists of:
@@ -43,7 +43,7 @@ SST consists of:
  * test runner (unittest)
  * data parameterization/injection
  * XML/HTML/Console report output
-    
+
 At runtime, scripts are converted to a standard Python unittest suite and executed.
 
 
@@ -56,7 +56,7 @@ Coming soon!
 --------
     Code
 --------
-    
+
 * `Launchpad Project <https://launchpad.net/selenium-simple-test>`_
 * `Browse the Source (Trunk) <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
 * get a copy of the trunk:
@@ -84,7 +84,7 @@ This should be everything you need to get up and running on a fresh install of U
     $ bzr branch lp:selenium-simple-test
     $ cd selenium-simple-test
     $ sudo pip install -r requirements.txt
-    $ ./run.py -d examples
+    $ ./sst-run -d examples
 
 
 --------------------------------------------------
@@ -94,16 +94,16 @@ This should be everything you need to get up and running on a fresh install of U
 SST depends on Selenium (2.x), so first make sure Selenium/Webdriver is working on your system.
 
  * install selenium package (Python bindings) with pip, easy_install, or however you wish:
- 
+
   * sudo pip install selenium
   * http://pypi.python.org/pypi/selenium
 
  * make sure it works.
- 
+
   * create a script containing the following webdriver code, and run it:
-  
+
   ::
-   
+
     #!/usr/bin/env python
     from selenium import webdriver
     browser = webdriver.Firefox()
@@ -118,23 +118,23 @@ Example SST test script
 
 a sample test case in SST::
 
-    from funcrunner.actions import *
+    from sst.actions import *
 
     goto('http://www.ubuntu.com/')
     title_contains('Ubuntu homepage')
-    
-    
+
+
 --------------------------------
 Running your first test with SST
 --------------------------------
 
 create a .py file in the 'selenium-simple-test/tests' directory, and add your code.
 
-then call your test from the command line, using run.py (located inside your 'selenium-simple-test' direcrory)::
+then call your test from the command line, using sst-run (located inside your 'selenium-simple-test' direcrory)::
 
-    $./run.py mytest.py
+    $./sst-run mytest.py
     or
-    $ python run.py mytest.py
+    $ python sst-run mytest.py
 
 
 ------------------------
@@ -143,7 +143,7 @@ then call your test from the command line, using run.py (located inside your 'se
 
 SST ships with a few trivial example scripts.  You can run them like this::
 
-    $./run.py -d examples   
+    $./sst-run -d examples
 
 
 --------------------------
@@ -154,18 +154,18 @@ SST ships with a set of self-tests based on a test Django project.
 
 You can run the suite of self tests (and the test django server) like this::
 
-    $./run.py -d selftests -s 
+    $./sst-run -d selftests -s
 
 
 --------------------
 Command line options
 --------------------
 
-Usage: run.py [testname] 
+Usage: sst-run [testname]
 
-* Calling run.py without any arguments runs all tests in the local 'test' directory.
+* Calling sst-run without any arguments runs all tests in the local 'test' directory.
 
-* Calling run.py with testname(s) as arguments will just run those tests. The testnames should not include the '.py' at the end of the filename.
+* Calling sst-run with testname(s) as arguments will just run those tests. The testnames should not include the '.py' at the end of the filename.
 
 * You may optionally create a data file for data-driven testing.  Create a '^' delimited txt data file with the same name as the test, plus the '.csv' extension.  This will run a test using each row in the data file (1st row of data file is variable name mapping)
 
@@ -176,7 +176,7 @@ Options:
   -b BROWSER_TYPE   select webdriver (Firefox, Chrome, InternetExplorer, etc)
   -s                launch django server for local SST framework tests
   -x                run tests in headless xserver
-  
+
 
 -------------------------
     Organizing your tests
@@ -189,11 +189,11 @@ for example, a simple test setup might look like::
     /selenium-simple-test
         /mytests
             foo.py
-        
+
 and you would call this from the command line::
 
-    $./run.py -d mytests
-    
+    $./sst-run -d mytests
+
 
 a more complex setup might look like::
 
@@ -205,11 +205,11 @@ a more complex setup might look like::
             /project_bar
                 feature_bar.py
                 feature_baz.py
-        
+
 and you would still call this from the command like::
 
-    $./run.py -d mytests
-    
+    $./sst-run -d mytests
+
 SST will find all of the tests in subdirectories and execute them.
 
 
@@ -230,9 +230,9 @@ SST will find all of the tests in subdirectories and execute them.
 
 .. toctree::
    :maxdepth: 1
-   
+
    actions
-   
+
 """
 
 
@@ -240,9 +240,9 @@ SST will find all of the tests in subdirectories and execute them.
 
 
 
-with open(os.path.join(this_dir, 'index.rst'), 'w') as h:    
+with open(os.path.join(this_dir, 'index.rst'), 'w') as h:
     h.write(index_text)
-    
+
 
 
 with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
@@ -252,7 +252,7 @@ with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
         text = textwrap.dedent(text or '')
         h.write(text)
         h.write('\n')
-    
+
     foo = """
 =====================
     Actions Reference
@@ -260,11 +260,11 @@ with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
 
 """
     h.write(foo)
-    
-    
+
+
     _write(actions.__doc__)
     _write('\n')
-    
+
     for entry in sorted(actions.__all__):
         member = getattr(actions, entry)
         doc = getattr(member, '__doc__', '')
@@ -288,7 +288,7 @@ with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
         _write(doc)
         h.write('\n')
 
-        
+
 
 
 

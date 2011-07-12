@@ -21,7 +21,7 @@ import time
 import urllib
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/src')
-import funcrunner
+import sst
 
 
 
@@ -51,15 +51,15 @@ def main():
         print '\nstarting virtual display...'
         display = Display(visible=0, size=(800, 600))
         display.start()
-        
+
     if cmd_opts.launch_server:
         run_django()
-        
+
     print '----------------------------------------------------------------------'
-    
-    funcrunner.runtests(args, 
-        test_dir=cmd_opts.dir_name, 
-        report_format=cmd_opts.report_format, 
+
+    sst.runtests(args,
+        test_dir=cmd_opts.dir_name,
+        report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type
         )
 
@@ -72,9 +72,9 @@ def main():
     if cmd_opts.xserver_headless:
         print '\nstopping virtual display...\n'
         display.stop()
-    
-        
-        
+
+
+
 def run_django():
     subprocess.Popen(['./src/testproject/manage.py', 'runserver'],
         stderr=open(os.devnull, 'w'),

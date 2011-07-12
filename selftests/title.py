@@ -1,4 +1,4 @@
-from funcrunner.actions import *
+from sst.actions import *
 
 # tests goto, url_is, title_is, set_base_url
 # reset_base_url

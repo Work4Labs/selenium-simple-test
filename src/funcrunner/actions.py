@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #
 #   Copyright (c) 2011 Canonical Ltd.
-# 
+#
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
 #
 #   License: GNU LGPLv3 (http://www.gnu.org/licenses/)
 #
 #   SST is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Lesser Public License 
+#   it under the terms of the GNU General Lesser Public License
 #   as published by the Free Software Foundation.
 #
 
@@ -22,7 +22,7 @@ actions.
 
 The standard set of actions are imported by starting the test scripts with::
 
-    from funcrunner.actions import *
+    from sst.actions import *
 
 
 Actions that work on page elements usually take either an element id or an
@@ -48,8 +48,8 @@ except ImportError as e:
     print 'Error importing Selenium/Webdriver.  Selenium 2.x python bindings are required.'
     print e
     sys.exit(1)
- 
- 
+
+
 
 __all__ = [
     'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails', 'url_is',
@@ -57,7 +57,7 @@ __all__ = [
     'radio_select', 'text_is', 'is_checkbox', 'get_element', 'get_elements',
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
-    'textfield_write', 'url_contains', 'sleep', 'is_select', 
+    'textfield_write', 'url_contains', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element'
 ]
 
@@ -99,7 +99,7 @@ def start(browser_type='Firefox'):
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
-    _print('\nStarting %s:' % browser_type); 
+    _print('\nStarting %s:' % browser_type);
     #browser = webdriver.Firefox()
     browser = getattr(webdriver, browser_type)()
 
@@ -117,11 +117,11 @@ def stop():
 
 def sleep(secs):
     """
-    Delay execution for a given number of seconds. The argument may be a floating 
+    Delay execution for a given number of seconds. The argument may be a floating
     point number for subsecond precision."""
     time.sleep(secs)
     return
-        
+
 
 def _fix_url(url):
     if url.startswith('/'):
@@ -221,7 +221,7 @@ def is_link(the_id):
     href = link.get_attribute('href')
     if href is None:
         msg = 'The text %r is not part of a Link or a Link ID' % the_id
-        _raise(msg)  
+        _raise(msg)
     return link
 
 
@@ -269,8 +269,8 @@ def title_contains(title):
     msg = 'Title is: %r. Does not contain %r' % (real_title, title)
     if not re.search(title, real_title):
         _raise(msg)
-        
-        
+
+
 def url_is(url):
     """
     Assert the current url is as specified. Can be an absolute url or
@@ -378,21 +378,21 @@ def set_select(the_id, text_in):
         if element.text == text_in:
             element.click()
             return
-    msg = 'The following option could not be found in the list: %s' % text_in 
+    msg = 'The following option could not be found in the list: %s' % text_in
     _raise(msg)
-    
+
 
 def select_value_is(the_id, text_in):
     """Assert the specified element is a select list with the specified value"""
     elem = is_select(the_id)
-    # Because there is no way to connect the current text of a select element we have to use 'value' 
+    # Because there is no way to connect the current text of a select element we have to use 'value'
     current = elem.get_attribute('value')
     for element in elem.find_elements_by_tag_name("option"):
         if text_in == element.text and current == element.get_attribute('value'):
-            return 
-    msg = 'The option is not currently set to the following expected value: %s' % text_in 
+            return
+    msg = 'The option is not currently set to the following expected value: %s' % text_in
     _raise(msg)
-    
+
 
 def is_radio(the_id):
     """Assert the specified element is a radio button"""
@@ -460,7 +460,7 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-    
+
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -482,14 +482,14 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     if text is not None:
         # if text was specified, filter elements
         elements = [element for element in elements if _check_text(element, text)]
-    
+
     if len(elements) == 0:
         msg = 'Could not identify elements: 0 elements found'
         _raise(msg)
-    
+
     return elements
-    
-    
+
+
 def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     """
     This function will find and return an element by any of several
@@ -502,15 +502,15 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like, so long as they
     uniquely identify one element."""
-    
+
     elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
-    
+
     if len(elements) != 1:
         msg = 'Could not identify element: %s elements found' % len(elements)
         _raise(msg)
-        
+
     return elements[0]
-    
+
 
 def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     """
@@ -519,7 +519,7 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-    
+
     elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
     return True
 

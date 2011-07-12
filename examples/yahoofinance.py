@@ -1,4 +1,4 @@
-from funcrunner.actions import *
+from sst.actions import *
 
 goto('http://finance.search.yahoo.com/')
 title_contains('Yahoo!')
@@ -7,4 +7,3 @@ textfield_write(element, 'IBM')
 element = get_element(id='yschbt')
 button_click(element)
 title_contains('IBM')
-    
