@@ -15,7 +15,7 @@ PACKAGES = [
 ]
 SCRIPTS = ['sst-run']
 
-DESCRIPTION = 'Some short description'
+DESCRIPTION = 'Selenium Simple Test Framework'
 
 URL = "https://launchpad.net/selenium-simple-test"
 
