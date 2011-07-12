@@ -10,7 +10,9 @@ import os
 
 
 NAME = 'sst'
-PACKAGES = ['src/sst']
+PACKAGES = [
+    'sst', 'sst.selftests', 'sst.examples'
+]
 SCRIPTS = ['sst-run']
 
 DESCRIPTION = 'Some short description'
@@ -46,6 +48,7 @@ params = dict(
     version=__version__,
     packages=PACKAGES,
     scripts=SCRIPTS,
+    package_dir={'': 'src'},
 
     # metadata for upload to PyPI
     author=AUTHOR,
