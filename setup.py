@@ -11,7 +11,7 @@ import os
 
 NAME = 'sst'
 PACKAGES = [
-    'sst', 'sst.selftests', 'sst.examples'
+    'sst', 'sst.selftests'
 ]
 SCRIPTS = ['sst-run']
 
