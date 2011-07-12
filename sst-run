@@ -20,9 +20,14 @@ import sys
 import time
 import urllib
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/src')
-import sst
-
+try:
+    # installed
+    import sst
+except ImportError:
+    # from the development directory
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    sys.path.append(os.path.join(this_dir, 'src'))
+    import sst
 
 
 usage = """Usage: %prog [testname]

@@ -11,11 +11,15 @@ import os
 import sys
 import textwrap
 
-this_dir = os.path.abspath(os.path.dirname(__file__))
+try:
+    # installed
+    from sst import actions
+except ImportError:
+    # from the development directory
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    sys.path.append(os.path.join(this_dir, '../src'))
+    from sst import actions
 
-sys.path.append(os.path.join(this_dir, '../src'))
-
-from sst import actions
 
 
 index_text = """
