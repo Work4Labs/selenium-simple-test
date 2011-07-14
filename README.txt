@@ -50,7 +50,7 @@ Self-Tests (SST Framework Tests)
 ================================
 SST includes a set of self-tests that include a django project used as the application
 under test.  The test django project doesn't have a database, so once you have the
-dependencies installed you can execute "./run -d selftests -s" to run the tests.
+dependencies installed you can execute "./sst-run -d selftests -s" to run the tests.
 
 
 
