@@ -15,7 +15,7 @@ Requirements:
 
 - [optional] Running the self-tests requires django 1.1.2:
     * $ sudo pip install django==1.1.2
-    
+
 - [optional] Running headless X-server requires pyvirtualdisplay:
     * $ sudo apt-get install xvfb xserver-xephyr
     * $ sudo pip install pyvirtualdisplay
@@ -35,11 +35,11 @@ By default, tests are located in the "/tests" directory under selenium-simple-te
 
 You can run all tests in this directory by running:
 
-    "./run.py"
+    "./sst-run"
 
-An individual test (file) can be run with just the name of the test. 
+An individual test (file) can be run with just the name of the test.
 
-    "./run.py mytest"
+    "./sst-run mytest"
 
 This runs the test file "tests/mytest.py".
 
@@ -48,9 +48,9 @@ This runs the test file "tests/mytest.py".
 
 Self-Tests (SST Framework Tests)
 ================================
-SST includes a set of self-tests that include a django project used as the application 
-under test.  The test django project doesn't have a database, so once you have the 
-dependencies installed you can execute "./run -d selftests -s" to run the tests.
+SST includes a set of self-tests that include a django project used as the application
+under test.  The test django project doesn't have a database, so once you have the
+dependencies installed you can execute "./sst-run -d selftests -s" to run the tests.
 
 
 
@@ -59,7 +59,7 @@ Experimenting with Selenium and Python
 ======================================
 
 To experiment with Selenium you can do the following:
-    
+
     from selenium import webdriver
     b = webdriver.Firefox()
     b.get('http://www.google.com')

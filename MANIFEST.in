@@ -1,0 +1,3 @@
+include examples/*.py
+recursive-include docs *.txt *.rst *.py *.png *.css *.html README
+recursive-include sst_docs *.txt *.py *.png *.css *.html *.js *.inv

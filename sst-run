@@ -20,9 +20,22 @@ import sys
 import time
 import urllib
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/src')
-import funcrunner
+try:
+    import selenium
+except ImportError as e:
+    import sys
+    print 'Error importing Selenium/Webdriver.  Selenium 2.x python bindings are required.'
+    print e
+    sys.exit(1)
 
+try:
+    # installed
+    import sst
+except ImportError:
+    # from the development directory
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    sys.path.append(os.path.join(this_dir, 'src'))
+    import sst
 
 
 usage = """Usage: %prog [testname]
@@ -51,15 +64,15 @@ def main():
         print '\nstarting virtual display...'
         display = Display(visible=0, size=(800, 600))
         display.start()
-        
+
     if cmd_opts.launch_server:
         run_django()
-        
+
     print '----------------------------------------------------------------------'
-    
-    funcrunner.runtests(args, 
-        test_dir=cmd_opts.dir_name, 
-        report_format=cmd_opts.report_format, 
+
+    sst.runtests(args,
+        test_dir=cmd_opts.dir_name,
+        report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type
         )
 
@@ -72,9 +85,9 @@ def main():
     if cmd_opts.xserver_headless:
         print '\nstopping virtual display...\n'
         display.stop()
-    
-        
-        
+
+
+
 def run_django():
     subprocess.Popen(['./src/testproject/manage.py', 'runserver'],
         stderr=open(os.devnull, 'w'),

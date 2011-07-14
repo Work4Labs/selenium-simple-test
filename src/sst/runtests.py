@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #
 #   Copyright (c) 2011 Canonical Ltd.
-# 
+#
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
 #
 #   License: GNU LGPLv3 (http://www.gnu.org/licenses/)
 #
 #   SST is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Lesser Public License 
+#   it under the terms of the GNU General Lesser Public License
 #   as published by the Free Software Foundation.
 #
 
@@ -27,22 +27,29 @@ __unittest = True
 __all__ = ['runtests']
 
 
+def runtests(
+        test_names, test_dir='tests', report_format='console',
+        browser_type='Firefox'
+    ):
+    if test_dir == 'selftests':
+        # XXXX horrible hardcoding
+        # selftests should be a command instead
+        package_dir = os.path.dirname(__file__)
+        test_dir = os.path.join(package_dir, 'selftests')
 
-
-def runtests(test_names, test_dir='tests', report_format='console', browser_type='Firefox'):
     suites = (get_suite(test_names, root, browser_type) for root, _, _ in os.walk(test_dir))
     alltests = TestSuite(suites)
-    
+
     if report_format == 'console':
         runner = TextTestRunner(verbosity=2)
         runner.run(alltests)
-        
+
     if report_format == 'html':
         import HTMLTestRunner
         fp = file('results.html', 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(stream=fp, title='SST Test Report', verbosity=2)
         runner.run(alltests)
-        
+
     if report_format == 'xml':
         try:
             import junitxml
@@ -55,8 +62,6 @@ def runtests(test_names, test_dir='tests', report_format='console', browser_type
         alltests.run(result)
         result.stopTestRun()
 
-    
-
 
 def get_suite(test_names, test_dir, browser_type):
     args = set(test_names)
@@ -67,13 +72,13 @@ def get_suite(test_names, test_dir, browser_type):
         sys.path.append(test_path)
 
     suite = TestSuite()
-    
+
     try:
         dir_list = os.listdir(test_dir)
     except OSError:
         print 'The test directory was not found'
         sys.exit(1)
-    
+
     for entry in dir_list:
         if not entry.endswith('.py'):
             continue
@@ -95,8 +100,8 @@ def get_suite(test_names, test_dir, browser_type):
         print 'The following tests were not found: %s' % (' '.join(argv))
         sys.exit(1)
     return suite
-    
-    
+
+
 
 def get_case(test_dir, entry, browser_type, context=None):
     context = context or {}
@@ -126,7 +131,7 @@ def get_case(test_dir, entry, browser_type, context=None):
 def get_data(csv_path):
     """
     Return a list of data dicts for parameterized testing.
-    
+
       the first row (headers) match data_map key names
       rows beneath that are filled with data values
     """
@@ -136,7 +141,7 @@ def get_data(csv_path):
     with open(csv_path) as f:
         headers = f.readline().rstrip().split('^')
         headers = [header.replace('"', '') for header in headers]
-        headers = [header.replace("'", '') for header in headers]    
+        headers = [header.replace("'", '') for header in headers]
         for line in f:
             row = {}
             row_num += 1

@@ -1,4 +1,4 @@
-from funcrunner.actions import *
+from sst.actions import *
 
 
 goto('http://www.google.com/')

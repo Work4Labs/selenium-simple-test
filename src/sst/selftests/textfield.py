@@ -1,4 +1,4 @@
-from funcrunner.actions import *
+from sst.actions import *
 
 
 # password functionality is so close to textfield that
