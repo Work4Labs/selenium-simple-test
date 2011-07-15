@@ -9,15 +9,12 @@ from sst import __version__
 import os
 
 
+
 NAME = 'sst'
-PACKAGES = [
-    'sst', 'sst.selftests'
-]
+PACKAGES = ['sst', 'sst.selftests']
 SCRIPTS = ['sst-run']
-
 DESCRIPTION = 'Selenium Simple Test Framework'
-
-URL = "https://launchpad.net/selenium-simple-test"
+URL = 'https://launchpad.net/selenium-simple-test'
 
 readme = os.path.join(this_dir, 'README.txt')
 LONG_DESCRIPTION = open(readme).read()
