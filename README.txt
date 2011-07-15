@@ -18,11 +18,10 @@ Requirements:
 
 - [optional] Running headless X-server requires pyvirtualdisplay:
     * $ sudo apt-get install xvfb xserver-xephyr
-    * $ sudo pip install pyvirtualdisplay==0.0.6
+    * $ sudo pip install pyvirtualdisplay
 
 
 - You can intall all of these automatically from the requirements.txt file with:
-    [optional] * $ sudo apt-get install xvfb xserver-xephyr
     * $ sudo pip install -r requirements.txt
 
 
