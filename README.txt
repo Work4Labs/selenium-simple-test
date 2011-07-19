@@ -8,7 +8,7 @@ Requirements:
 - Python 2.6 or 2.7
 
 - Selenium WebDriver bindings:
-    * $ sudo pip install selenium==2.0.1
+    * $ sudo pip install selenium
 
 - [optional] XML reports requires junitxml:
     * $ sudo pip install junitxml==0.6
