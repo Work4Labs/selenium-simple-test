@@ -89,14 +89,22 @@ def _print(text):
         print text
 
 
-def start(browser_type='Firefox'):
+def start(browser_type='Firefox', javascript_disabled=False):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
     _print('\nStarting %s:' % browser_type);
     #browser = webdriver.Firefox()
-    browser = getattr(webdriver, browser_type)()
+    if javascript_disabled:
+        profile = getattr(webdriver, '%sProfile' % browser_type)()
+        profile.set_preference('javascript.enabled', 'false') 
+        browser = getattr(webdriver, browser_type)(profile)
+    else:
+        browser = getattr(webdriver, browser_type)()
+    
+    
+
 
 
 def stop():

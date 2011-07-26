@@ -27,10 +27,10 @@ __unittest = True
 __all__ = ['runtests']
 
 
-def runtests(
-        test_names, test_dir='tests', report_format='console',
-        browser_type='Firefox'
-    ):
+def runtests(test_names, test_dir='tests', report_format='console',
+             browser_type='Firefox', javascript_disabled=False,
+             ):
+             
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
         # selftests should be a command instead
@@ -41,7 +41,7 @@ def runtests(
         msg = 'Specified directory %r does not exist' % (test_dir,)
         raise IOError(msg)
 
-    suites = (get_suite(test_names, root, browser_type) for root, _, _ in os.walk(test_dir))
+    suites = (get_suite(test_names, root, browser_type, javascript_disabled) for root, _, _ in os.walk(test_dir))
     alltests = TestSuite(suites)
 
     if report_format == 'console':
@@ -67,7 +67,7 @@ def runtests(
         result.stopTestRun()
 
 
-def get_suite(test_names, test_dir, browser_type):
+def get_suite(test_names, test_dir, browser_type, javascript_disabled):
     args = set(test_names)
     argv = set(test_names)
 
@@ -97,9 +97,9 @@ def get_suite(test_names, test_dir, browser_type):
         csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             for row in get_data(csv_path):  # reading the csv file now
-                suite.addTest(get_case(test_dir, entry, browser_type, row))  # row is a dictionary of variables
+                suite.addTest(get_case(test_dir, entry, browser_type, javascript_disabled, row))  # row is a dictionary of variables
         else:
-            suite.addTest(get_case(test_dir, entry, browser_type))
+            suite.addTest(get_case(test_dir, entry, browser_type, javascript_disabled))
     if argv:
         print 'The following tests were not found: %s' % (' '.join(argv))
         sys.exit(1)
@@ -107,12 +107,12 @@ def get_suite(test_names, test_dir, browser_type):
 
 
 
-def get_case(test_dir, entry, browser_type, context=None):
+def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
     context = context or {}
     path = os.path.join(test_dir, entry)
     def setUp(self):
         reset_base_url()
-        start(browser_type)
+        start(browser_type, javascript_disabled)
     def tearDown(self):
         stop()
     def test(self):

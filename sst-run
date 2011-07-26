@@ -73,7 +73,8 @@ def main():
     sst.runtests(args,
         test_dir=cmd_opts.dir_name,
         report_format=cmd_opts.report_format,
-        browser_type=cmd_opts.browser_type
+        browser_type=cmd_opts.browser_type,
+        javascript_disabled=cmd_opts.javascript_disabled,
         )
 
     print '----------------------------------------------------------------------'
@@ -118,6 +119,9 @@ def get_opts():
     parser.add_option('-b', dest='browser_type',
                       default='Firefox',
                       help='select webdriver (Firefox, Chrome, InternetExplorer, etc)')
+    parser.add_option('-j', dest='javascript_disabled',
+                      default=False, action='store_true',
+                      help='disable javascript in browser')
     parser.add_option('-s', dest='launch_server',
                       default=False, action='store_true',
                       help='launch django server for local SST framework tests')
