@@ -15,12 +15,10 @@
 import ast
 import os
 import sys
-import time
-import warnings
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
-from .actions import start, stop, reset_base_url, waitfor
+from .actions import start, stop, reset_base_url
 
 
 __unittest = True
@@ -93,7 +91,7 @@ def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
     test_path = os.path.abspath(os.path.join(os.curdir, test_dir))
 
     suite = TestSuite()
-    dir_list = os.listdir(test_dir)
+    dir_list = os.listdir(test_path)
 
     for entry in dir_list:
         if not entry.endswith('.py'):
@@ -106,17 +104,17 @@ def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
                 continue
         found.add(entry[:-3])
 
-        csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
+        csv_path = os.path.join(test_path, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             # reading the csv file now
             for row in get_data(csv_path):
                 # row is a dictionary of variables
                 suite.addTest(
-                    get_case(test_dir, entry, browser_type, javascript_disabled, row)
+                    get_case(test_path, entry, browser_type, javascript_disabled, row)
                 )
         else:
             suite.addTest(
-                get_case(test_dir, entry, browser_type, javascript_disabled)
+                get_case(test_path, entry, browser_type, javascript_disabled)
             )
 
     return suite
