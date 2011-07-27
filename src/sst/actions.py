@@ -98,12 +98,12 @@ def start(browser_type='Firefox', javascript_disabled=False):
     #browser = webdriver.Firefox()
     if javascript_disabled:
         profile = getattr(webdriver, '%sProfile' % browser_type)()
-        profile.set_preference('javascript.enabled', 'false') 
+        profile.set_preference('javascript.enabled', 'false')
         browser = getattr(webdriver, browser_type)(profile)
     else:
         browser = getattr(webdriver, browser_type)()
-    
-    
+
+
 
 
 
@@ -144,104 +144,104 @@ def goto(url=''):
     browser.get(url)
 
 
-def is_checkbox(the_id):
+def is_checkbox(id_or_elem):
     """
     Assert that the element is a checkbox. Takes an id or an element object.
     Raises a failure exception if the element specified doesn't exist or isn't
     a checkbox."""
-    elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'checkbox')
+    elem = _get_elem(id_or_elem)
+    _elem_is_type(elem, id_or_elem, 'checkbox')
     return elem
 
 
-def checkbox_value_is(the_id, value):
+def checkbox_value_is(id_or_elem, value):
     """
     Assert checkbox value. Takes an element id or object plus either True or
     False. Raises a failure exception if the element specified doesn't exist
     or isn't a checkbox."""
-    checkbox = is_checkbox(the_id)
+    checkbox = is_checkbox(id_or_elem)
     real = checkbox.is_selected()
-    msg = 'Checkbox: %r - Has Value: %r' % (the_id, real)
+    msg = 'Checkbox: %r - Has Value: %r' % (id_or_elem, real)
     if real != value:
         _raise(msg)
 
 
-def checkbox_toggle(the_id):
+def checkbox_toggle(id_or_elem):
     """
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    checkbox = is_checkbox(the_id)
+    checkbox = is_checkbox(id_or_elem)
     before = checkbox.is_selected()
     checkbox.click()
     after = checkbox.is_selected()
-    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (the_id, before)
+    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (id_or_elem, before)
     if before == after:
         _raise(msg)
 
 
-def checkbox_set(the_id, new_value):
+def checkbox_set(id_or_elem, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    checkbox = is_checkbox(the_id)
+    checkbox = is_checkbox(id_or_elem)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
     if new_value != current_value:
-        checkbox_toggle(the_id)
+        checkbox_toggle(id_or_elem)
 
 
-def is_textfield(the_id):
+def is_textfield(id_or_elem):
     """
     Assert that the element is a textfield, textarea or password box. Takes an
     id or an element object. Raises a failure exception if the element
     specified doesn't exist or isn't a textfield."""
-    elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'text', 'password', 'textarea')
+    elem = _get_elem(id_or_elem)
+    _elem_is_type(elem, id_or_elem, 'text', 'password', 'textarea')
     return elem
 
 
-def textfield_write(the_id, new_text, check=True):
+def textfield_write(id_or_elem, new_text, check=True):
     """
     Set the specified text into the textfield. If the text fails to write (the
     textfield contents after writing are different to the specified text) this
     function will fail. You can switch off the checking by passing
     `check=False`."""
-    textfield = is_textfield(the_id)
+    textfield = is_textfield(id_or_elem)
     textfield.clear()
     textfield.send_keys(new_text)
     if not check:
         return
     current_text = textfield.get_attribute('value')
-    msg = 'Textfield: %r - did not write. Text was: %r' % (the_id, current_text)
+    msg = 'Textfield: %r - did not write. Text was: %r' % (id_or_elem, current_text)
     if current_text != new_text:
         _raise(msg)
 
 
-def is_link(the_id):
+def is_link(id_or_elem):
     """
     Assert that the element is a link."""
-    link = _get_elem(the_id)
+    link = _get_elem(id_or_elem)
     href = link.get_attribute('href')
     if href is None:
-        msg = 'The text %r is not part of a Link or a Link ID' % the_id
+        msg = 'The text %r is not part of a Link or a Link ID' % id_or_elem
         _raise(msg)
     return link
 
 
-def get_link_url(the_id):
+def get_link_url(id_or_elem):
     """
     Return the URL from a link."""
-    link = is_link(the_id)
+    link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     return link_url
 
 
-def link_click(the_id, check=False):
+def link_click(id_or_elem, check=False):
     """
     Click the specified link. As some links do redirects the location you end
     up at is not checked by default. If you pass in `check=True` then this
     action asserts that the resulting url is the link url."""
-    link = is_link(the_id)
+    link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     link.click()
 
@@ -344,13 +344,13 @@ def fails(action, *args, **kwargs):
     _raise(msg)
 
 
-def _get_elem(the_id):
-    if isinstance(the_id, WebElement):
-        return the_id
+def _get_elem(id_or_elem):
+    if isinstance(id_or_elem, WebElement):
+        return id_or_elem
     try:
-        return browser.find_element_by_id(the_id)
+        return browser.find_element_by_id(id_or_elem)
     except NoSuchElementException:
-        msg = 'Element with id: %r does not exist' % the_id
+        msg = 'Element with id: %r does not exist' % id_or_elem
         _raise(msg)
 
 
@@ -367,16 +367,16 @@ def _elem_is_type(elem, name, *elem_types):
         _raise(msg)
 
 
-def is_select(the_id):
+def is_select(id_or_elem):
     """Assert the specified element is a select drop-list"""
-    elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'select-one')
+    elem = _get_elem(id_or_elem)
+    _elem_is_type(elem, id_or_elem, 'select-one')
     return elem
 
 
-def set_select(the_id, text_in):
+def set_select(id_or_elem, text_in):
     """Set the select drop list to a text value provided to the function"""
-    elem = is_select(the_id)
+    elem = is_select(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
             element.click()
@@ -385,9 +385,9 @@ def set_select(the_id, text_in):
     _raise(msg)
 
 
-def select_value_is(the_id, text_in):
+def select_value_is(id_or_elem, text_in):
     """Assert the specified element is a select list with the specified value"""
-    elem = is_select(the_id)
+    elem = is_select(id_or_elem)
     # Because there is no way to connect the current text of a select element we have to use 'value'
     current = elem.get_attribute('value')
     for element in elem.find_elements_by_tag_name("option"):
@@ -397,27 +397,27 @@ def select_value_is(the_id, text_in):
     _raise(msg)
 
 
-def is_radio(the_id):
+def is_radio(id_or_elem):
     """Assert the specified element is a radio button"""
-    elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'radio')
+    elem = _get_elem(id_or_elem)
+    _elem_is_type(elem, id_or_elem, 'radio')
     return elem
 
 
-def radio_value_is(the_id, value):
+def radio_value_is(id_or_elem, value):
     """
     Assert the specified element is a radio button with the specified value;
     True for selected and False for unselected."""
-    elem = is_radio(the_id)
+    elem = is_radio(id_or_elem)
     selected = elem.is_selected()
-    msg = 'Radio %r should be set to: %s.' % (the_id, value)
+    msg = 'Radio %r should be set to: %s.' % (id_or_elem, value)
     if value != selected:
         _raise(msg)
 
 
-def radio_select(the_id):
+def radio_select(id_or_elem):
     """Select the specified radio button."""
-    elem = is_radio(the_id)
+    elem = is_radio(id_or_elem)
     elem.click()
 
 
@@ -438,9 +438,9 @@ def _get_text(elem):
     return text
 
 
-def text_is(the_id, text):
+def text_is(id_or_elem, text):
     """Assert the specified element has the specified text."""
-    elem = _get_elem(the_id)
+    elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
         msg = "Element %r has no text attribute"
@@ -527,14 +527,14 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     return True
 
 
-def is_button(the_id):
+def is_button(id_or_elem):
     """Assert that the specified element is a button."""
-    elem = _get_elem(the_id)
-    _elem_is_type(elem, the_id, 'submit')
+    elem = _get_elem(id_or_elem)
+    _elem_is_type(elem, id_or_elem, 'submit')
     return elem
 
 
-def button_click(the_id):
+def button_click(id_or_elem):
     """Click the specified button."""
-    button = is_button(the_id)
+    button = is_button(id_or_elem)
     button.click()
