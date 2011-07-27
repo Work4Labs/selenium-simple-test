@@ -69,12 +69,14 @@ def main():
 
     print '----------------------------------------------------------------------'
 
-    sst.runtests(args,
+    sst.runtests(
+        args,
         test_dir=cmd_opts.dir_name,
         report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type,
         javascript_disabled=cmd_opts.javascript_disabled,
-        )
+        shared_directory=cmd_opts.shared_modules,
+    )
 
     print '----------------------------------------------------------------------'
 
@@ -127,6 +129,9 @@ def get_opts():
     parser.add_option('-x', dest='xserver_headless',
                       default=False, action='store_true',
                       help='run tests in headless xserver')
+    parser.add_option('-m', dest='shared_modules',
+                      default=None,
+                      help='directory for shared modules')
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
 
