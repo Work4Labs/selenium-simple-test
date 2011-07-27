@@ -12,10 +12,11 @@
 #   as published by the Free Software Foundation.
 #
 
-
+import ast
 import os
 import sys
 import time
+import warnings
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
@@ -30,7 +31,7 @@ __all__ = ['runtests']
 def runtests(test_names, test_dir='tests', report_format='console',
              browser_type='Firefox', javascript_disabled=False,
              ):
-             
+
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
         # selftests should be a command instead
@@ -41,8 +42,22 @@ def runtests(test_names, test_dir='tests', report_format='console',
         msg = 'Specified directory %r does not exist' % (test_dir,)
         raise IOError(msg)
 
-    suites = (get_suite(test_names, root, browser_type, javascript_disabled) for root, _, _ in os.walk(test_dir))
+    found_tests = set()
+    test_names = set(test_names)
+
+    suites = (
+        get_suite(
+            test_names, root, browser_type, javascript_disabled,
+            found_tests
+        )
+        for root, _, _ in os.walk(test_dir)
+    )
+
     alltests = TestSuite(suites)
+
+    if not alltests.countTestCases():
+            print "Error: Didn't find any tests"
+            sys.exit(1)
 
     if report_format == 'console':
         runner = TextTestRunner(verbosity=2)
@@ -51,7 +66,9 @@ def runtests(test_names, test_dir='tests', report_format='console',
     if report_format == 'html':
         import HTMLTestRunner
         fp = file('results.html', 'wb')
-        runner = HTMLTestRunner.HTMLTestRunner(stream=fp, title='SST Test Report', verbosity=2)
+        runner = HTMLTestRunner.HTMLTestRunner(
+            stream=fp, title='SST Test Report', verbosity=2
+        )
         runner.run(alltests)
 
     if report_format == 'xml':
@@ -66,54 +83,54 @@ def runtests(test_names, test_dir='tests', report_format='console',
         alltests.run(result)
         result.stopTestRun()
 
+    missing = test_names - found_tests
+    for name in missing:
+        msg = "Warning: test %r not found" % name
+        print >> sys.stderr, msg
 
-def get_suite(test_names, test_dir, browser_type, javascript_disabled):
-    args = set(test_names)
-    argv = set(test_names)
 
+def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
     test_path = os.path.abspath(os.path.join(os.curdir, test_dir))
-    if not test_path in sys.path:
-        sys.path.append(test_path)
 
     suite = TestSuite()
-
-    try:
-        dir_list = os.listdir(test_dir)
-    except OSError:
-        print 'The test directory was not found'
-        sys.exit(1)
+    dir_list = os.listdir(test_dir)
 
     for entry in dir_list:
         if not entry.endswith('.py'):
             continue
-        if args and entry[:-3] not in args:
+        if test_names and entry[:-3] not in test_names:
             continue
-        elif not args:
+        elif not test_names:
             if entry.startswith('_'):
                 # ignore entries that start with an underscore unless explcitly specified
                 continue
-        if args:
-            argv.remove(entry[:-3])
+        found.add(entry[:-3])
+
         csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
-            for row in get_data(csv_path):  # reading the csv file now
-                suite.addTest(get_case(test_dir, entry, browser_type, javascript_disabled, row))  # row is a dictionary of variables
+            # reading the csv file now
+            for row in get_data(csv_path):
+                # row is a dictionary of variables
+                suite.addTest(
+                    get_case(test_dir, entry, browser_type, javascript_disabled, row)
+                )
         else:
-            suite.addTest(get_case(test_dir, entry, browser_type, javascript_disabled))
-    if argv:
-        print 'The following tests were not found: %s' % (' '.join(argv))
-        sys.exit(1)
-    return suite
+            suite.addTest(
+                get_case(test_dir, entry, browser_type, javascript_disabled)
+            )
 
+    return suite
 
 
 def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
     context = context or {}
     path = os.path.join(test_dir, entry)
     def setUp(self):
+        sys.path.append(test_dir)
         reset_base_url()
         start(browser_type, javascript_disabled)
     def tearDown(self):
+        sys.path.remove(test_dir)
         stop()
     def test(self):
         if context:
@@ -125,9 +142,11 @@ def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
 
     name = entry[:-3]
     test_name = 'test_%s' % name
-    FunctionalTest = type('Test%s' % name.title(), (TestCase,),
-                          {'setUp': setUp, 'tearDown': tearDown,
-                           test_name: test})
+    FunctionalTest = type(
+        'Test%s' % name.title(), (TestCase,),
+        {'setUp': setUp, 'tearDown': tearDown,
+         test_name: test}
+    )
     return FunctionalTest(test_name)
 
 
@@ -153,8 +172,8 @@ def get_data(csv_path):
             fields = line.rstrip().split('^')
             for header, field in zip(headers, fields):
                 try:
-                    value = eval(field)
-                except NameError:
+                    value = ast.literal_eval(field)
+                except ValueError:
                     value = field
                     if value.lower() == 'false':
                         value = False
