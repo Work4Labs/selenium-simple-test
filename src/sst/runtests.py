@@ -26,15 +26,31 @@ __unittest = True
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='tests', report_format='console',
-             browser_type='Firefox', javascript_disabled=False,
-             ):
-
+def runtests(
+        test_names, test_dir='tests', report_format='console',
+        browser_type='Firefox', javascript_disabled=False,
+        shared_directory=None
+    ):
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
         # selftests should be a command instead
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
+
+    if shared_directory is None:
+        shared_directory = os.path.join(test_dir, 'shared')
+
+    test_dir = os.path.normpath(
+        os.path.abspath(
+            os.path.join(os.getcwd(), test_dir)
+        )
+    )
+    shared_directory = os.path.normpath(
+        os.path.abspath(
+            os.path.join(os.getcwd(), shared_directory)
+        )
+    )
+    sys.path.append(shared_directory)
 
     if not os.path.isdir(test_dir):
         msg = 'Specified directory %r does not exist' % (test_dir,)
@@ -49,6 +65,8 @@ def runtests(test_names, test_dir='tests', report_format='console',
             found_tests
         )
         for root, _, _ in os.walk(test_dir)
+        if os.path.abspath(root) != shared_directory and
+        not os.path.split(root)[1].startswith('_')
     )
 
     alltests = TestSuite(suites)
@@ -87,11 +105,11 @@ def runtests(test_names, test_dir='tests', report_format='console',
         print >> sys.stderr, msg
 
 
-def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
-    test_path = os.path.abspath(os.path.join(os.curdir, test_dir))
-
+def get_suite(
+        test_names, test_dir, browser_type, javascript_disabled, found
+    ):
     suite = TestSuite()
-    dir_list = os.listdir(test_path)
+    dir_list = os.listdir(test_dir)
 
     for entry in dir_list:
         if not entry.endswith('.py'):
@@ -104,23 +122,25 @@ def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
                 continue
         found.add(entry[:-3])
 
-        csv_path = os.path.join(test_path, entry.replace('.py', '.csv'))
+        csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             # reading the csv file now
             for row in get_data(csv_path):
                 # row is a dictionary of variables
                 suite.addTest(
-                    get_case(test_path, entry, browser_type, javascript_disabled, row)
+                    get_case(test_dir, entry, browser_type, javascript_disabled, row)
                 )
         else:
             suite.addTest(
-                get_case(test_path, entry, browser_type, javascript_disabled)
+                get_case(test_dir, entry, browser_type, javascript_disabled)
             )
 
     return suite
 
 
-def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
+def get_case(
+        test_dir, entry, browser_type, javascript_disabled, context=None
+    ):
     context = context or {}
     path = os.path.join(test_dir, entry)
     def setUp(self):
@@ -146,7 +166,6 @@ def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
          test_name: test}
     )
     return FunctionalTest(test_name)
-
 
 
 def get_data(csv_path):
@@ -181,4 +200,3 @@ def get_data(csv_path):
             rows.append(row)
     print 'found %s rows' % len(rows)
     return rows
-

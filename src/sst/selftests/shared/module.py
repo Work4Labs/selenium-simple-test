@@ -1,0 +1,2 @@
+def truthiness():
+    return True
