@@ -65,7 +65,8 @@ def runtests(
             found_tests
         )
         for root, _, _ in os.walk(test_dir)
-        if os.path.abspath(root) != shared_directory
+        if os.path.abspath(root) != shared_directory and
+        not os.path.split(root)[1].startswith('_')
     )
 
     alltests = TestSuite(suites)
