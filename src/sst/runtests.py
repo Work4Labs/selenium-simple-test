@@ -29,16 +29,20 @@ __all__ = ['runtests']
 def runtests(
         test_names, test_dir='tests', report_format='console',
         browser_type='Firefox', javascript_disabled=False,
-        top_level_dir=None
+        shared_directory=None
     ):
-    if top_level_dir is None:
-        top_level_dir = test_dir
-
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
         # selftests should be a command instead
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
+
+    if shared_directory is None:
+        shared_directory = os.path.abspath(
+            os.path.normpath(os.path.join(test_dir, 'shared'))
+        )
+
+    sys.path.append(shared_directory)
 
     if not os.path.isdir(test_dir):
         msg = 'Specified directory %r does not exist' % (test_dir,)
@@ -53,6 +57,7 @@ def runtests(
             found_tests
         )
         for root, _, _ in os.walk(test_dir)
+        if os.path.abspath(root) != shared_directory
     )
 
     alltests = TestSuite(suites)
