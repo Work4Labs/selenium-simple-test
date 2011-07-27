@@ -23,7 +23,6 @@ import urllib
 try:
     import selenium
 except ImportError as e:
-    import sys
     print 'Error importing Selenium/Webdriver.  Selenium 2.x python bindings are required.'
     print e
     sys.exit(1)

@@ -26,9 +26,13 @@ __unittest = True
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='tests', report_format='console',
-             browser_type='Firefox', javascript_disabled=False,
-             ):
+def runtests(
+        test_names, test_dir='tests', report_format='console',
+        browser_type='Firefox', javascript_disabled=False,
+        top_level_dir=None
+    ):
+    if top_level_dir is None:
+        top_level_dir = test_dir
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -87,7 +91,9 @@ def runtests(test_names, test_dir='tests', report_format='console',
         print >> sys.stderr, msg
 
 
-def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
+def get_suite(
+        test_names, test_dir, browser_type, javascript_disabled, found
+    ):
     test_path = os.path.abspath(os.path.join(os.curdir, test_dir))
 
     suite = TestSuite()
@@ -120,7 +126,9 @@ def get_suite(test_names, test_dir, browser_type, javascript_disabled, found):
     return suite
 
 
-def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
+def get_case(
+        test_dir, entry, browser_type, javascript_disabled, context=None
+    ):
     context = context or {}
     path = os.path.join(test_dir, entry)
     def setUp(self):
@@ -146,7 +154,6 @@ def get_case(test_dir, entry, browser_type, javascript_disabled, context=None):
          test_name: test}
     )
     return FunctionalTest(test_name)
-
 
 
 def get_data(csv_path):
@@ -181,4 +188,3 @@ def get_data(csv_path):
             rows.append(row)
     print 'found %s rows' % len(rows)
     return rows
-
