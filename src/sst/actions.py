@@ -106,8 +106,6 @@ def start(browser_type='Firefox', javascript_disabled=False):
 
 
 
-
-
 def stop():
     """
     Stops Firefox and ends the browser session. Called automatically for you at
@@ -304,6 +302,7 @@ def set_wait_timeout(timeout, poll=None):
         _POLL = poll
 
 
+
 def waitfor(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions that
@@ -313,22 +312,28 @@ def waitfor(condition, *args, **kwargs):
     intervals specified by the poll argument (default every 0.1 seconds).
 
     """
-    start = time.time()
-    max_time = time.time() + _TIMEOUT
-    msg = condition.__name__
-    while True:
-        try:
-            result = condition(*args, **kwargs)
-        except AssertionError:
-            pass
-        else:
-            if result != False:
-                break
+    global VERBOSE
+    original = VERBOSE
+    VERBOSE = False
+    try:
+        start = time.time()
+        max_time = time.time() + _TIMEOUT
+        msg = condition.__name__
+        while True:
+            try:
+                result = condition(*args, **kwargs)
+            except AssertionError:
+                pass
+            else:
+                if result != False:
+                    break
 
-        if time.time() > max_time:
-            error = 'Timed out waiting for: ' + msg
-            _raise(error)
-        time.sleep(_POLL)
+            if time.time() > max_time:
+                error = 'Timed out waiting for: ' + msg
+                _raise(error)
+            time.sleep(_POLL)
+    finally:
+        VERBOSE = original
 
 
 def fails(action, *args, **kwargs):
