@@ -32,3 +32,9 @@ fails(waitfor, get_condition(False, raises=True))
 waitfor(url_is, '/')
 fails(waitfor, url_is, '/thing')
 
+waitfor(url_is, url='/')
+fails(waitfor, url_is, url='/thing')
+
+fails(waitfor, get_condition(wait=6))
+fails(waitfor, get_condition(wait=6, raises=True))
+
