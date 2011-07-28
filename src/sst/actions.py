@@ -291,8 +291,19 @@ def url_contains(url):
     if not re.search(url, real_url):
         _raise('url is %r. Does not contain %r' % (real_url, url))
 
+_TIMEOUT = 5
+_POLL = 0.1
 
-def waitfor(condition, msg='', timeout=5, poll=0.1):
+def set_wait_timeout(timeout, poll=None):
+    """Set the timeout used by`waitfor`"""
+    global _TIMEOUT
+    global _POLL
+    _TIMEOUT = timeout
+    if poll is not None:
+        _POLL = poll
+
+
+def waitfor(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions that
     may take some time to complete. This action takes a condition function
@@ -300,31 +311,23 @@ def waitfor(condition, msg='', timeout=5, poll=0.1):
     is specified as the timeout (default 5 seconds). The function is called at
     intervals specified by the poll argument (default every 0.1 seconds).
 
-    If it fails, the condition function never returns True before the timeout,
-    then any msg you supply will be added to the failure message.
-
-    An example action using waitfor::
-
-        def wait_for_title_to_change(title):
-            def title_changed():
-                return browser.title == title
-
-            waitfor(title_changed, 'title to change')
-
-    Note that test scripts shouldn't use the browser object directly,
-    so if waitfor is to be used in test scripts (instead of for building
-    actions) it should be changed to catch assertion errors instead of condition
-    functions that return True or False.
     """
     start = time.time()
-    max_time = time.time() + timeout
+    max_time = time.time() + _TIMEOUT
+    msg = condition.__name__
     while True:
-        if condition():
-            break
+        try:
+            result = condition(*args, **kwargs)
+        except AssertionError:
+            pass
+        else:
+            if result != False:
+                break
+
         if time.time() > max_time:
             error = 'Timed out waiting for: ' + msg
             _raise(error)
-        time.sleep(poll)
+        time.sleep(_POLL)
 
 
 def fails(action, *args, **kwargs):
