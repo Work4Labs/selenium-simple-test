@@ -53,7 +53,8 @@ __all__ = [
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'sleep', 'is_select',
-    'select_value_is', 'set_select', 'get_link_url', 'exists_element'
+    'select_value_is', 'set_select', 'get_link_url', 'exists_element',
+    'set_wait_timeout'
 ]
 
 
@@ -102,8 +103,6 @@ def start(browser_type='Firefox', javascript_disabled=False):
         browser = getattr(webdriver, browser_type)(profile)
     else:
         browser = getattr(webdriver, browser_type)()
-
-
 
 
 
@@ -295,7 +294,14 @@ _TIMEOUT = 5
 _POLL = 0.1
 
 def set_wait_timeout(timeout, poll=None):
-    """Set the timeout used by`waitfor`"""
+    """
+    Set the timeout, in seconds, used by`waitfor`. The default at the start of
+    a test is always 5 seconds.
+
+    The optional second argument, is how long (in seconds) `waitfor` should
+    wait in between checking its condition (the poll frequency). The default
+    at the start of a test is always 0.1 seconds.
+    """
     global _TIMEOUT
     global _POLL
     _TIMEOUT = timeout
@@ -303,31 +309,43 @@ def set_wait_timeout(timeout, poll=None):
         _POLL = poll
 
 
+
 def waitfor(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions that
-    may take some time to complete. This action takes a condition function
-    and calls it until it returns True. The maximum amount of time it will wait
-    is specified as the timeout (default 5 seconds). The function is called at
-    intervals specified by the poll argument (default every 0.1 seconds).
+    may take some time to complete.
 
+    This action takes a condition function and any arguments it should be called
+    with. The condition function can either be an action or a function that
+    returns True for success and False for failure. For example::
+
+        waitfor(title_is, 'Some page title')
+
+    If the specified condition does not become true within 5 seconds then `waitfor`
+    fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`.
     """
-    start = time.time()
-    max_time = time.time() + _TIMEOUT
-    msg = condition.__name__
-    while True:
-        try:
-            result = condition(*args, **kwargs)
-        except AssertionError:
-            pass
-        else:
-            if result != False:
-                break
+    global VERBOSE
+    original = VERBOSE
+    VERBOSE = False
+    try:
+        start = time.time()
+        max_time = time.time() + _TIMEOUT
+        msg = condition.__name__
+        while True:
+            try:
+                result = condition(*args, **kwargs)
+            except AssertionError:
+                pass
+            else:
+                if result != False:
+                    break
 
-        if time.time() > max_time:
-            error = 'Timed out waiting for: ' + msg
-            _raise(error)
-        time.sleep(_POLL)
+            if time.time() > max_time:
+                error = 'Timed out waiting for: ' + msg
+                _raise(error)
+            time.sleep(_POLL)
+    finally:
+        VERBOSE = original
 
 
 def fails(action, *args, **kwargs):
