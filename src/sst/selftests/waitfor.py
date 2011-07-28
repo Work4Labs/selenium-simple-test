@@ -1,9 +1,18 @@
 from sst.actions import *
 from time import time
 
-def get_condition(result=True, wait=0, raises=False):
+def get_condition(result=True, wait=0, raises=False,
+                  cond_args=None, cond_kwargs=None):
     initial = time()
-    def condition():
+    def condition(*args, **kwargs):
+        if cond_args is not None:
+            if cond_args != args:
+                # can't raise an assertion error here!
+                raise TypeError('wrong args passed')
+        if cond_kwargs is not None:
+            if cond_kwargs != kwargs:
+                # can't raise an assertion error here!
+                raise TypeError('wrong args passed')
         if time() > initial + wait:
             return result
         if raises:
@@ -12,10 +21,14 @@ def get_condition(result=True, wait=0, raises=False):
     return condition
 
 goto('/')
+set_wait_timeout(5)
 
 waitfor(get_condition(True))
 fails(waitfor, get_condition(False))
 
 waitfor(get_condition(raises=True))
 fails(waitfor, get_condition(False, raises=True))
+
+waitfor(url_is, '/')
+fails(waitfor, url_is, '/thing')
 

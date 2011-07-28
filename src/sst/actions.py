@@ -53,7 +53,8 @@ __all__ = [
     'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'sleep', 'is_select',
-    'select_value_is', 'set_select', 'get_link_url', 'exists_element'
+    'select_value_is', 'set_select', 'get_link_url', 'exists_element',
+    'set_wait_timeout'
 ]
 
 
