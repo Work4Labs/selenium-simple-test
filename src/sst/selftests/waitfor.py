@@ -1,10 +1,13 @@
 from sst.actions import *
 from time import time
 
+CALLS = 0
 def get_condition(result=True, wait=0, raises=False,
                   cond_args=None, cond_kwargs=None):
     initial = time()
     def condition(*args, **kwargs):
+        global CALLS
+        CALLS += 1
         if cond_args is not None:
             if cond_args != args:
                 # can't raise an assertion error here!
@@ -35,6 +38,19 @@ fails(waitfor, url_is, '/thing')
 waitfor(url_is, url='/')
 fails(waitfor, url_is, url='/thing')
 
+CALLS = 0
 fails(waitfor, get_condition(wait=6))
+assert CALLS > 30
+
 fails(waitfor, get_condition(wait=6, raises=True))
 
+set_wait_timeout(5)
+waitfor(get_condition(wait=2))
+waitfor(get_condition(wait=2, raises=True))
+
+set_wait_timeout(5, 1)
+CALLS = 0
+waitfor(get_condition(wait=4))
+assert CALLS < 6
+
+set_wait_timeout(5, 0.1)
