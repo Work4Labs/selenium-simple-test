@@ -18,12 +18,21 @@ import sys
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
+from sst import actions
 from .actions import start, stop, reset_base_url, set_wait_timeout
 
 
 __unittest = True
 
 __all__ = ['runtests']
+
+from types import ModuleType
+
+sstconfig = ModuleType('sstconfig')
+sys.modules['sstconfig'] = sstconfig
+sstconfig.browser_type = None
+sstconfig._current_context = None
+sstconfig.javascript_disabled = False
 
 
 def runtests(
@@ -181,6 +190,7 @@ def get_case(
         test_dir, entry, browser_type, javascript_disabled, context=None,
         failfast=False
     ):
+    context_provided = context is not None
     context = context or {}
     path = os.path.join(test_dir, entry)
     def setUp(self):
@@ -192,13 +202,20 @@ def get_case(
         js_disabled = 'JAVASCRIPT_DISABLED' in self.code.co_names
 
         reset_base_url()
-        start(browser_type, javascript_disabled or js_disabled)
+        actions.context = context
+        context['__file__'] = path
+        name = context['__name__'] = os.path.splitext(entry)[0]
+        sstconfig._current_context = context
+        sstconfig.browser_type = browser_type
+        sstconfig.javascript_disabled = javascript_disabled or js_disabled
         set_wait_timeout(5, 0.1)
+
+        start(browser_type, javascript_disabled or js_disabled)
     def tearDown(self):
         sys.path.remove(test_dir)
         stop()
     def test(self):
-        if context:
+        if context_provided:
             print 'Loading data row %s' % context['_row_num']
         exec self.code in context
     def run(self, result=None):

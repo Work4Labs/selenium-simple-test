@@ -44,8 +44,6 @@ from selenium.common.exceptions import (
 )
 
 
-
-
 __all__ = [
     'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails', 'url_is',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
@@ -64,6 +62,11 @@ BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
 
+
+# a "generated module"
+def get_config():
+    import sstconfig
+    return sstconfig
 
 
 def _raise(msg):
@@ -94,11 +97,14 @@ def _print(text):
         print text
 
 
-def start(browser_type='Firefox', javascript_disabled=False):
+def start(browser_type=None, javascript_disabled=False):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
+    if browser_type is None:
+        browser_type = get_config().browser_type
+
     _print('\nStarting %s:' % browser_type);
     #browser = webdriver.Firefox()
     if javascript_disabled:
