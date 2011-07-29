@@ -74,6 +74,10 @@ def _raise(msg):
 def set_base_url(url):
     """Set the url used for relative arguments to the `goto` action."""
     global BASE_URL
+    if not url.endswith('/'):
+        url += '/'
+    if not url.startswith('http'):
+        url = 'http://' + url
     BASE_URL = url
 
 

@@ -37,24 +37,14 @@ def runtests(
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
 
-    if shared_directory is None:
-        shared_directory = os.path.join(test_dir, 'shared')
-
-    test_dir = os.path.normpath(
-        os.path.abspath(
-            os.path.join(os.getcwd(), test_dir)
-        )
-    )
-    shared_directory = os.path.normpath(
-        os.path.abspath(
-            os.path.join(os.getcwd(), shared_directory)
-        )
-    )
-    sys.path.append(shared_directory)
-
+    test_dir = _get_full_path(test_dir)
     if not os.path.isdir(test_dir):
         msg = 'Specified directory %r does not exist' % (test_dir,)
-        raise IOError(msg)
+        print msg
+        sys.exit(1)
+
+    shared_directory = find_shared_directory(test_dir, shared_directory)
+    sys.path.append(shared_directory)
 
     found_tests = set()
     test_names = set(test_names)
@@ -72,8 +62,8 @@ def runtests(
     alltests = TestSuite(suites)
 
     if not alltests.countTestCases():
-            print "Error: Didn't find any tests"
-            sys.exit(1)
+        print "Error: Didn't find any tests"
+        sys.exit(1)
 
     if report_format == 'console':
         runner = TextTestRunner(verbosity=2)
@@ -103,6 +93,53 @@ def runtests(
     for name in missing:
         msg = "Warning: test %r not found" % name
         print >> sys.stderr, msg
+
+
+def _get_full_path(path):
+    return os.path.normpath(
+        os.path.abspath(
+            os.path.join(os.getcwd(), path)
+        )
+    )
+
+
+def find_shared_directory(test_dir, shared_directory):
+    """This function is responsible for finding the shared directory.
+    It implements the following rule:
+
+    If a shared directory is explicitly specified then that is used.
+
+    The test directory is checked first. If there is a shared directory
+    there, then that is used.
+
+    If the current directory is not "above" the test directory then the
+    function bails.
+
+    Otherwise it checks every directory from the test directory up to the
+    current directory. If it finds one with a "shared" directory then it
+    uses that as the shared directory and returns.
+
+    The intention is that if you have 'tests/shared' and 'tests/foo' you
+    run `sst-run -d tests/foo` and 'tests/shared' will still be used as
+    the shared directory.
+    """
+    if shared_directory is not None:
+        return _get_full_path(shared_directory)
+
+    cwd = os.getcwd()
+    default_shared = os.path.join(test_dir, 'shared')
+    shared_directory = default_shared
+    if not os.path.isdir(default_shared):
+        relpath = os.path.relpath(test_dir, cwd)
+        if not relpath.startswith('..') and not os.path.isabs(relpath):
+            while relpath and relpath != os.curdir:
+                this_shared = os.path.join(cwd, relpath, 'shared')
+                if os.path.isdir(this_shared):
+                    shared_directory = this_shared
+                    break
+                relpath = os.path.split(relpath)[0]
+
+    return _get_full_path(shared_directory)
 
 
 def get_suite(
