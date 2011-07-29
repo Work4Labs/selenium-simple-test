@@ -52,7 +52,7 @@ __all__ = [
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
-    'set_wait_timeout'
+    'set_wait_timeout', 'set_variable'
 ]
 
 
@@ -63,8 +63,9 @@ __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
 
 
-# a "generated module"
 def get_config():
+    # a "generated module" which may not be available in sys.modules when this
+    # module is imported, so fetch it through a helper function
     import sstconfig
     return sstconfig
 
@@ -105,8 +106,8 @@ def start(browser_type=None, javascript_disabled=False):
     if browser_type is None:
         browser_type = get_config().browser_type
 
-    _print('\nStarting %s:' % browser_type);
-    #browser = webdriver.Firefox()
+    _print('\nStarting %s:' % browser_type)
+
     if javascript_disabled:
         profile = getattr(webdriver, '%sProfile' % browser_type)()
         profile.set_preference('javascript.enabled', 'false')
@@ -141,6 +142,23 @@ def _fix_url(url):
     if not url.startswith('http'):
         url = BASE_URL + url
     return url
+
+
+
+def set_variable(name, value):
+    """Set a variable to the specified value, *unless* the variable already
+    exists. Useful to have tests that can be run standalone, or executed with
+    `run_test` and have values overridden."""
+    context = get_config()._current_context
+
+    if name not in context:
+        context[name] = value
+
+
+def run_test(name, **kwargs):
+    """ """
+    context = get_config()._current_context
+
 
 
 def goto(url=''):

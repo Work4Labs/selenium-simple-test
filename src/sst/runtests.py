@@ -20,7 +20,7 @@ from unittest import TestSuite, TextTestRunner, TestCase
 
 from sst import actions
 from .actions import start, stop, reset_base_url, set_wait_timeout
-
+from .context import populate_context
 
 __unittest = True
 
@@ -199,18 +199,11 @@ def get_case(
             source = h.read() + '\n'
             self.code = compile(source, path, 'exec')
 
-        js_disabled = 'JAVASCRIPT_DISABLED' in self.code.co_names
-
+        js_disabled = javascript_disabled or 'JAVASCRIPT_DISABLED' in self.code.co_names
+        populate_context(context, path, entry, browser_type, js_disabled)
         reset_base_url()
-        actions.context = context
-        context['__file__'] = path
-        name = context['__name__'] = os.path.splitext(entry)[0]
-        sstconfig._current_context = context
-        sstconfig.browser_type = browser_type
-        sstconfig.javascript_disabled = javascript_disabled or js_disabled
         set_wait_timeout(5, 0.1)
-
-        start(browser_type, javascript_disabled or js_disabled)
+        start(browser_type, js_disabled)
     def tearDown(self):
         sys.path.remove(test_dir)
         stop()
