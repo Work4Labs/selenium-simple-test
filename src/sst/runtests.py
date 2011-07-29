@@ -173,7 +173,6 @@ def get_case(
             if startTestRun is not None:
                 startTestRun()
         TestCase.run(self, result)
-        print failfast, result.wasSuccessful()
         if not result.wasSuccessful() and failfast:
             result.shouldStop = True
 
