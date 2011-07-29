@@ -104,6 +104,25 @@ def _get_full_path(path):
 
 
 def find_shared_directory(test_dir, shared_directory):
+    """This function is responsible for finding the shared directory.
+    It implements the following rule:
+
+    If a shared directory is explicitly specified then that is used.
+
+    The test directory is checked first. If there is a shared directory
+    there, then that is used.
+
+    If the current directory is not "above" the test directory then the
+    function bails.
+
+    Otherwise it checks every directory from the test directory up to the
+    current directory. If it finds one with a "shared" directory then it
+    uses that as the shared directory and returns.
+
+    The intention is that if you have 'tests/shared' and 'tests/foo' you
+    run `sst-run -d tests/foo` and 'tests/shared' will still be used as
+    the shared directory.
+    """
     if shared_directory is not None:
         return _get_full_path(shared_directory)
 
