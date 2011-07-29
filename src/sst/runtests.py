@@ -29,7 +29,7 @@ __all__ = ['runtests']
 def runtests(
         test_names, test_dir='tests', report_format='console',
         browser_type='Firefox', javascript_disabled=False,
-        shared_directory=None
+        shared_directory=None, failfast=False
     ):
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -62,7 +62,7 @@ def runtests(
     suites = (
         get_suite(
             test_names, root, browser_type, javascript_disabled,
-            found_tests
+            found_tests, failfast
         )
         for root, _, _ in os.walk(test_dir)
         if os.path.abspath(root) != shared_directory and
@@ -106,7 +106,7 @@ def runtests(
 
 
 def get_suite(
-        test_names, test_dir, browser_type, javascript_disabled, found
+        test_names, test_dir, browser_type, javascript_disabled, found, failfast
     ):
     suite = TestSuite()
     dir_list = os.listdir(test_dir)
@@ -128,18 +128,21 @@ def get_suite(
             for row in get_data(csv_path):
                 # row is a dictionary of variables
                 suite.addTest(
-                    get_case(test_dir, entry, browser_type, javascript_disabled, row)
+                    get_case(test_dir, entry, browser_type,
+                             javascript_disabled, row, failfast=failfast)
                 )
         else:
             suite.addTest(
-                get_case(test_dir, entry, browser_type, javascript_disabled)
+                get_case(test_dir, entry, browser_type,
+                         javascript_disabled, failfast=failfast)
             )
 
     return suite
 
 
 def get_case(
-        test_dir, entry, browser_type, javascript_disabled, context=None
+        test_dir, entry, browser_type, javascript_disabled, context=None,
+        failfast=False
     ):
     context = context or {}
     path = os.path.join(test_dir, entry)
@@ -161,13 +164,25 @@ def get_case(
         if context:
             print 'Loading data row %s' % context['_row_num']
         exec self.code in context
+    def run(self, result=None):
+        # Had to move some bits from original implementation of TestCase.run to
+        # keep the way it works
+        if result is None:
+            result = self.defaultTestResult()
+            startTestRun = getattr(result, 'startTestRun', None)
+            if startTestRun is not None:
+                startTestRun()
+        TestCase.run(self, result)
+        print failfast, result.wasSuccessful()
+        if not result.wasSuccessful() and failfast:
+            result.shouldStop = True
 
     name = entry[:-3]
     test_name = 'test_%s' % name
     FunctionalTest = type(
         'Test%s' % name.title(), (TestCase,),
         {'setUp': setUp, 'tearDown': tearDown,
-         test_name: test}
+         test_name: test, 'run': run}
     )
     return FunctionalTest(test_name)
 
