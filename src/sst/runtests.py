@@ -145,19 +145,22 @@ def get_case(
     path = os.path.join(test_dir, entry)
     def setUp(self):
         sys.path.append(test_dir)
+        with open(path) as h:
+            source = h.read() + '\n'
+            self.code = compile(source, path, 'exec')
+
+        js_disabled = 'JAVASCRIPT_DISABLED' in self.code.co_names
+
         reset_base_url()
+        start(browser_type, javascript_disabled or js_disabled)
         set_wait_timeout(5, 0.1)
-        start(browser_type, javascript_disabled)
     def tearDown(self):
         sys.path.remove(test_dir)
         stop()
     def test(self):
         if context:
             print 'Loading data row %s' % context['_row_num']
-        with open(path) as h:
-            source = h.read() + '\n'
-            code = compile(source, path, 'exec')
-            exec code in context
+        exec self.code in context
 
     name = entry[:-3]
     test_name = 'test_%s' % name

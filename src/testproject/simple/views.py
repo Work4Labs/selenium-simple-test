@@ -1,4 +1,4 @@
-# Create your views here.
+from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.template import Context, loader
 
@@ -14,3 +14,6 @@ def begin(request):
     c = Context({'title': 'The Next Page'})
     return HttpResponse(t.render(c))
 
+
+def nojs(request):
+    return render_to_response('nojs.html', {'title': 'No JavaScript Test'})
