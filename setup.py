@@ -46,6 +46,8 @@ params = dict(
     packages=PACKAGES,
     scripts=SCRIPTS,
     package_dir={'': 'src'},
+    package_data={'sst.selftests': ['*.csv', '_package/*', 'shared/*',
+                                    'subdirectory/*']},
 
     # metadata for upload to PyPI
     author=AUTHOR,
