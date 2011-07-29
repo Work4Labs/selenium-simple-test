@@ -1,3 +1,4 @@
+from sst import actions
 from sst.actions import *
 
 # tests goto, url_is, title_is, set_base_url
@@ -10,6 +11,9 @@ fails(url_is, '/foo')
 
 title_is('The Page Title')
 fails(title_is, 'this is not the title')
+
+set_base_url('localhost:8000')
+assert actions.BASE_URL == 'http://localhost:8000/'
 
 set_base_url('http://localhost:8000/begin/')
 goto('/')

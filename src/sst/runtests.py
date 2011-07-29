@@ -37,19 +37,15 @@ def runtests(
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
 
-    if shared_directory is None:
-        shared_directory = os.path.join(test_dir, 'shared')
+
+    shared_directory = find_shared_directory(test_dir, shared_directory)
 
     test_dir = os.path.normpath(
         os.path.abspath(
             os.path.join(os.getcwd(), test_dir)
         )
     )
-    shared_directory = os.path.normpath(
-        os.path.abspath(
-            os.path.join(os.getcwd(), shared_directory)
-        )
-    )
+
     sys.path.append(shared_directory)
 
     if not os.path.isdir(test_dir):
@@ -103,6 +99,18 @@ def runtests(
     for name in missing:
         msg = "Warning: test %r not found" % name
         print >> sys.stderr, msg
+
+
+def find_shared_directory(test_dir, shared_directory):
+    if shared_directory is None:
+        shared_directory = os.path.join(test_dir, 'shared')
+
+    shared_directory = os.path.normpath(
+        os.path.abspath(
+            os.path.join(os.getcwd(), shared_directory)
+        )
+    )
+    return shared_directory
 
 
 def get_suite(
