@@ -80,6 +80,7 @@ def main():
         browser_type=cmd_opts.browser_type,
         javascript_disabled=cmd_opts.javascript_disabled,
         shared_directory=cmd_opts.shared_modules,
+        failfast=cmd_opts.failfast,
     )
 
     print '----------------------------------------------------------------------'
@@ -140,6 +141,9 @@ def get_opts():
                       dest='run_tests', action='store_true',
                       default=False,
                       help='run selftests')
+    parser.add_option('--failfast',
+                      action='store_true', default=False,
+                      help="stop test execution after first failure")
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
 
