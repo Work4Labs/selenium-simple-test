@@ -37,20 +37,14 @@ def runtests(
         package_dir = os.path.dirname(__file__)
         test_dir = os.path.join(package_dir, 'selftests')
 
-
-    shared_directory = find_shared_directory(test_dir, shared_directory)
-
-    test_dir = os.path.normpath(
-        os.path.abspath(
-            os.path.join(os.getcwd(), test_dir)
-        )
-    )
-
-    sys.path.append(shared_directory)
-
+    test_dir = _get_full_path(test_dir)
     if not os.path.isdir(test_dir):
         msg = 'Specified directory %r does not exist' % (test_dir,)
-        raise IOError(msg)
+        print msg
+        sys.exit(1)
+
+    shared_directory = find_shared_directory(test_dir, shared_directory)
+    sys.path.append(shared_directory)
 
     found_tests = set()
     test_names = set(test_names)
@@ -68,8 +62,8 @@ def runtests(
     alltests = TestSuite(suites)
 
     if not alltests.countTestCases():
-            print "Error: Didn't find any tests"
-            sys.exit(1)
+        print "Error: Didn't find any tests"
+        sys.exit(1)
 
     if report_format == 'console':
         runner = TextTestRunner(verbosity=2)
@@ -101,16 +95,32 @@ def runtests(
         print >> sys.stderr, msg
 
 
-def find_shared_directory(test_dir, shared_directory):
-    if shared_directory is None:
-        shared_directory = os.path.join(test_dir, 'shared')
-
-    shared_directory = os.path.normpath(
+def _get_full_path(path):
+    return os.path.normpath(
         os.path.abspath(
-            os.path.join(os.getcwd(), shared_directory)
+            os.path.join(os.getcwd(), path)
         )
     )
-    return shared_directory
+
+
+def find_shared_directory(test_dir, shared_directory):
+    if shared_directory is not None:
+        return _get_full_path(shared_directory)
+
+    cwd = os.getcwd()
+    default_shared = os.path.join(test_dir, 'shared')
+    shared_directory = default_shared
+    if not os.path.isdir(default_shared):
+        relpath = os.path.relpath(test_dir, cwd)
+        if not relpath.startswith('..') and not os.path.isabs(relpath):
+            while relpath and relpath != os.curdir:
+                this_shared = os.path.join(cwd, relpath, 'shared')
+                if os.path.isdir(this_shared):
+                    shared_directory = this_shared
+                    break
+                relpath = os.path.split(relpath)[0]
+
+    return _get_full_path(shared_directory)
 
 
 def get_suite(
