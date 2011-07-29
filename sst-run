@@ -64,6 +64,10 @@ def main():
         display = Display(visible=0, size=(800, 600))
         display.start()
 
+    if cmd_opts.run_tests:
+        cmd_opts.launch_server = True
+        cmd_opts.dir_name = 'selftests'
+
     if cmd_opts.launch_server:
         run_django()
 
@@ -132,6 +136,10 @@ def get_opts():
     parser.add_option('-m', dest='shared_modules',
                       default=None,
                       help='directory for shared modules')
+    parser.add_option('--test',
+                      dest='run_tests', action='store_true',
+                      default=False,
+                      help='run selftests')
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
 

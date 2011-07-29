@@ -18,7 +18,7 @@ import sys
 
 from unittest import TestSuite, TextTestRunner, TestCase
 
-from .actions import start, stop, reset_base_url
+from .actions import start, stop, reset_base_url, set_wait_timeout
 
 
 __unittest = True
@@ -153,6 +153,8 @@ def get_case(
 
         reset_base_url()
         start(browser_type, javascript_disabled or js_disabled)
+        set_wait_timeout(5, 0.1)
+        start(browser_type, javascript_disabled)
     def tearDown(self):
         sys.path.remove(test_dir)
         stop()
