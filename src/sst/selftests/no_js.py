@@ -1,8 +1,7 @@
 JAVASCRIPT_DISABLED = True
 
-from sst.actions import browser
+from sst.actions import *
 
-profile = browser.firefox_profile
-javascript_enabled = profile.default_preferences['javascript.enabled']
-
-assert javascript_enabled == 'false'
+goto('/nojs/')
+waitfor(title_is, "No JavaScript Test")
+text_is('test', "Before JS")
