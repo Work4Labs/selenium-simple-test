@@ -1,6 +1,11 @@
 Selenium-Simple-Test (SST)
 ==========================
 
+https://launchpad.net/selenium-simple-test
+Copyright (c) 2011 Canonical Ltd.
+Apache License, Version 2.0
+
+
 
 Requirements:
 =============
