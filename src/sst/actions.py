@@ -53,12 +53,12 @@ from selenium.common.exceptions import (
 
 
 __all__ = [
-    'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails', 'url_is',
+    'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails',
     'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select', 'text_is', 'is_checkbox', 'get_element', 'get_elements',
-    'checkbox_value_is', 'checkbox_toggle', 'checkbox_set', 'is_link',
-    'is_button', 'button_click', 'link_click', 'is_textfield',
-    'textfield_write', 'url_contains', 'sleep', 'is_select',
+    'radio_select', 'text_is', 'text_contains', 'is_checkbox', 'get_element',
+    'get_elements', 'checkbox_value_is', 'checkbox_toggle', 'checkbox_set',
+    'is_link', 'is_button', 'button_click', 'link_click', 'is_textfield',
+    'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
     'set_wait_timeout'
 ]
@@ -113,7 +113,6 @@ def start(browser_type='Firefox', javascript_disabled=False):
         browser = getattr(webdriver, browser_type)(profile)
     else:
         browser = getattr(webdriver, browser_type)()
-
 
 
 def stop():
@@ -275,11 +274,11 @@ def title_is(title):
         _raise(msg)
 
 
-def title_contains(title):
-    """Assert the page title containts the specified text."""
+def title_contains(text):
+    """Assert the page title contains the specified text (regex pattern)."""
     real_title = browser.title
-    msg = 'Title is: %r. Does not contain %r' % (real_title, title)
-    if not re.search(title, real_title):
+    msg = 'Title is: %r. Does not contain %r' % (real_title, text)
+    if not re.search(text, real_title):
         _raise(msg)
 
 
@@ -294,11 +293,13 @@ def url_is(url):
         _raise(msg)
 
 
-def url_contains(url):
-    """Assert the current url contains the specified text."""
+def url_contains(text):
+    """Assert the current url contains the specified text (regex pattern)."""
     real_url = browser.current_url
-    if not re.search(url, real_url):
-        _raise('url is %r. Does not contain %r' % (real_url, url))
+    msg = 'Url is %r.\nDoes not contain %r' % (real_url, text)
+    if not re.search(text, real_url):
+        _raise(msg)
+
 
 _TIMEOUT = 5
 _POLL = 0.1
@@ -317,7 +318,6 @@ def set_wait_timeout(timeout, poll=None):
     _TIMEOUT = timeout
     if poll is not None:
         _POLL = poll
-
 
 
 def waitfor(condition, *args, **kwargs):
@@ -470,21 +470,31 @@ def _get_text(elem):
 
 
 def text_is(id_or_elem, text):
-    """Assert the specified element has the specified text."""
+    """Assert the specified element text is as specified."""
     elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
-        msg = "Element %r has no text attribute"
+        msg = 'Element %r has no text attribute' % id_or_elem
         _raise(msg)
-
     if real != text:
-        msg = 'Text should be %r.\nIt is %r.' % (text, real)
+        msg = 'Element text should be %r.\nIt is %r.' % (text, real)
         _raise(msg)
 
+
+def text_contains(id_or_elem, text):
+    """Assert the specified element contains the specified text (regex pattern)."""
+    elem = _get_elem(id_or_elem)
+    real = _get_text(elem)
+    if real is None:
+        msg = 'Element %r has no text attribute' % id_or_elem
+        _raise(msg)
+    if not re.search(text, real):
+        msg = 'Element text is %r. Does not contain %r' % (real, text)
+        _raise(msg)
+        
 
 def _check_text(elem, text):
     return _get_text(elem) == text
-
 
 
 def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
