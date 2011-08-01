@@ -73,7 +73,7 @@ Coming soon!
     License
 -----------
 
-SST is Free Open Source Software, licensed under the **GNU LGPLv3**
+SST is Free Open Source Software, **Apache2** Licensed
 
 
 -------------------------------
