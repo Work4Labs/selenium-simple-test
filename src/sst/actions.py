@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 #
 #   Copyright (c) 2011 Canonical Ltd.
@@ -52,7 +53,7 @@ __all__ = [
     'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
-    'set_wait_timeout', 'set_variable'
+    'set_wait_timeout', 'get_argument'
 ]
 
 
@@ -61,6 +62,13 @@ browser = None
 BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
+
+
+class _Sentinel(object):
+    def __repr__(self):
+        return 'default'
+_sentinel = _Sentinel()
+
 
 
 def get_config():
@@ -145,19 +153,26 @@ def _fix_url(url):
 
 
 
-def set_variable(name, value):
-    """Set a variable to the specified value, *unless* the variable already
-    exists. Useful to have tests that can be run standalone, or executed with
-    `run_test` and have values overridden."""
-    context = get_config()._current_context
+def get_argument(name, default=_sentinel):
+    """Get an argument from the one the test was called with.
+    
+    A test is called with arguments when it is executed by
+    the `run_test`. You can optionally provide a default value
+    that will be used if the argument is not set. If you don't
+    provide a default value and the argument is missing an
+    exception will be raised."""
+    args = get_config().__args__
 
-    if name not in context:
-        context[name] = value
+    value = args.get(name, default)
+    if value is _sentinel:
+        raise LookupError(name)
+    return value
 
 
 def run_test(name, **kwargs):
     """ """
-    context = get_config()._current_context
+    from sst import context
+    context.run_test(name, kwargs)
 
 
 
