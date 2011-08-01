@@ -175,9 +175,33 @@ def get_argument(name, default=_sentinel):
 
 
 def run_test(name, **kwargs):
-    """ """
-    from sst import context
-    context.run_test(name, kwargs)
+    """Execute a named test, with the specified arguments.
+    
+    Arguments can be retrieved by the test with `get_argument`.
+    
+    The `name` is the test file name without the '.py'.
+    
+    You can specify tests in an alternative directory with
+    relative path syntax. e.g.::
+    
+        run_test('subdir/foo', spam='eggs')
+        
+    Tests can return a result by setting the name `RESULT`
+    in the test.
+    
+    Tests are executed with the same browser (and browser
+    session) as the test calling `test_run`. This includes
+    whether or not Javascript is enabled.
+    
+    Before the test is called the timeout and base url are
+    reset, but will be restored to their orginal value
+    when `run_test` returns.
+    
+    XXXX should the base url be copied across to the test
+    being executed? Most tests will have to set their own
+    base url, so probably not.
+    """
+    return context.run_test(name, kwargs)
 
 
 
