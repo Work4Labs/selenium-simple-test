@@ -110,7 +110,7 @@ def start(browser_type='Firefox', javascript_disabled=False):
     profile = getattr(webdriver, '%sProfile' % browser_type)()
 
     if browser_type == 'Firefox':
-        profile.set_preference('intl.accept_languages', 'en')
+        profile.set_preference('intl.accept_languages', '"en"')
 
     if javascript_disabled:
         profile.set_preference('javascript.enabled', 'false')
