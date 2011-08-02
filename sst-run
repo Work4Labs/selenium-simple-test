@@ -64,6 +64,10 @@ file is variable name mapping)
 def main():
     (cmd_opts, args) = get_opts()
 
+    if cmd_opts.quiet:
+        from sst import actions
+        actions.VERBOSE = False
+        
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
@@ -143,6 +147,9 @@ def get_opts():
     parser.add_option('-m', dest='shared_modules',
                       default=None,
                       help='directory for shared modules')
+    parser.add_option('-q', dest='quiet', action='store_true',
+                      default=False,
+                      help='output less debugging info during test run')
     parser.add_option('--test',
                       dest='run_tests', action='store_true',
                       default=False,
