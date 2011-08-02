@@ -1,5 +1,8 @@
 from sst.actions import *
 
+set_wait_timeout(6, 0.3)
+set_base_url('http://bar/')
+
 args = {}
 
 foo = 6
