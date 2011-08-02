@@ -130,8 +130,8 @@ def stop():
     the end of each test script."""
     global browser
     _print('Stopping browser')
-    #browser.close()
-    browser.quit()  # quit calls close() and does cleanup
+    # quit calls close() and does cleanup
+    browser.quit()  
     browser = None
 
 
@@ -140,7 +140,6 @@ def sleep(secs):
     Delay execution for a given number of seconds. The argument may be a floating
     point number for subsecond precision."""
     time.sleep(secs)
-    return
 
 
 def _fix_url(url):
@@ -191,7 +190,9 @@ def run_test(name, **kwargs):
     reset, but will be restored to their orginal value
     when `run_test` returns.
     """
+    # delayed import to workaround circular imports
     from sst import context
+    _print('Executing test: %s' % name)
     return context.run_test(name, kwargs)
 
 
@@ -232,6 +233,7 @@ def checkbox_toggle(id_or_elem):
     """
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
+    _print('Toggling checkbox: %r' % id_or_elem)
     checkbox = is_checkbox(id_or_elem)
     before = checkbox.is_selected()
     checkbox.click()
@@ -245,6 +247,7 @@ def checkbox_set(id_or_elem, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
+    _print('Setting checkbox %r to %s' % (id_or_elem, new_value))
     checkbox = is_checkbox(id_or_elem)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
@@ -268,11 +271,13 @@ def textfield_write(id_or_elem, new_text, check=True):
     textfield contents after writing are different to the specified text) this
     function will fail. You can switch off the checking by passing
     `check=False`."""
+    _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = is_textfield(id_or_elem)
     textfield.clear()
     textfield.send_keys(new_text)
     if not check:
         return
+    _print('Check text wrote correctly')
     current_text = textfield.get_attribute('value')
     msg = 'Textfield: %r - did not write. Text was: %r' % (id_or_elem, current_text)
     if current_text != new_text:
@@ -303,6 +308,7 @@ def link_click(id_or_elem, check=False):
     Click the specified link. As some links do redirects the location you end
     up at is not checked by default. If you pass in `check=True` then this
     action asserts that the resulting url is the link url."""
+    _print('Clicking link %r' % id_or_elem)
     link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     link.click()
@@ -633,3 +639,17 @@ def button_click(id_or_elem):
     """Click the specified button."""
     button = is_button(id_or_elem)
     button.click()
+    
+    
+def get_elements_by_css(selector):
+    """Find all elements that match a css selector"""
+    return browser.find_elements_by_css_selector(selector)
+
+
+def get_element_by_css(selector):
+    """Find an element by css selector."""
+    elements = get_elements_by_css(selector)
+    if len(elements) != 1:
+        msg = 'Could not identify element: %s elements found' % len(elements)
+        _raise(msg)
+    return elements[0]
