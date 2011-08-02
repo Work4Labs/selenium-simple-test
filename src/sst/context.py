@@ -70,7 +70,7 @@ def run_test(name, args):
     actions.set_wait_timeout(5, 0.1)
 
     try:
-        return _execute_test(name, kwargs)
+        return _execute_test(name, args)
     finally:
         restore_context(config)
 
@@ -95,3 +95,4 @@ def _execute_test(name, kwargs):
     with open(location) as h:
         exec h.read() in context
 
+    return context.get('RESULT')

@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 #
 #   Copyright (c) 2011 Canonical Ltd.
@@ -59,7 +58,7 @@ __all__ = [
     'is_link', 'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
-    'set_wait_timeout', 'get_argument'
+    'set_wait_timeout', 'get_argument', 'run_test'
 ]
 
 
