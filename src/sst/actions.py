@@ -48,7 +48,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException
+    InvalidElementStateException
 )
 
 
@@ -394,7 +394,6 @@ def waitfor(condition, *args, **kwargs):
     original = VERBOSE
     VERBOSE = False
     try:
-        start = time.time()
         max_time = time.time() + _TIMEOUT
         msg = condition.__name__
         while True:
@@ -619,7 +618,7 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-    elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+    get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
     return True
 
 
