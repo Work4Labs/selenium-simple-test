@@ -17,14 +17,18 @@ def get_sstconfig():
 
 
 def populate_context(
-        context, path, module, browser_type,
+        context, path, browser_type,
         javascript_disabled, arguments=None
     ):
     """Create the execution context for a test"""
     sstconfig = get_sstconfig()
 
+    name = os.path.splitext(
+        os.path.split(path)[1]
+    )[0]
+
     context['__file__'] = path
-    context['__name__'] = os.path.splitext(module)[0]
+    context['__name__'] = name
 
     sstconfig._current_context = context
     sstconfig.browser_type = browser_type
@@ -70,8 +74,24 @@ def run_test(name, args):
     finally:
         restore_context(config)
 
+
 def _execute_test(name, kwargs):
     sstconfig = get_sstconfig()
-    
-    path = name + '.py'
-    location = os.path.join
+    current_loc = os.path.dirname(
+        sstconfig._current_context['__file__']
+    )
+    location = os.path.normpath(
+        os.path.abspath(
+            os.path.join(current_loc, name + '.py')
+        )
+    )
+
+    context = {}
+    populate_context(
+        context, location, sstconfig.browser_type,
+        sstconfig.javascript_disabled, kwargs
+    )
+
+    with open(location) as h:
+        exec h.read() in context
+

@@ -39,6 +39,7 @@ sys.modules['sstconfig'] = sstconfig
 sstconfig.browser_type = None
 sstconfig._current_context = None
 sstconfig.javascript_disabled = False
+sstconfig.shared_directory = None
 
 
 def runtests(
@@ -59,6 +60,7 @@ def runtests(
         sys.exit(1)
 
     shared_directory = find_shared_directory(test_dir, shared_directory)
+    sstconfig.shared_directory = shared_directory
     sys.path.append(shared_directory)
 
     found_tests = set()
@@ -206,7 +208,7 @@ def get_case(
             self.code = compile(source, path, 'exec')
 
         js_disabled = javascript_disabled or 'JAVASCRIPT_DISABLED' in self.code.co_names
-        populate_context(context, path, entry, browser_type, js_disabled)
+        populate_context(context, path, browser_type, js_disabled)
         reset_base_url()
         set_wait_timeout(5, 0.1)
         start(browser_type, js_disabled)
