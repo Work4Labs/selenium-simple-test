@@ -42,6 +42,8 @@ tagname, text, class or other attributes. See the `get_element` documentation.
 import re
 import time
 
+from sst import config
+
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
@@ -74,13 +76,6 @@ class _Sentinel(object):
         return 'default'
 _sentinel = _Sentinel()
 
-
-
-def get_config():
-    # a "generated module" which may not be available in sys.modules when this
-    # module is imported, so fetch it through a helper function
-    import sstconfig
-    return sstconfig
 
 
 def _raise(msg):
@@ -117,7 +112,7 @@ def start(browser_type=None, javascript_disabled=False):
     the start of each test script."""
     global browser
     if browser_type is None:
-        browser_type = get_config().browser_type
+        browser_type = config.browser_type
 
     _print('\nStarting %s:' % browser_type)
 
@@ -165,7 +160,7 @@ def get_argument(name, default=_sentinel):
     that will be used if the argument is not set. If you don't
     provide a default value and the argument is missing an
     exception will be raised."""
-    args = get_config().__args__
+    args = config.__args__
 
     value = args.get(name, default)
     if value is _sentinel:

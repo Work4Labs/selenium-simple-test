@@ -22,10 +22,9 @@ import ast
 import os
 import sys
 
-from types import ModuleType
 from unittest import TestSuite, TextTestRunner, TestCase
 
-from sst import actions
+from sst import config
 from .actions import start, stop, reset_base_url, set_wait_timeout
 from .context import populate_context
 
@@ -33,13 +32,6 @@ __unittest = True
 
 __all__ = ['runtests']
 
-
-sstconfig = ModuleType('sstconfig')
-sys.modules['sstconfig'] = sstconfig
-sstconfig.browser_type = None
-sstconfig._current_context = None
-sstconfig.javascript_disabled = False
-sstconfig.shared_directory = None
 
 
 def runtests(
@@ -60,7 +52,7 @@ def runtests(
         sys.exit(1)
 
     shared_directory = find_shared_directory(test_dir, shared_directory)
-    sstconfig.shared_directory = shared_directory
+    config.shared_directory = shared_directory
     sys.path.append(shared_directory)
 
     found_tests = set()

@@ -5,5 +5,5 @@ from sst.actions import *
 goto('/nojs/')
 text_is('test', "Before JS")
 
-import sstconfig
-assert sstconfig.javascript_disabled
+from sst import config
+assert config.javascript_disabled

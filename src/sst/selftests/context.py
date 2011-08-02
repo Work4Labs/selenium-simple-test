@@ -1,12 +1,12 @@
 import os
-import sstconfig
+from sst import config
 
-assert locals() == sstconfig._current_context
-assert sstconfig.browser_type
-assert sstconfig.__args__ == {}
-assert not sstconfig.javascript_disabled
+assert locals() == config._current_context
+assert config.browser_type
+assert config.__args__ == {}
+assert not config.javascript_disabled
 assert __name__ == 'context'
 assert __file__.endswith('context.py')
 
 thisdir = os.path.dirname(__file__)
-assert sstconfig.shared_directory == os.path.join(thisdir, 'shared')
+assert config.shared_directory == os.path.join(thisdir, 'shared')
