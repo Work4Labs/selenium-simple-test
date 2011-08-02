@@ -1,6 +1,6 @@
 import os
 
-from sst import actions, context
+from sst import actions
 from collections import namedtuple
 
 StoredContext = namedtuple(

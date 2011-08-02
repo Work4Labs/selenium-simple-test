@@ -22,6 +22,7 @@ import ast
 import os
 import sys
 
+from types import ModuleType
 from unittest import TestSuite, TextTestRunner, TestCase
 
 from sst import actions
@@ -32,7 +33,6 @@ __unittest = True
 
 __all__ = ['runtests']
 
-from types import ModuleType
 
 sstconfig = ModuleType('sstconfig')
 sys.modules['sstconfig'] = sstconfig

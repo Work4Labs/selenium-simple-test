@@ -160,7 +160,7 @@ def _fix_url(url):
 
 def get_argument(name, default=_sentinel):
     """Get an argument from the one the test was called with.
-    
+
     A test is called with arguments when it is executed by
     the `run_test`. You can optionally provide a default value
     that will be used if the argument is not set. If you don't
@@ -176,31 +176,28 @@ def get_argument(name, default=_sentinel):
 
 def run_test(name, **kwargs):
     """Execute a named test, with the specified arguments.
-    
+
     Arguments can be retrieved by the test with `get_argument`.
-    
+
     The `name` is the test file name without the '.py'.
-    
+
     You can specify tests in an alternative directory with
     relative path syntax. e.g.::
-    
+
         run_test('subdir/foo', spam='eggs')
-        
+
     Tests can return a result by setting the name `RESULT`
     in the test.
-    
+
     Tests are executed with the same browser (and browser
     session) as the test calling `test_run`. This includes
     whether or not Javascript is enabled.
-    
+
     Before the test is called the timeout and base url are
     reset, but will be restored to their orginal value
     when `run_test` returns.
-    
-    XXXX should the base url be copied across to the test
-    being executed? Most tests will have to set their own
-    base url, so probably not.
     """
+    from sst import context
     return context.run_test(name, kwargs)
 
 
@@ -554,7 +551,7 @@ def text_contains(id_or_elem, text):
     if not re.search(text, real):
         msg = 'Element text is %r. Does not contain %r' % (real, text)
         _raise(msg)
-        
+
 
 def _check_text(elem, text):
     return _get_text(elem) == text
