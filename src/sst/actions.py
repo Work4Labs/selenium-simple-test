@@ -48,7 +48,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException
+    InvalidElementStateException
 )
 
 
@@ -130,8 +130,8 @@ def stop():
     the end of each test script."""
     global browser
     _print('Stopping browser')
-    #browser.close()
-    browser.quit()  # quit calls close() and does cleanup
+    # quit calls close() and does cleanup
+    browser.quit()  
     browser = None
 
 
@@ -140,7 +140,6 @@ def sleep(secs):
     Delay execution for a given number of seconds. The argument may be a floating
     point number for subsecond precision."""
     time.sleep(secs)
-    return
 
 
 def _fix_url(url):
@@ -169,7 +168,8 @@ def get_argument(name, default=_sentinel):
 
 
 def run_test(name, **kwargs):
-    """Execute a named test, with the specified arguments.
+    """
+    Execute a named test, with the specified arguments.
 
     Arguments can be retrieved by the test with `get_argument`.
 
@@ -189,11 +189,11 @@ def run_test(name, **kwargs):
 
     Before the test is called the timeout and base url are
     reset, but will be restored to their orginal value
-    when `run_test` returns.
-    """
+    when `run_test` returns."""
+    # delayed import to workaround circular imports
     from sst import context
+    _print('Executing test: %s' % name)
     return context.run_test(name, kwargs)
-
 
 
 def goto(url=''):
@@ -232,6 +232,7 @@ def checkbox_toggle(id_or_elem):
     """
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
+    _print('Toggling checkbox: %r' % id_or_elem)
     checkbox = is_checkbox(id_or_elem)
     before = checkbox.is_selected()
     checkbox.click()
@@ -245,6 +246,7 @@ def checkbox_set(id_or_elem, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
+    _print('Setting checkbox %r to %s' % (id_or_elem, new_value))
     checkbox = is_checkbox(id_or_elem)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
@@ -268,11 +270,13 @@ def textfield_write(id_or_elem, new_text, check=True):
     textfield contents after writing are different to the specified text) this
     function will fail. You can switch off the checking by passing
     `check=False`."""
+    _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = is_textfield(id_or_elem)
     textfield.clear()
     textfield.send_keys(new_text)
     if not check:
         return
+    _print('Check text wrote correctly')
     current_text = textfield.get_attribute('value')
     msg = 'Textfield: %r - did not write. Text was: %r' % (id_or_elem, current_text)
     if current_text != new_text:
@@ -293,6 +297,7 @@ def is_link(id_or_elem):
 def get_link_url(id_or_elem):
     """
     Return the URL from a link."""
+    _print('Getting url from link %r' % id_or_elem)
     link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     return link_url
@@ -303,6 +308,7 @@ def link_click(id_or_elem, check=False):
     Click the specified link. As some links do redirects the location you end
     up at is not checked by default. If you pass in `check=True` then this
     action asserts that the resulting url is the link url."""
+    _print('Clicking link %r' % id_or_elem)
     link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     link.click()
@@ -311,13 +317,6 @@ def link_click(id_or_elem, check=False):
     # don't check by default
     if check:
         url_is(link_url)
-
-
-# Code for use with future wait_for (possibly also update url_is to return a boolean)
-#    def url_match():
-#        return browser.get_current_url() == link_url
-#
-#    waitfor(url_match, 'Page to load - Current URL: %r - Link URL: %r' % (browser.get_current_url(), link_url))
 
 
 def title_is(title):
@@ -365,13 +364,15 @@ def set_wait_timeout(timeout, poll=None):
 
     The optional second argument, is how long (in seconds) `waitfor` should
     wait in between checking its condition (the poll frequency). The default
-    at the start of a test is always 0.1 seconds.
-    """
+    at the start of a test is always 0.1 seconds."""
     global _TIMEOUT
     global _POLL
     _TIMEOUT = timeout
+    msg = 'Setting wait timeout to %rs' % timeout
     if poll is not None:
+        msg += ('. Setting poll time to %r' % poll)
         _POLL = poll
+    _print(msg)
 
 
 def waitfor(condition, *args, **kwargs):
@@ -386,13 +387,13 @@ def waitfor(condition, *args, **kwargs):
         waitfor(title_is, 'Some page title')
 
     If the specified condition does not become true within 5 seconds then `waitfor`
-    fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`.
-    """
+    fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
     global VERBOSE
+    _print('Waiting for %r' % condition)
+
     original = VERBOSE
     VERBOSE = False
     try:
-        start = time.time()
         max_time = time.time() + _TIMEOUT
         msg = condition.__name__
         while True:
@@ -461,6 +462,7 @@ def is_select(id_or_elem):
 
 def set_select(id_or_elem, text_in):
     """Set the select drop list to a text value provided to the function"""
+    _print('Setting %r option list to %s' % (id_or_elem, text_in))
     elem = is_select(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
@@ -502,6 +504,7 @@ def radio_value_is(id_or_elem, value):
 
 def radio_select(id_or_elem):
     """Select the specified radio button."""
+    _print('Selecting radio button item %r' % id_or_elem)
     elem = is_radio(id_or_elem)
     elem.click()
 
@@ -558,7 +561,6 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -600,7 +602,6 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like, so long as they
     uniquely identify one element."""
-
     elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
 
     if len(elements) != 1:
@@ -617,8 +618,7 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-
-    elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+    get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
     return True
 
 
@@ -631,5 +631,20 @@ def is_button(id_or_elem):
 
 def button_click(id_or_elem):
     """Click the specified button."""
+    _print('Clicking button %r' % id_or_elem)
     button = is_button(id_or_elem)
     button.click()
+    
+    
+def get_elements_by_css(selector):
+    """Find all elements that match a css selector"""
+    return browser.find_elements_by_css_selector(selector)
+
+
+def get_element_by_css(selector):
+    """Find an element by css selector."""
+    elements = get_elements_by_css(selector)
+    if len(elements) != 1:
+        msg = 'Could not identify element: %s elements found' % len(elements)
+        _raise(msg)
+    return elements[0]
