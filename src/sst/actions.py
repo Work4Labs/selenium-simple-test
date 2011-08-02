@@ -168,7 +168,8 @@ def get_argument(name, default=_sentinel):
 
 
 def run_test(name, **kwargs):
-    """Execute a named test, with the specified arguments.
+    """
+    Execute a named test, with the specified arguments.
 
     Arguments can be retrieved by the test with `get_argument`.
 
@@ -188,13 +189,11 @@ def run_test(name, **kwargs):
 
     Before the test is called the timeout and base url are
     reset, but will be restored to their orginal value
-    when `run_test` returns.
-    """
+    when `run_test` returns."""
     # delayed import to workaround circular imports
     from sst import context
     _print('Executing test: %s' % name)
     return context.run_test(name, kwargs)
-
 
 
 def goto(url=''):
@@ -298,6 +297,7 @@ def is_link(id_or_elem):
 def get_link_url(id_or_elem):
     """
     Return the URL from a link."""
+    _print('Getting url from link %r' % id_or_elem)
     link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     return link_url
@@ -317,13 +317,6 @@ def link_click(id_or_elem, check=False):
     # don't check by default
     if check:
         url_is(link_url)
-
-
-# Code for use with future wait_for (possibly also update url_is to return a boolean)
-#    def url_match():
-#        return browser.get_current_url() == link_url
-#
-#    waitfor(url_match, 'Page to load - Current URL: %r - Link URL: %r' % (browser.get_current_url(), link_url))
 
 
 def title_is(title):
@@ -371,13 +364,15 @@ def set_wait_timeout(timeout, poll=None):
 
     The optional second argument, is how long (in seconds) `waitfor` should
     wait in between checking its condition (the poll frequency). The default
-    at the start of a test is always 0.1 seconds.
-    """
+    at the start of a test is always 0.1 seconds."""
     global _TIMEOUT
     global _POLL
     _TIMEOUT = timeout
+    msg = 'Setting wait timeout to %rs' % timeout
     if poll is not None:
+        msg += ('. Setting poll time to %r' % poll)
         _POLL = poll
+    _print(msg)
 
 
 def waitfor(condition, *args, **kwargs):
@@ -392,9 +387,10 @@ def waitfor(condition, *args, **kwargs):
         waitfor(title_is, 'Some page title')
 
     If the specified condition does not become true within 5 seconds then `waitfor`
-    fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`.
-    """
+    fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
     global VERBOSE
+    _print('Waiting for %r' % condition)
+
     original = VERBOSE
     VERBOSE = False
     try:
@@ -467,6 +463,7 @@ def is_select(id_or_elem):
 
 def set_select(id_or_elem, text_in):
     """Set the select drop list to a text value provided to the function"""
+    _print('Setting %r option list to %s' % (id_or_elem, text_in))
     elem = is_select(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
@@ -508,6 +505,7 @@ def radio_value_is(id_or_elem, value):
 
 def radio_select(id_or_elem):
     """Select the specified radio button."""
+    _print('Selecting radio button item %r' % id_or_elem)
     elem = is_radio(id_or_elem)
     elem.click()
 
@@ -564,7 +562,6 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-
     selector_string = ''
     if tag is not None:
         selector_string = tag
@@ -606,7 +603,6 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like, so long as they
     uniquely identify one element."""
-
     elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
 
     if len(elements) != 1:
@@ -623,7 +619,6 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-
     elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
     return True
 
@@ -637,6 +632,7 @@ def is_button(id_or_elem):
 
 def button_click(id_or_elem):
     """Click the specified button."""
+    _print('Clicking button %r' % id_or_elem)
     button = is_button(id_or_elem)
     button.click()
     
