@@ -111,17 +111,20 @@ def start(browser_type=None, javascript_disabled=False):
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
+
     if browser_type is None:
         browser_type = config.browser_type
 
     _print('\nStarting %s:' % browser_type)
+    profile = getattr(webdriver, '%sProfile' % browser_type)()
+
+    if browser_type == 'Firefox':
+        profile.set_preference('intl.accept_languages', '"en"')
 
     if javascript_disabled:
-        profile = getattr(webdriver, '%sProfile' % browser_type)()
         profile.set_preference('javascript.enabled', 'false')
-        browser = getattr(webdriver, browser_type)(profile)
-    else:
-        browser = getattr(webdriver, browser_type)()
+
+    browser = getattr(webdriver, browser_type)(profile)
 
 
 def stop():
