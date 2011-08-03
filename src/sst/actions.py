@@ -116,7 +116,6 @@ def start(browser_type=None, javascript_disabled=False):
         browser_type = config.browser_type
 
     _print('\nStarting %s:' % browser_type)
-    #browser = webdriver.Firefox()
     profile = getattr(webdriver, '%sProfile' % browser_type)()
 
     if browser_type == 'Firefox':
