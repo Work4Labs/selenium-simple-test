@@ -115,13 +115,15 @@ def reset_base_url():
 
 
 def end_test():
-    """If called it ends the test. Can be used conditionally to exit a
+    """
+    If called it ends the test. Can be used conditionally to exit a
     test under certain conditions."""
     raise EndTest
 
 
 def skip(reason=''):
-    """Skip the test. Unlike `end_test` a skipped test will be reported
+    """
+    Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
     raise SkipTest(reason)
 
@@ -180,7 +182,8 @@ def _fix_url(url):
 
 
 def get_argument(name, default=_sentinel):
-    """Get an argument from the one the test was called with.
+    """
+    Get an argument from the one the test was called with.
 
     A test is called with arguments when it is executed by
     the `run_test`. You can optionally provide a default value
@@ -312,8 +315,7 @@ def textfield_write(id_or_elem, new_text, check=True):
 
 
 def is_link(id_or_elem):
-    """
-    Assert that the element is a link."""
+    """Assert that the element is a link."""
     link = _get_elem(id_or_elem)
     href = link.get_attribute('href')
     if href is None:
@@ -323,8 +325,7 @@ def is_link(id_or_elem):
 
 
 def get_link_url(id_or_elem):
-    """
-    Return the URL from a link."""
+    """Return the URL from a link."""
     _print('Getting url from link %r' % id_or_elem)
     link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
@@ -385,10 +386,9 @@ def url_contains(text, regex=False):
     if regex:
         if not re.search(text, real_url):
             _raise(msg)
-    else:
-        if not text in real_url:
-            _raise(msg)
-            
+    elif not text in real_url:
+        _raise(msg)
+
 
 _TIMEOUT = 5
 _POLL = 0.1
@@ -490,14 +490,14 @@ def _elem_is_type(elem, name, *elem_types):
 
 
 def is_select(id_or_elem):
-    """Assert the specified element is a select drop-list"""
+    """Assert the specified element is a select drop-list."""
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, 'select-one')
     return elem
 
 
 def set_select(id_or_elem, text_in):
-    """Set the select drop list to a text value provided to the function"""
+    """Set the select drop list to a text value provided to the function."""
     _print('Setting %r option list to %s' % (id_or_elem, text_in))
     elem = is_select(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
@@ -509,7 +509,7 @@ def set_select(id_or_elem, text_in):
 
 
 def select_value_is(id_or_elem, text_in):
-    """Assert the specified element is a select list with the specified value"""
+    """Assert the specified element is a select list with the specified value."""
     elem = is_select(id_or_elem)
     # Because there is no way to connect the current text of a select element we have to use 'value'
     current = elem.get_attribute('value')
@@ -521,7 +521,7 @@ def select_value_is(id_or_elem, text_in):
 
 
 def is_radio(id_or_elem):
-    """Assert the specified element is a radio button"""
+    """Assert the specified element is a radio button."""
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, 'radio')
     return elem
@@ -654,8 +654,8 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     """
     This function will find if an element exists by any of several
-    attributes. If the element cannot be found from the attributes you
-    provide, the call will fail with an exception.
+    attributes. It returns True if the element is found or False
+    if it can't be found.
 
     You can specify as many or as few attributes as you like."""
     try:
