@@ -621,8 +621,11 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like."""
-    get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
-    return True
+    try:
+        get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+        return True
+    except AssertionError:
+        return False
 
 
 def is_button(id_or_elem):
