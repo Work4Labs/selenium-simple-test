@@ -1,10 +1,9 @@
 Selenium-Simple-Test (SST)
 ==========================
 
-https://launchpad.net/selenium-simple-test
-Copyright (c) 2011 Canonical Ltd.
-Apache License, Version 2.0
-
+:Home: https://launchpad.net/selenium-simple-test
+:Author: Copyright (c) 2011 Canonical Ltd.
+:License: Apache License, Version 2.0
 
 
 Requirements:
@@ -14,6 +13,9 @@ Requirements:
 
 - Selenium WebDriver bindings:
     * $ sudo pip install selenium
+
+- unittest2 test framework
+    * $ sudo pip install unittest2
 
 - [optional] XML reports requires junitxml:
     * $ sudo pip install junitxml==0.6
@@ -28,8 +30,6 @@ Requirements:
 
 - You can intall all of these automatically from the requirements.txt file with:
     * $ sudo pip install -r requirements.txt
-
-
 
 
 Running Tests
@@ -49,15 +49,11 @@ An individual test (file) can be run with just the name of the test.
 This runs the test file "tests/mytest.py".
 
 
-
-
 Self-Tests (SST Framework Tests)
 ================================
 SST includes a set of self-tests that include a django project used as the application
 under test.  The test django project doesn't have a database, so once you have the
-dependencies installed you can execute "./sst-run -d selftests -s" to run the tests.
-
-
+dependencies installed you can execute "./sst-run --test" to run the tests.
 
 
 Experimenting with Selenium and Python
@@ -68,5 +64,3 @@ To experiment with Selenium you can do the following:
     from selenium import webdriver
     b = webdriver.Firefox()
     b.get('http://www.google.com')
-
-

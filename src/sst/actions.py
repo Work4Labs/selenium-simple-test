@@ -51,6 +51,8 @@ from selenium.common.exceptions import (
     InvalidElementStateException
 )
 
+from unittest2 import SkipTest
+
 
 __all__ = [
     'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails',
@@ -60,7 +62,8 @@ __all__ = [
     'is_link', 'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
-    'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url'
+    'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
+    'end_test', 'skip'
 ]
 
 
@@ -69,6 +72,10 @@ browser = None
 BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
+
+
+class EndTest(StandardError):
+    pass
 
 
 class _Sentinel(object):
@@ -105,6 +112,18 @@ def reset_base_url():
     you when a test script completes."""
     global BASE_URL
     BASE_URL = __DEFAULT_BASE_URL__
+
+
+def end_test():
+    """If called it ends the test. Can be used conditionally to exit a
+    test under certain conditions."""
+    raise EndTest
+
+
+def skip(reason=''):
+    """Skip the test. Unlike `end_test` a skipped test will be reported
+    as a skip rather than a pass."""
+    raise SkipTest(reason)
 
 
 def _print(text):

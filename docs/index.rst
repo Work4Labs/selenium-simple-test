@@ -19,7 +19,7 @@ SST consists of:
 
  * convenient actions (functions) in Python
  * test case loader (converts to xUnit style cases)
- * test runner (unittest)
+ * test runner (unittest2)
  * data parameterization/injection
  * XML/HTML/Console report output
 
@@ -244,6 +244,7 @@ XXXX
 -----------------
 
 * `Python Unittest <http://docs.python.org/library/unittest.html>`_
+* `unittest2 <http://pypi.python.org/pypi/unittest2/>`_
 * `Selenium Project Home <http://selenium.googlecode.com>`_
 * `Selenium WebDriver (from 'Architecture of Open Source Applications') <http://www.aosabook.org/en/selenium.html>`_
 
