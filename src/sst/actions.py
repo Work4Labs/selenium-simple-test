@@ -63,7 +63,7 @@ __all__ = [
     'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
-    'end_test', 'skip'
+    'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css'
 ]
 
 
