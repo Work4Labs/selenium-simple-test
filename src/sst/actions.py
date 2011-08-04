@@ -48,7 +48,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException
+    InvalidElementStateException, WebDriverException
 )
 
 from unittest2 import SkipTest
@@ -471,7 +471,7 @@ def _get_elem(id_or_elem):
         return id_or_elem
     try:
         return browser.find_element_by_id(id_or_elem)
-    except NoSuchElementException:
+    except (NoSuchElementException, WebDriverException):
         msg = 'Element with id: %r does not exist' % id_or_elem
         _raise(msg)
 
@@ -611,13 +611,17 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     selector_string += ''.join(['[%s=%r]' % (key, value) for
                                 key, value in kwargs.items()])
-    if text is not None and not selector_string:
-        elements = browser.find_elements_by_xpath('//*[text() = %r]' % text)
-    else:
-        if not selector_string:
-            msg = 'Could not identify element: no arguments provided'
-            _raise(msg)
-        elements = browser.find_elements_by_css_selector(selector_string)
+    try:
+        if text is not None and not selector_string:
+            elements = browser.find_elements_by_xpath('//*[text() = %r]' % text)
+        else:
+            if not selector_string:
+                msg = 'Could not identify element: no arguments provided'
+                _raise(msg)
+            elements = browser.find_elements_by_css_selector(selector_string)
+    except (WebDriverException, NoSuchElementException):
+        msg = 'Element not found'
+        _raise(msg)
 
     if text is not None:
         # if text was specified, filter elements
@@ -681,7 +685,10 @@ def button_click(id_or_elem):
 
 def get_elements_by_css(selector):
     """Find all elements that match a css selector"""
-    return browser.find_elements_by_css_selector(selector)
+    try:
+        return browser.find_elements_by_css_selector(selector)
+    except (WebDriverException, NoSuchElementException):
+        _raise('No elements found')
 
 
 def get_element_by_css(selector):
