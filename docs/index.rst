@@ -229,14 +229,29 @@ specify where the shared directory is::
  The sst.config module
 ----------------------
 
-Inside tests you can import the `sst.config` module to know
+Inside tests you can import the `sst.config` module to know various things about the current test
+environment. The `sst.config` module has the following information::
+
+    from sst import config
+
+    # is javascript disabled?
+    config.javascript_disabled
+
+    # which browser is being used?
+    config.browser_type
+
+    # full path to the shared directory
+    config.shared_directory
 
 
 ------------------------------------------
  Disabling Javascript for individual tests
 ------------------------------------------
 
-XXXX
+If you need to disable Javascript for an individual test you can do it by
+putting the following at the start of the test::
+
+    JAVASCRIPT_DISABLED = True
 
 
 -----------------
