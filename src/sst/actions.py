@@ -330,12 +330,16 @@ def title_is(title):
         _raise(msg)
 
 
-def title_contains(text):
-    """Assert the page title contains the specified text (regex pattern)."""
+def title_contains(text, regex=False):
+    """Assert the page title contains the specified text (or regex pattern)."""
     real_title = browser.title
     msg = 'Title is: %r. Does not contain %r' % (real_title, text)
-    if not re.search(text, real_title):
-        _raise(msg)
+    if regex:
+        if not re.search(text, real_title):
+            _raise(msg)
+    else:
+        if not text in real_title:
+            _raise(msg)
 
 
 def url_is(url):
@@ -349,13 +353,17 @@ def url_is(url):
         _raise(msg)
 
 
-def url_contains(text):
+def url_contains(text, regex=False):
     """Assert the current url contains the specified text (regex pattern)."""
     real_url = browser.current_url
     msg = 'Url is %r.\nDoes not contain %r' % (real_url, text)
-    if not re.search(text, real_url):
-        _raise(msg)
-
+    if regex:
+        if not re.search(text, real_url):
+            _raise(msg)
+    else:
+        if not text in real_url:
+            _raise(msg)
+            
 
 _TIMEOUT = 5
 _POLL = 0.1
@@ -541,16 +549,20 @@ def text_is(id_or_elem, text):
         _raise(msg)
 
 
-def text_contains(id_or_elem, text):
+def text_contains(id_or_elem, text, regex=False):
     """Assert the specified element contains the specified text (regex pattern)."""
     elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
         msg = 'Element %r has no text attribute' % id_or_elem
         _raise(msg)
-    if not re.search(text, real):
-        msg = 'Element text is %r. Does not contain %r' % (real, text)
-        _raise(msg)
+    msg = 'Element text is %r. Does not contain %r' % (real, text)
+    if regex:
+        if not re.search(text, real):
+            _raise(msg)
+    else:
+        if text not in real:
+            _raise(msg)
 
 
 def _check_text(elem, text):

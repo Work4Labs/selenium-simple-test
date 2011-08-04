@@ -12,6 +12,10 @@ fails(url_is, '/foo')
 title_is('The Page Title')
 fails(title_is, 'this is not the title')
 
+title_contains('The Page')
+title_contains('.*Pag[E|e]', regex=True)
+fails(title_contains, 'foobar')
+
 set_base_url('localhost:8000')
 assert actions.BASE_URL == 'http://localhost:8000/'
 
