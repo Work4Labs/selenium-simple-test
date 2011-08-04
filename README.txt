@@ -15,6 +15,10 @@ Requirements:
     * $ sudo pip install selenium
 
 - unittest2 test framework
+    * $ sudo apt-get install python-unittest2
+
+  Not all distributions package unittest2. You
+  may need to do:
     * $ sudo pip install unittest2
 
 - [optional] XML reports requires junitxml:
