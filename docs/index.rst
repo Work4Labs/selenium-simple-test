@@ -207,11 +207,34 @@ shared directory.
  Shared directory
 -----------------
 
-XXXX
+SST allows you to have a directory called `shared` in the top level directory
+of your tests, which is added to `sys.path`. Here you can keep helper modules
+used by all your tests. `sst-run` will not run Python files in the `shared`
+directory as tests.
+
+By default SST looks in the test directory you specify to find `shared`,
+alternatively you can specify a different directory using the `-m` command
+line argument to `sst-run`.
+
+If there is no 'shared' directory in the test directory, then `sst-run` will
+walk up from the test directory to the current directory looking for one. This
+allows you to run tests just from a subdirectory without having to explicitly
+specify where the shared directory is::
+
+    ./sst-run -d tests/some/subdirectory
+
+
 
 ----------------------
  The sst.config module
 ----------------------
+
+Inside tests you can import the `sst.config` module to know
+
+
+------------------------------------------
+ Disabling Javascript for individual tests
+------------------------------------------
 
 XXXX
 
