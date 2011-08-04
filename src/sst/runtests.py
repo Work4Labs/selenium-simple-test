@@ -22,15 +22,18 @@ import ast
 import os
 import sys
 
-from unittest import TestSuite, TextTestRunner, TestCase
+from unittest2 import TestSuite, TextTestRunner, TestCase
 
 from sst import config
-from .actions import start, stop, reset_base_url, set_wait_timeout
+from .actions import (
+    start, stop, reset_base_url, set_wait_timeout,
+    EndTest
+)
 from .context import populate_context
 
-__unittest = True
 
 __all__ = ['runtests']
+
 
 
 
@@ -210,7 +213,10 @@ def get_case(
     def test(self):
         if context_provided:
             print 'Loading data row %s' % context['_row_num']
-        exec self.code in context
+        try:
+            exec self.code in context
+        except EndTest:
+            pass
     def run(self, result=None):
         # Had to move some bits from original implementation of TestCase.run to
         # keep the way it works
