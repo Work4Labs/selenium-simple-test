@@ -24,7 +24,7 @@ import sys
 
 from unittest2 import TestSuite, TextTestRunner, TestCase
 
-from sst import config
+from sst import actions, config
 from .actions import (
     start, stop, reset_base_url, set_wait_timeout,
     EndTest
