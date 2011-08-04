@@ -204,8 +204,15 @@ def get_case(
 
         js_disabled = javascript_disabled or 'JAVASCRIPT_DISABLED' in self.code.co_names
         populate_context(context, path, browser_type, js_disabled)
-        reset_base_url()
-        set_wait_timeout(5, 0.1)
+
+        original = actions.VERBOSE
+        actions.VERBOSE = False
+        try:
+            reset_base_url()
+            set_wait_timeout(5, 0.1)
+        finally:
+            actions.VERBOSE = original
+
         start(browser_type, js_disabled)
     def tearDown(self):
         sys.path.remove(test_dir)
