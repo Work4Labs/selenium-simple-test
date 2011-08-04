@@ -685,7 +685,10 @@ def button_click(id_or_elem):
 
 def get_elements_by_css(selector):
     """Find all elements that match a css selector"""
-    return browser.find_elements_by_css_selector(selector)
+    try:
+        return browser.find_elements_by_css_selector(selector)
+    except (WebDriverException, NoSuchElementException):
+        _raise('No elements found')
 
 
 def get_element_by_css(selector):
