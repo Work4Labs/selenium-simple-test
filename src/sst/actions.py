@@ -60,7 +60,7 @@ __all__ = [
     'is_link', 'is_button', 'button_click', 'link_click', 'is_textfield',
     'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
-    'set_wait_timeout', 'get_argument', 'run_test'
+    'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url'
 ]
 
 
@@ -90,7 +90,13 @@ def set_base_url(url):
         url += '/'
     if not url.startswith('http'):
         url = 'http://' + url
+    _print('Setting base url to: %s' % url)
     BASE_URL = url
+
+
+def get_base_url():
+    """Return the base url used by `goto`."""
+    return BASE_URL
 
 
 def reset_base_url():
@@ -134,7 +140,7 @@ def stop():
     global browser
     _print('Stopping browser')
     # quit calls close() and does cleanup
-    browser.quit()  
+    browser.quit()
     browser = None
 
 
@@ -637,8 +643,8 @@ def button_click(id_or_elem):
     _print('Clicking button %r' % id_or_elem)
     button = is_button(id_or_elem)
     button.click()
-    
-    
+
+
 def get_elements_by_css(selector):
     """Find all elements that match a css selector"""
     return browser.find_elements_by_css_selector(selector)

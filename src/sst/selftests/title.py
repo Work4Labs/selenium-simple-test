@@ -1,8 +1,7 @@
-from sst import actions
 from sst.actions import *
 
 # tests goto, url_is, title_is, set_base_url
-# reset_base_url
+# reset_base_url, get_base_url
 
 goto('/')
 
@@ -13,9 +12,10 @@ title_is('The Page Title')
 fails(title_is, 'this is not the title')
 
 set_base_url('localhost:8000')
-assert actions.BASE_URL == 'http://localhost:8000/'
+assert get_base_url() == 'http://localhost:8000/'
 
 set_base_url('http://localhost:8000/begin/')
+assert get_base_url() == 'http://localhost:8000/begin/'
 goto('/')
 
 # url_is adds the base url for relative urls
@@ -27,5 +27,6 @@ fails(url_is, 'http://localhost:8000/')
 fails(url_is, '/begin/')
 
 reset_base_url()
+assert get_base_url() == 'http://localhost:8000/'
 goto('/')
 url_is('http://localhost:8000/')
