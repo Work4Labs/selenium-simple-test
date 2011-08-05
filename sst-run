@@ -29,7 +29,7 @@ import urllib
 try:
     import selenium
 except ImportError as e:
-    print 'Error importing Selenium/Webdriver.  Selenium 2.x python bindings are required.'
+    print 'Error importing Selenium WebDriver.  Selenium 2.x python bindings are required.'
     print e
     sys.exit(1)
 
@@ -71,7 +71,7 @@ def main():
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
-        display = Display(visible=0, size=(800, 600))
+        display = Display(visible=0, size=(1024, 768))
         display.start()
 
     if cmd_opts.run_tests:
