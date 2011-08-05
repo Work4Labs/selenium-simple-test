@@ -1,19 +1,18 @@
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
-from django.template import Context, loader
 
 
 def index(request):
-    t = loader.get_template('index.html')
-    c = Context({'title': 'The Page Title'})
-    return HttpResponse(t.render(c))
+    return render_to_response('index.html', {'title': 'The Page Title'})
 
 
 def begin(request):
-    t = loader.get_template('index.html')
-    c = Context({'title': 'The Next Page'})
-    return HttpResponse(t.render(c))
+    return render_to_response('index.html', {'title': 'The Next Page'})
 
 
 def nojs(request):
     return render_to_response('nojs.html', {'title': 'No JavaScript Test'})
+
+
+def html5(request):
+    return render_to_response('html5.html')
+
