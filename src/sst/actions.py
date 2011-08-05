@@ -285,13 +285,17 @@ def checkbox_set(id_or_elem, new_value):
         checkbox_toggle(id_or_elem)
 
 
+_textfields = (
+    'text', 'password', 'textarea',
+    'email', 'url', 'search', 'number'
+)
 def is_textfield(id_or_elem):
     """
     Assert that the element is a textfield, textarea or password box. Takes an
     id or an element object. Raises a failure exception if the element
     specified doesn't exist or isn't a textfield."""
     elem = _get_elem(id_or_elem)
-    _elem_is_type(elem, id_or_elem, 'text', 'password', 'textarea')
+    _elem_is_type(elem, id_or_elem, *_textfields)
     return elem
 
 

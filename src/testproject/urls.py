@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     (r'simple', include('testproject.simple.urls')),
     (r'begin', 'simple.views.begin'),
     (r'nojs', 'simple.views.nojs'),
+    (r'html5', 'simple.views.html5'),
     (r'', 'simple.views.index'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
