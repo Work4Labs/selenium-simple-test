@@ -63,7 +63,7 @@ dependencies installed you can execute "./sst-run --test" to run the tests.
 Experimenting with Selenium and Python
 ======================================
 
-To experiment with Selenium you can do the following:
+To experiment with Selenium you can do the following::
 
     from selenium import webdriver
     b = webdriver.Firefox()

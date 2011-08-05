@@ -15,4 +15,3 @@ def nojs(request):
 
 def html5(request):
     return render_to_response('html5.html')
-
