@@ -411,6 +411,13 @@ def set_wait_timeout(timeout, poll=None):
     _print(msg)
 
 
+def _get_name(obj):
+    try:
+        return obj.__name__
+    except:
+        return repr(obj)
+
+
 def waitfor(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions that
@@ -425,7 +432,7 @@ def waitfor(condition, *args, **kwargs):
     If the specified condition does not become true within 5 seconds then `waitfor`
     fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
     global VERBOSE
-    _print('Waiting for %r' % condition)
+    _print('Waiting for %s' % _get_name(condition))
 
     original = VERBOSE
     VERBOSE = False
