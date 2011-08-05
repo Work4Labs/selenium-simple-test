@@ -4,6 +4,7 @@
 
 
 :Home: https://launchpad.net/selenium-simple-test
+:Download: http://pypi.python.org/pypi/sst
 :Author: Copyright (c) 2011 Canonical Ltd.
 :License: Apache License, Version 2.0
 
