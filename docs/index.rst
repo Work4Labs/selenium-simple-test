@@ -83,10 +83,10 @@ SST depends on Selenium (2.x), so first make sure Selenium/Webdriver is working 
 
   * create a script containing the following webdriver code, and run it::
 
-    #!/usr/bin/env python
-    from selenium import webdriver
-    browser = webdriver.Firefox()
-    browser.get('http://www.ubuntu.com/')
+     #!/usr/bin/env python
+     from selenium import webdriver
+     browser = webdriver.Firefox()
+     browser.get('http://www.ubuntu.com/')
 
  * this should open your Firefox browser and navigate to the Ubuntu homepage.
 
@@ -101,6 +101,19 @@ a sample test case in SST::
 
     goto('http://www.ubuntu.com/')
     title_contains('Ubuntu homepage')
+
+
+---------------------
+    Actions reference
+---------------------
+
+Test scripts perform actions in the browser as if they were a user.
+SST provides a large set of "actions" for you to us in your tests.
+
+.. toctree::
+   :maxdepth: 1
+
+   actions
 
 
 --------------------------------
@@ -185,8 +198,7 @@ and you would call this from the command line::
 
     $./sst-run -d mytests
 
-
-a more complex setup might look like::
+A more complex setup might look like::
 
     /selenium-simple-test
         /mytests
@@ -196,6 +208,9 @@ a more complex setup might look like::
             /project_bar
                 feature_bar.py
                 feature_baz.py
+            /shared
+                module.py
+                utils.py
 
 and you would still call this from the command like::
 
@@ -226,7 +241,6 @@ allows you to run tests just from a subdirectory without having to explicitly
 specify where the shared directory is::
 
     ./sst-run -d tests/some/subdirectory
-
 
 
 ----------------------
@@ -265,16 +279,5 @@ putting the following at the start of the test::
 * `Python Unittest <http://docs.python.org/library/unittest.html>`_
 * `unittest2 <http://pypi.python.org/pypi/unittest2/>`_
 * `Selenium Project Home <http://selenium.googlecode.com>`_
-* `Selenium WebDriver (from 'Architecture of Open Source Applications') <http://www.aosabook.org/en/selenium.html>`_
-
-----
-
----------------------
-    Actions reference
----------------------
-
-.. toctree::
-   :maxdepth: 1
-
-   actions
-
+* `Selenium WebDriver (from 'Architecture of Open Source Applications')
+  <http://www.aosabook.org/en/selenium.html>`_
