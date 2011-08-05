@@ -356,7 +356,7 @@ def title_is(title):
     """Assert the page title is as specified."""
     real_title = browser.title
     msg = 'Title is: %r. Should be: %r' % (real_title, title)
-    if not real_title == title:
+    if real_title != title:
         _raise(msg)
 
 
@@ -379,7 +379,7 @@ def url_is(url):
     url = _fix_url(url)
     real_url = browser.current_url
     msg = 'Url is: %r\nShould be: %r' % (real_url, url)
-    if not url == real_url:
+    if url != real_url:
         _raise(msg)
 
 
@@ -390,8 +390,9 @@ def url_contains(text, regex=False):
     if regex:
         if not re.search(text, real_url):
             _raise(msg)
-    elif not text in real_url:
-        _raise(msg)
+    else:
+        if text not in real_url:
+            _raise(msg)
 
 
 _TIMEOUT = 5
@@ -699,7 +700,7 @@ def get_elements_by_css(selector):
     try:
         return browser.find_elements_by_css_selector(selector)
     except (WebDriverException, NoSuchElementException) as e:
-        _raise('No elements found: (%s)' % (e,))
+        _raise('Error finding elements: (%s)' % (e,))
 
 
 def get_element_by_css(selector):

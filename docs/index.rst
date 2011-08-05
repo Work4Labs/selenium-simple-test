@@ -30,22 +30,29 @@ SST consists of:
 At runtime, scripts are converted to a standard Python unittest suite and executed.
 
 
-------------
-    Download
-------------
+---------------------
+ Download and Install
+---------------------
 
-Coming soon!
+SST can be pip installed!
 
+    pip install -U sst
 
---------
-    Code
---------
+Or you can download the current release from the `pypi page
+<http://pypi.python.org/pypi/sst>`_.
+
+The current development version can be found at:
 
 * `Launchpad Project <https://launchpad.net/selenium-simple-test>`_
-* `Browse the Source (Trunk) <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
+* `Browse the Source (Trunk)
+  <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
 * get a copy of the trunk::
 
       bzr branch lp:selenium-simple-test
+
+SST is primarily being developed on Linux, specifically Ubuntu. It should work
+fine on other platforms but any issues (or even better - patches) should be
+reported on the launchpad project.
 
 
 -----------
@@ -281,3 +288,12 @@ putting the following at the start of the test::
 * `Selenium Project Home <http://selenium.googlecode.com>`_
 * `Selenium WebDriver (from 'Architecture of Open Source Applications')
   <http://www.aosabook.org/en/selenium.html>`_
+
+----------
+ CHANGELOG
+----------
+
+Version 0.1.0 -- 2011/08/05
+---------------------------
+
+* Initial release
