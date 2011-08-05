@@ -6,6 +6,47 @@ Selenium-Simple-Test (SST)
 :License: Apache License, Version 2.0
 
 
+Automated Web Test Framework with Python
+========================================
+
+selenium-simple-test (SST) is a web test framework that uses a simple
+Python DSL to generate functional GUI tests.
+
+Tests are made up of scripts, created by composing actions that drive a browser
+via selenium/webdriver.  You have the flexibilty of the full Python language,
+along with a convenient set of functions to simplify web testing.
+
+SST consists of:
+
+ * convenient actions (functions) in Python
+ * test case loader (converts to xUnit style cases)
+ * test runner (unittest2)
+ * data parameterization/injection
+ * XML/HTML/Console report output
+
+At runtime, scripts are converted to a standard Python unittest suite and executed.
+
+
+Install
+=======
+
+SST can be pip installed!
+
+    pip install -U sst
+
+Or you can download the current release from the `pypi page
+<http://pypi.python.org/pypi/sst>`_.
+
+The current development version can be found at:
+
+* `Launchpad Project <https://launchpad.net/selenium-simple-test>`_
+* `Browse the Source (Trunk)
+  <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
+* get a copy of the trunk::
+
+      bzr branch lp:selenium-simple-test
+
+
 Requirements:
 =============
 
@@ -31,40 +72,9 @@ Requirements:
     * $ sudo apt-get install xvfb xserver-xephyr
     * $ sudo pip install pyvirtualdisplay
 
-
 - You can intall all of these automatically from the requirements.txt file with:
     * $ sudo pip install -r requirements.txt
 
-
-Running Tests
-=============
-
-By default, tests are located in the "/tests" directory under selenium-simple-test.
-(you may change this by passing the -d <dir> command-line option)
-
-You can run all tests in this directory by running:
-
-    "./sst-run"
-
-An individual test (file) can be run with just the name of the test.
-
-    "./sst-run mytest"
-
-This runs the test file "tests/mytest.py".
-
-
-Self-Tests (SST Framework Tests)
-================================
-SST includes a set of self-tests that include a django project used as the application
-under test.  The test django project doesn't have a database, so once you have the
-dependencies installed you can execute "./sst-run --test" to run the tests.
-
-
-Experimenting with Selenium and Python
-======================================
-
-To experiment with Selenium you can do the following::
-
-    from selenium import webdriver
-    b = webdriver.Firefox()
-    b.get('http://www.google.com')
+SST is primarily being developed on Linux, specifically Ubuntu. It should work
+fine on other platforms but any issues (or even better - patches) should be
+reported on the launchpad project.

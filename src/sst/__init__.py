@@ -20,7 +20,7 @@
 
 
 __all__ = ['runtests']
-__version__ = '0.0alpha'
+__version__ = '0.1.0'
 
 
 try:
