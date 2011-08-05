@@ -180,11 +180,10 @@ Options:
   -r REPORT_FORMAT   results report format (html, xml, console)
   -b BROWSER_TYPE    select webdriver (Firefox, Chrome, InternetExplorer, etc)
   -j                 disable javascript in browser
-  -s                 launch django server for local SST framework tests
   -x                 run tests in headless xserver
   -m SHARED_MODULES  directory for shared modules
   -q                 output less debugging info during test run
-  --test             run selftests
+  --test             run selftests (launches local django server)
   --failfast         stop test execution after first failure
 
 
