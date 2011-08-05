@@ -619,8 +619,8 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
                 msg = 'Could not identify element: no arguments provided'
                 _raise(msg)
             elements = browser.find_elements_by_css_selector(selector_string)
-    except (WebDriverException, NoSuchElementException):
-        msg = 'Element not found'
+    except (WebDriverException, NoSuchElementException) as e:
+        msg = 'Element not found (%s)' % (e,)
         _raise(msg)
 
     if text is not None:
@@ -687,8 +687,8 @@ def get_elements_by_css(selector):
     """Find all elements that match a css selector"""
     try:
         return browser.find_elements_by_css_selector(selector)
-    except (WebDriverException, NoSuchElementException):
-        _raise('No elements found')
+    except (WebDriverException, NoSuchElementException) as e:
+        _raise('No elements found: (%s)' % (e,))
 
 
 def get_element_by_css(selector):
