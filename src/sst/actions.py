@@ -415,6 +415,13 @@ def set_wait_timeout(timeout, poll=None):
     _print(msg)
 
 
+def _get_name(obj):
+    try:
+        return obj.__name__
+    except:
+        return repr(obj)
+
+
 def waitfor(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions that
@@ -429,7 +436,7 @@ def waitfor(condition, *args, **kwargs):
     If the specified condition does not become true within 5 seconds then `waitfor`
     fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
     global VERBOSE
-    _print('Waiting for %r' % condition)
+    _print('Waiting for %s' % _get_name(condition))
 
     original = VERBOSE
     VERBOSE = False
@@ -623,8 +630,8 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
                 msg = 'Could not identify element: no arguments provided'
                 _raise(msg)
             elements = browser.find_elements_by_css_selector(selector_string)
-    except (WebDriverException, NoSuchElementException):
-        msg = 'Element not found'
+    except (WebDriverException, NoSuchElementException) as e:
+        msg = 'Element not found (%s)' % (e,)
         _raise(msg)
 
     if text is not None:
@@ -691,8 +698,8 @@ def get_elements_by_css(selector):
     """Find all elements that match a css selector"""
     try:
         return browser.find_elements_by_css_selector(selector)
-    except (WebDriverException, NoSuchElementException):
-        _raise('No elements found')
+    except (WebDriverException, NoSuchElementException) as e:
+        _raise('No elements found: (%s)' % (e,))
 
 
 def get_element_by_css(selector):
