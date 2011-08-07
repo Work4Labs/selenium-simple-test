@@ -39,6 +39,7 @@ tagname, text, class or other attributes. See the `get_element` documentation.
 """
 
 
+import os
 import re
 import time
 
@@ -63,7 +64,8 @@ __all__ = [
     'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
-    'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css'
+    'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
+    'take_screenshot'
 ]
 
 
@@ -165,6 +167,18 @@ def stop():
     browser = None
 
 
+def take_screenshot(filename='screenshot.png'):
+    """
+    Takes a screenshot of the browser window. Called automatically on failures when
+    running in `-s` mode."""
+    _print('Capturing Screenshot')
+    try:
+        os.makedirs('results')
+    except OSError:
+        pass  # already exists
+    browser.get_screenshot_as_file('results/%s' % filename)                
+    
+    
 def sleep(secs):
     """
     Delay execution for a given number of seconds. The argument may be a floating

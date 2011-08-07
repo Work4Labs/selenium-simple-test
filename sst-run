@@ -21,6 +21,7 @@
 
 import optparse
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -63,11 +64,13 @@ file is variable name mapping)
 
 def main():
     (cmd_opts, args) = get_opts()
-
+    
+    clear_old_results()
+    
     if cmd_opts.quiet:
         from sst import actions
         actions.VERBOSE = False
-        
+    
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
@@ -87,6 +90,7 @@ def main():
         browser_type=cmd_opts.browser_type,
         javascript_disabled=cmd_opts.javascript_disabled,
         shared_directory=cmd_opts.shared_modules,
+        screenshots_on=cmd_opts.screenshots_on,
         failfast=cmd_opts.failfast,
     )
 
@@ -99,6 +103,14 @@ def main():
     if cmd_opts.xserver_headless:
         print '\nstopping virtual display...\n'
         display.stop()
+
+
+
+def clear_old_results():
+    try:
+        shutil.rmtree('./results/')
+    except OSError:
+        pass
 
 
 
@@ -144,6 +156,9 @@ def get_opts():
     parser.add_option('-q', dest='quiet', action='store_true',
                       default=False,
                       help='output less debugging info during test run')
+    parser.add_option('-s', dest='screenshots_on', action='store_true',
+                      default=False,
+                      help='save screenshots on failures')
     parser.add_option('--test',
                       dest='run_tests', action='store_true',
                       default=False,

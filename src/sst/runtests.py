@@ -21,13 +21,13 @@
 import ast
 import os
 import sys
+import time
 
 from unittest2 import TestSuite, TextTestRunner, TestCase
 
 from sst import actions, config
 from .actions import (
-    start, stop, reset_base_url, set_wait_timeout,
-    EndTest
+    start, stop, reset_base_url, set_wait_timeout, take_screenshot, EndTest
 )
 from .context import populate_context
 
@@ -40,7 +40,7 @@ __all__ = ['runtests']
 def runtests(
         test_names, test_dir='tests', report_format='console',
         browser_type='Firefox', javascript_disabled=False,
-        shared_directory=None, failfast=False
+        shared_directory=None, screenshots_on=False, failfast=False
     ):
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -64,7 +64,7 @@ def runtests(
     suites = (
         get_suite(
             test_names, root, browser_type, javascript_disabled,
-            found_tests, failfast
+            screenshots_on, found_tests, failfast
         )
         for root, _, _ in os.walk(test_dir)
         if os.path.abspath(root) != shared_directory and
@@ -83,7 +83,11 @@ def runtests(
 
     if report_format == 'html':
         import HTMLTestRunner
-        fp = file('results.html', 'wb')
+        try:
+            os.makedirs('results')
+        except OSError:
+            pass  # already exists
+        fp = file('results/results.html', 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2
         )
@@ -95,7 +99,11 @@ def runtests(
         except ImportError:
             print 'Please install junitxml to use XML output'
             sys.exit(1)
-        fp = file('results.xml', 'wb')
+        try:
+            os.makedirs('results')
+        except OSError:
+            pass  # already exists
+        fp = file('results/results.xml', 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
         alltests.run(result)
@@ -155,7 +163,8 @@ def find_shared_directory(test_dir, shared_directory):
 
 
 def get_suite(
-        test_names, test_dir, browser_type, javascript_disabled, found, failfast
+        test_names, test_dir, browser_type, javascript_disabled, 
+        screenshots_on, found, failfast
     ):
     suite = TestSuite()
     dir_list = os.listdir(test_dir)
@@ -178,20 +187,22 @@ def get_suite(
                 # row is a dictionary of variables
                 suite.addTest(
                     get_case(test_dir, entry, browser_type,
-                             javascript_disabled, row, failfast=failfast)
+                             javascript_disabled, screenshots_on, 
+                             row, failfast=failfast)
                 )
         else:
             suite.addTest(
                 get_case(test_dir, entry, browser_type,
-                         javascript_disabled, failfast=failfast)
+                         javascript_disabled, screenshots_on,
+                         failfast=failfast)
             )
 
     return suite
 
 
 def get_case(
-        test_dir, entry, browser_type, javascript_disabled, context=None,
-        failfast=False
+        test_dir, entry, browser_type, javascript_disabled, screenshots_on,
+        context=None, failfast=False
     ):
     context_provided = context is not None
     context = context or {}
@@ -224,6 +235,13 @@ def get_case(
             exec self.code in context
         except EndTest:
             pass
+        except Exception as e:
+            if screenshots_on:
+                print '-----------'
+                print entry
+                print '-------------'
+                take_screenshot(filename='screenshot_%s_%s.png' % (entry[:-3], time.time()))
+            raise
     def run(self, result=None):
         # Had to move some bits from original implementation of TestCase.run to
         # keep the way it works
