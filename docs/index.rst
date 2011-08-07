@@ -183,6 +183,7 @@ Options:
   -x                 run tests in headless xserver
   -m SHARED_MODULES  directory for shared modules
   -q                 output less debugging info during test run
+  -s                 save screenshots on failures
   --test             run selftests (launches local django server)
   --failfast         stop test execution after first failure
 
