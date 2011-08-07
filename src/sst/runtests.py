@@ -237,9 +237,6 @@ def get_case(
             pass
         except Exception as e:
             if screenshots_on:
-                print '-----------'
-                print entry
-                print '-------------'
                 take_screenshot(filename='screenshot_%s_%s.png' % (entry[:-3], time.time()))
             raise
     def run(self, result=None):
