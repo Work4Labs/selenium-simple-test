@@ -172,13 +172,19 @@ def take_screenshot(filename='screenshot.png'):
     Takes a screenshot of the browser window. Called automatically on failures when
     running in `-s` mode."""
     _print('Capturing Screenshot')
+    _make_dir('results')
+    browser.get_screenshot_as_file('results/%s' % filename)                
+
+
+def _make_dir(dir):
+    """
+    Make directory if it does not exist."""
     try:
-        os.makedirs('results')
+        os.makedirs(dir)
     except OSError:
         pass  # already exists
-    browser.get_screenshot_as_file('results/%s' % filename)                
-    
-    
+        
+
 def sleep(secs):
     """
     Delay execution for a given number of seconds. The argument may be a floating

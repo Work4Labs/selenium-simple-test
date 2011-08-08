@@ -19,9 +19,9 @@
 #
 
 import ast
+import datetime
 import os
 import sys
-import time
 
 from unittest2 import TestSuite, TextTestRunner, TestCase
 
@@ -83,10 +83,7 @@ def runtests(
 
     if report_format == 'html':
         import HTMLTestRunner
-        try:
-            os.makedirs('results')
-        except OSError:
-            pass  # already exists
+        _make_dir('results')
         fp = file('results/results.html', 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2
@@ -99,10 +96,7 @@ def runtests(
         except ImportError:
             print 'Please install junitxml to use XML output'
             sys.exit(1)
-        try:
-            os.makedirs('results')
-        except OSError:
-            pass  # already exists
+        _make_dir('results')
         fp = file('results/results.xml', 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
@@ -123,6 +117,15 @@ def _get_full_path(path):
     )
 
 
+def _make_dir(dir):
+    """
+    Make directory if it does not exist."""
+    try:
+        os.makedirs(dir)
+    except OSError:
+        pass  # already exists
+        
+        
 def find_shared_directory(test_dir, shared_directory):
     """This function is responsible for finding the shared directory.
     It implements the following rule:
@@ -223,7 +226,6 @@ def get_case(
             set_wait_timeout(5, 0.1)
         finally:
             actions.VERBOSE = original
-
         start(browser_type, js_disabled)
     def tearDown(self):
         sys.path.remove(test_dir)
@@ -235,9 +237,11 @@ def get_case(
             exec self.code in context
         except EndTest:
             pass
-        except Exception as e:
+        except Exception:
             if screenshots_on:
-                take_screenshot(filename='screenshot_%s_%s.png' % (entry[:-3], time.time()))
+                filename = 'screenshot-%s-%s.png' % (datetime.datetime.now(), entry[:-3])
+                filename = filename.replace(' ', '_') 
+                take_screenshot(filename)
             raise
     def run(self, result=None):
         # Had to move some bits from original implementation of TestCase.run to
