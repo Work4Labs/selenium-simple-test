@@ -179,8 +179,13 @@ def take_screenshot(filename='screenshot.png'):
 def _make_dir(dir):
     """
     Make directory if it does not exist."""
+    path = os.path.normpath(
+        os.path.abspath(
+            os.path.join(os.getcwd(), dir)
+            )
+        )
     try:
-        os.makedirs(dir)
+        os.makedirs(path)
     except OSError:
         pass  # already exists
         

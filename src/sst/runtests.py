@@ -118,10 +118,8 @@ def _get_full_path(path):
 
 
 def _make_dir(dir):
-    """
-    Make directory if it does not exist."""
     try:
-        os.makedirs(dir)
+        os.makedirs( _get_full_path(dir))
     except OSError:
         pass  # already exists
         
