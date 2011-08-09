@@ -83,7 +83,7 @@ def runtests(
 
     if report_format == 'html':
         import HTMLTestRunner
-        _make_dir('results')
+        _make_results_dir()
         fp = file('results/results.html', 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2
@@ -96,7 +96,7 @@ def runtests(
         except ImportError:
             print 'Please install junitxml to use XML output'
             sys.exit(1)
-        _make_dir('results')
+        _make_results_dir()
         fp = file('results/results.xml', 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
@@ -117,11 +117,14 @@ def _get_full_path(path):
     )
 
 
-def _make_dir(dir):
+def _make_results_dir():
+    dir = _get_full_path('results')
+    config.results_directory = dir
     try:
-        os.makedirs( _get_full_path(dir))
+        os.makedirs(dir)
     except OSError:
         pass  # already exists
+    
         
         
 def find_shared_directory(test_dir, shared_directory):

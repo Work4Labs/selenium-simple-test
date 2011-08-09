@@ -12,10 +12,14 @@ The `sst.config` module has the following information::
     # full path to the shared directory
     config.shared_directory
 
+    # full path to the results directory
+    config.results_directory
+    
 """
 
 browser_type = None
 _current_context = None
 javascript_disabled = False
 shared_directory = None
+results_directory = None
 __args__ = {}
