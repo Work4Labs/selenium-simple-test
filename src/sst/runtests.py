@@ -86,7 +86,7 @@ def runtests(
     if report_format == 'html':
         import HTMLTestRunner
         _make_results_dir()
-        fp = file('results/results.html', 'wb')
+        fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2
         )
@@ -99,7 +99,7 @@ def runtests(
             print 'Please install junitxml to use XML output'
             sys.exit(1)
         _make_results_dir()
-        fp = file('results/results.xml', 'wb')
+        fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
         alltests.run(result)
