@@ -57,7 +57,9 @@ def runtests(
     shared_directory = find_shared_directory(test_dir, shared_directory)
     config.shared_directory = shared_directory
     sys.path.append(shared_directory)
-
+    
+    config.results_directory = _get_full_path('results')
+    
     found_tests = set()
     test_names = set(test_names)
 
@@ -72,7 +74,7 @@ def runtests(
     )
 
     alltests = TestSuite(suites)
-
+    
     if not alltests.countTestCases():
         print "Error: Didn't find any tests"
         sys.exit(1)
@@ -119,7 +121,6 @@ def _get_full_path(path):
 
 def _make_results_dir():
     dir = _get_full_path('results')
-    config.results_directory = dir
     try:
         os.makedirs(dir)
     except OSError:

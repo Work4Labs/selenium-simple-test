@@ -169,23 +169,19 @@ def stop():
 
 def take_screenshot(filename='screenshot.png'):
     """
-    Takes a screenshot of the browser window. Called automatically on failures when
-    running in `-s` mode."""
+    Takes a screenshot of the browser window. Called automatically on failures 
+    when running in `-s` mode."""
     _print('Capturing Screenshot')
-    _make_dir('results')
-    browser.get_screenshot_as_file('results/%s' % filename)                
+    _make_results_dir()
+    screenshot_file = os.path.join(config.results_directory, filename)
+    browser.get_screenshot_as_file(screenshot_file)                
 
 
-def _make_dir(dir):
+def _make_results_dir():
     """
-    Make directory if it does not exist."""
-    path = os.path.normpath(
-        os.path.abspath(
-            os.path.join(os.getcwd(), dir)
-            )
-        )
+    Make results directory if it does not exist."""
     try:
-        os.makedirs(path)
+        os.makedirs(config.results_directory)
     except OSError:
         pass  # already exists
         
