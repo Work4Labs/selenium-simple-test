@@ -75,10 +75,7 @@ def main():
         display.start()
 
     if cmd_opts.run_tests:
-        cmd_opts.launch_server = True
         cmd_opts.dir_name = 'selftests'
-
-    if cmd_opts.launch_server:
         run_django()
 
     print '----------------------------------------------------------------------'
@@ -95,7 +92,7 @@ def main():
 
     print '----------------------------------------------------------------------'
 
-    if cmd_opts.launch_server:
+    if cmd_opts.run_tests:
         print '\nkilling django...'
         os.system("kill $(ps aux | grep 'manage.py' | awk '{print $2}')")
 
@@ -138,9 +135,6 @@ def get_opts():
     parser.add_option('-j', dest='javascript_disabled',
                       default=False, action='store_true',
                       help='disable javascript in browser')
-    parser.add_option('-s', dest='launch_server',
-                      default=False, action='store_true',
-                      help='launch django server for local SST framework tests')
     parser.add_option('-x', dest='xserver_headless',
                       default=False, action='store_true',
                       help='run tests in headless xserver')
