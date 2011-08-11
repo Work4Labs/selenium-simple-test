@@ -64,13 +64,13 @@ file is variable name mapping)
 
 def main():
     (cmd_opts, args) = get_opts()
-    
+
     clear_old_results()
-    
+
     if cmd_opts.quiet:
         from sst import actions
         actions.VERBOSE = False
-    
+
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
@@ -92,6 +92,7 @@ def main():
         shared_directory=cmd_opts.shared_modules,
         screenshots_on=cmd_opts.screenshots_on,
         failfast=cmd_opts.failfast,
+        debug=cmd_opts.debug,
     )
 
     print '----------------------------------------------------------------------'
@@ -166,6 +167,9 @@ def get_opts():
     parser.add_option('--failfast',
                       action='store_true', default=False,
                       help="stop test execution after first failure")
+    parser.add_option('--debug',
+                      action='store_true', default=False,
+                      help="drop into debugger on test fail or error")
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
 
