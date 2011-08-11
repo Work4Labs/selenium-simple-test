@@ -3,11 +3,6 @@ from sst.actions import *
 
 goto('/')
 
-u = 'שאלק'
-textfield_write('text_1', u)
-text_is('text_1', u)
-text_contains('text_1', u)
-
 u = u'abcdéשאלק'
 textfield_write('text_1', u)
 text_is('text_1', u)
