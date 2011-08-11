@@ -12,4 +12,3 @@ fails(is_link, 'foobar')
 fails(is_link, 'radio_with_id_1')
 
 link_click('the_band_link')
-

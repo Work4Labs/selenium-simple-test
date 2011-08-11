@@ -186,6 +186,7 @@ Options:
   -s                 save screenshots on failures
   --test             run selftests (launches local django server)
   --failfast         stop test execution after first failure
+  --debug            drop into debugger on test fail or error
 
 
 -------------------------

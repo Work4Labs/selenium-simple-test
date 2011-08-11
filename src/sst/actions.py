@@ -43,6 +43,8 @@ import os
 import re
 import time
 
+from pdb import set_trace as debug
+
 from sst import config
 
 from selenium import webdriver
@@ -65,7 +67,7 @@ __all__ = [
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
-    'take_screenshot'
+    'take_screenshot', 'debug'
 ]
 
 
@@ -78,6 +80,9 @@ VERBOSE = True
 
 class EndTest(StandardError):
     pass
+
+
+debug.__doc__ = """Start the debugger (a shortcut for `pdb.set_trace()`."""
 
 
 class _Sentinel(object):
@@ -169,12 +174,12 @@ def stop():
 
 def take_screenshot(filename='screenshot.png'):
     """
-    Takes a screenshot of the browser window. Called automatically on failures 
+    Takes a screenshot of the browser window. Called automatically on failures
     when running in `-s` mode."""
     _print('Capturing Screenshot')
     _make_results_dir()
     screenshot_file = os.path.join(config.results_directory, filename)
-    browser.get_screenshot_as_file(screenshot_file)                
+    browser.get_screenshot_as_file(screenshot_file)
 
 
 def _make_results_dir():
@@ -184,7 +189,7 @@ def _make_results_dir():
         os.makedirs(config.results_directory)
     except OSError:
         pass  # already exists
-        
+
 
 def sleep(secs):
     """
