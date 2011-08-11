@@ -156,7 +156,7 @@ def start(browser_type=None, javascript_disabled=False):
         profile.set_preference('intl.accept_languages', '"en"')
 
     if javascript_disabled:
-        profile.set_preference('javascript.enabled', 'false')
+        profile.set_preference('javascript.enabled', False)
 
     browser = getattr(webdriver, browser_type)(profile)
 
