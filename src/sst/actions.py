@@ -362,15 +362,22 @@ def get_link_url(id_or_elem):
     return link_url
 
 
-def link_click(id_or_elem, check=False):
+def link_click(id_or_elem, check=False, wait=True):
     """
     Click the specified link. As some links do redirects the location you end
     up at is not checked by default. If you pass in `check=True` then this
-    action asserts that the resulting url is the link url."""
+    action asserts that the resulting url is the link url.
+
+    By default this action will wait until a page with a body element is
+    available fter the click. You can switch off this behaviour by passing
+    `wait=False`."""
     _print('Clicking link %r' % id_or_elem)
     link = is_link(id_or_elem)
     link_url = link.get_attribute('href')
     link.click()
+
+    if wait:
+        _waitforbody()
 
     # some links do redirects - so we
     # don't check by default
@@ -437,7 +444,7 @@ def set_wait_timeout(timeout, poll=None):
     _TIMEOUT = timeout
     msg = 'Setting wait timeout to %rs' % timeout
     if poll is not None:
-        msg += ('. Setting poll time to %r' % poll)
+        msg += ('. Setting poll time to %rs' % poll)
         _POLL = poll
     _print(msg)
 
@@ -710,15 +717,24 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 def is_button(id_or_elem):
     """Assert that the specified element is a button."""
     elem = _get_elem(id_or_elem)
+    if elem.tag_name == 'button':
+        return elem
     _elem_is_type(elem, id_or_elem, 'submit')
     return elem
 
 
-def button_click(id_or_elem):
-    """Click the specified button."""
+def button_click(id_or_elem, wait=True):
+    """Click the specified button.
+
+    By default this action will wait until a page with a body element is
+    available fter the click. You can switch off this behaviour by passing
+    `wait=False`."""
     _print('Clicking button %r' % id_or_elem)
     button = is_button(id_or_elem)
     button.click()
+
+    if wait:
+        _waitforbody()
 
 
 def get_elements_by_css(selector):
@@ -736,3 +752,7 @@ def get_element_by_css(selector):
         msg = 'Could not identify element: %s elements found' % len(elements)
         _raise(msg)
     return elements[0]
+
+
+def _waitforbody():
+    waitfor(get_element, tag='body')

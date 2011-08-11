@@ -6,7 +6,7 @@ def index(request):
 
 
 def begin(request):
-    return render_to_response('index.html', {'title': 'The Next Page'})
+    return render_to_response('begin.html', {'title': 'The Next Page'})
 
 
 def nojs(request):
