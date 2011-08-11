@@ -120,9 +120,8 @@ def _get_full_path(path):
 
 
 def _make_results_dir():
-    dir = _get_full_path('results')
     try:
-        os.makedirs(dir)
+        os.makedirs(config.results_directory)
     except OSError:
         pass  # already exists
     
