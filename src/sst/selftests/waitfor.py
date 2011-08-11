@@ -24,7 +24,7 @@ def get_condition(result=True, wait=0, raises=False,
     return condition
 
 goto('/')
-set_wait_timeout(1)
+set_wait_timeout(0.1)
 
 waitfor(get_condition(True))
 fails(waitfor, get_condition(False))
@@ -39,17 +39,17 @@ waitfor(url_is, url='/')
 fails(waitfor, url_is, url='/thing')
 
 CALLS = 0
-fails(waitfor, get_condition(wait=2))
+set_wait_timeout(0.1, 0.01)
+fails(waitfor, get_condition(wait=0.2))
 assert CALLS > 6
 
-fails(waitfor, get_condition(wait=2, raises=True))
+fails(waitfor, get_condition(wait=0.2, raises=True))
 
-set_wait_timeout(5)
-waitfor(get_condition(wait=2))
-waitfor(get_condition(wait=2, raises=True))
+set_wait_timeout(0.5)
+waitfor(get_condition(wait=0.2))
+waitfor(get_condition(wait=0.2, raises=True))
 
-set_wait_timeout(3, 1)
+set_wait_timeout(0.3, 0.1)
 CALLS = 0
-waitfor(get_condition(wait=2))
+waitfor(get_condition(wait=0.2))
 assert CALLS <= 3
-
