@@ -140,7 +140,9 @@ def _print(text):
         print text
 
 
-def start(browser_type=None, javascript_disabled=False):
+def start(browser_type=None, browser_version='',
+          browser_platform='ANY', session_name='',
+          javascript_disabled=False, webdriver_remote=None):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""
@@ -150,15 +152,24 @@ def start(browser_type=None, javascript_disabled=False):
         browser_type = config.browser_type
 
     _print('\nStarting %s:' % browser_type)
-    profile = getattr(webdriver, '%sProfile' % browser_type)()
+    if webdriver_remote is None:
+        profile = getattr(webdriver, '%sProfile' % browser_type)()
 
-    if browser_type == 'Firefox':
-        profile.set_preference('intl.accept_languages', '"en"')
+        if browser_type == 'Firefox':
+            profile.set_preference('intl.accept_languages', '"en"')
 
-    if javascript_disabled:
-        profile.set_preference('javascript.enabled', False)
+        if javascript_disabled:
+            profile.set_preference('javascript.enabled', False)
 
-    browser = getattr(webdriver, browser_type)(profile)
+        browser = getattr(webdriver, browser_type)(profile)
+    else:
+        desired_capabilities = {"browserName": browser_type,
+                                "platform": browser_platform,
+                                "version": browser_version,
+                                "javascriptEnabled": not javascript_disabled,
+                                "name": session_name}
+        browser = webdriver.Remote(desired_capabilities=desired_capabilities,
+                                   command_executor=webdriver_remote)
 
 
 def stop():

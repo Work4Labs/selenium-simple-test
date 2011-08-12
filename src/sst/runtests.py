@@ -38,12 +38,12 @@ __all__ = ['runtests']
 
 
 
-def runtests(
-        test_names, test_dir='tests', report_format='console',
-        browser_type='Firefox', javascript_disabled=False,
-        shared_directory=None, screenshots_on=False, failfast=False,
-        debug=False,
-    ):
+def runtests(test_names, test_dir='tests', report_format='console',
+             browser_type='Firefox', browser_version='',
+             browser_platform='ANY', session_name=None,
+             javascript_disabled=False, webdriver_remote=None,
+             shared_directory=None, screenshots_on=False, failfast=False,
+             debug=False):
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
         # selftests should be a command instead
@@ -67,8 +67,9 @@ def runtests(
 
     suites = (
         get_suite(
-            test_names, root, browser_type, javascript_disabled,
-            screenshots_on, found_tests, failfast, debug
+            test_names, root, browser_type, browser_version,
+            browser_platform, session_name, javascript_disabled,
+            webdriver_remote, screenshots_on, found_tests, failfast, debug
         )
         for root, _, _ in os.walk(test_dir)
         if os.path.abspath(root) != shared_directory and
@@ -168,10 +169,9 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def get_suite(
-        test_names, test_dir, browser_type, javascript_disabled,
-        screenshots_on, found, failfast, debug
-    ):
+def get_suite(test_names, test_dir, browser_type, browser_version,
+              browser_platform, session_name, javascript_disabled,
+              webdriver_remote, screenshots_on, found, failfast, debug):
     suite = TestSuite()
     dir_list = os.listdir(test_dir)
 
@@ -193,26 +193,29 @@ def get_suite(
                 # row is a dictionary of variables
                 suite.addTest(
                     get_case(
-                        test_dir, entry, browser_type, javascript_disabled,
-                        screenshots_on, row, failfast=failfast,
-                        debug=debug
+                        test_dir, entry, browser_type, browser_version,
+                        browser_platform, session_name, javascript_disabled,
+                        webdriver_remote, screenshots_on, row,
+                        failfast=failfast, debug=debug
                     )
                 )
         else:
             suite.addTest(
                 get_case(
-                    test_dir, entry, browser_type, javascript_disabled,
-                    screenshots_on, failfast=failfast, debug=debug
+                    test_dir, entry, browser_type, browser_version,
+                    browser_platform, session_name, javascript_disabled,
+                    webdriver_remote, screenshots_on,
+                    failfast=failfast, debug=debug
                 )
             )
 
     return suite
 
 
-def get_case(
-        test_dir, entry, browser_type, javascript_disabled, screenshots_on,
-        context=None, failfast=False, debug=False
-    ):
+def get_case(test_dir, entry, browser_type, browser_version,
+             browser_platform, session_name, javascript_disabled,
+             webdriver_remote, screenshots_on,
+             context=None, failfast=False, debug=False):
     context_provided = context is not None
     context = context or {}
     path = os.path.join(test_dir, entry)
@@ -232,7 +235,8 @@ def get_case(
             set_wait_timeout(5, 0.1)
         finally:
             actions.VERBOSE = original
-        start(browser_type, js_disabled)
+        start(browser_type, browser_version, browser_platform,
+              session_name, js_disabled, webdriver_remote)
     def tearDown(self):
         sys.path.remove(test_dir)
         stop()

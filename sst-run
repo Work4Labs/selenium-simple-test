@@ -88,6 +88,10 @@ def main():
         test_dir=cmd_opts.dir_name,
         report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type,
+        browser_version=cmd_opts.browser_version,
+        browser_platform=cmd_opts.browser_platform,
+        session_name=cmd_opts.session_name,
+        webdriver_remote=cmd_opts.webdriver_remote,
         javascript_disabled=cmd_opts.javascript_disabled,
         shared_directory=cmd_opts.shared_modules,
         screenshots_on=cmd_opts.screenshots_on,
@@ -144,7 +148,24 @@ def get_opts():
                       help='results report format (html, xml, console)')
     parser.add_option('-b', dest='browser_type',
                       default='Firefox',
-                      help='select webdriver (Firefox, Chrome, InternetExplorer, etc)')
+                      help=('select webdriver (Firefox, Chrome, '
+                            'InternetExplorer, etc)'))
+    parser.add_option('-p', dest='browser_platform',
+                      default='ANY',
+                      help='desired platform, when using a remote Selenium')
+    parser.add_option('-V', dest='browser_version',
+                      default='',
+                      help=('desired browser version, when using a '
+                            'remote Selenium'))
+    parser.add_option('-n', dest='session_name',
+                      default=None,
+                      help=('identifier for this test run session, '
+                            'when using a remote Selenium'))
+    parser.add_option('-R', dest='webdriver_remote',
+                      default=None,
+                      help=('url to WebDriver endpoint '
+                            '(eg: http://host:port/wd/hub), '
+                            'when using a remote Selenium'))
     parser.add_option('-j', dest='javascript_disabled',
                       default=False, action='store_true',
                       help='disable javascript in browser')
