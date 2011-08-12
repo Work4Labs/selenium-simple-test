@@ -323,12 +323,6 @@ def is_textfield(id_or_elem):
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, *_textfields)
     return elem
-
-
-def _encode(text):
-    if isinstance(text, unicode):
-        text = text.encode('utf-8')
-    return text
         
     
 def textfield_write(id_or_elem, new_text, check=True):
@@ -337,7 +331,6 @@ def textfield_write(id_or_elem, new_text, check=True):
     textfield contents after writing are different to the specified text) this
     function will fail. You can switch off the checking by passing
     `check=False`."""
-    new_text = _encode(new_text)
     _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = is_textfield(id_or_elem)
     textfield.clear()
@@ -345,7 +338,7 @@ def textfield_write(id_or_elem, new_text, check=True):
     if not check:
         return
     _print('Check text wrote correctly')
-    current_text = _encode(textfield.get_attribute('value'))
+    current_text = textfield.get_attribute('value')
     msg = 'Textfield: %r - did not write. Text was: %r' % (id_or_elem, current_text)
     if current_text != new_text:
         _raise(msg)
@@ -621,8 +614,6 @@ def text_is(id_or_elem, text):
     if real is None:
         msg = 'Element %r has no text attribute' % id_or_elem
         _raise(msg)
-    real = _encode(real)
-    text = _encode(text)
     if real != text:
         msg = 'Element text should be %r.\nIt is %r.' % (text, real)
         _raise(msg)
@@ -635,8 +626,6 @@ def text_contains(id_or_elem, text, regex=False):
     if real is None:
         msg = 'Element %r has no text attribute' % id_or_elem
         _raise(msg)
-    real = _encode(real)
-    text = _encode(text)
     msg = 'Element text is %r. Does not contain %r' % (real, text)
     if regex:
         if not re.search(text, real):
