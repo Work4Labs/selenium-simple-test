@@ -20,10 +20,7 @@
 
 
 import os
-import subprocess
 import sys
-import time
-import urllib
 
 try:
     # installed
@@ -34,7 +31,7 @@ except ImportError:
     sys.path.append(os.path.join(this_dir, 'src'))
     import sst
 
-from sst.command import get_run_options, clear_old_results
+from sst.command import get_remote_options, clear_old_results
 
 
 def main():
@@ -46,16 +43,6 @@ def main():
         from sst import actions
         actions.VERBOSE = False
 
-    if cmd_opts.xserver_headless:
-        from pyvirtualdisplay import Display
-        print '\nstarting virtual display...'
-        display = Display(visible=0, size=(1024, 768))
-        display.start()
-
-    if cmd_opts.run_tests:
-        cmd_opts.dir_name = 'selftests'
-        run_django()
-
     print '----------------------------------------------------------------------'
 
     sst.runtests(
@@ -66,7 +53,7 @@ def main():
         browser_version=cmd_opts.browser_version,
         browser_platform=cmd_opts.browser_platform,
         session_name=cmd_opts.session_name,
-        webdriver_remote=cmd_opts.webdriver_remote,
+        webdriver_remote_url=cmd_opts.webdriver_remote_url,
         javascript_disabled=cmd_opts.javascript_disabled,
         shared_directory=cmd_opts.shared_modules,
         screenshots_on=cmd_opts.screenshots_on,
@@ -76,37 +63,9 @@ def main():
 
     print '----------------------------------------------------------------------'
 
-    if cmd_opts.run_tests:
-        print '\nkilling django...'
-        os.system("kill $(ps aux | grep 'manage.py' | awk '{print $2}')")
-
-    if cmd_opts.xserver_headless:
-        print '\nstopping virtual display...\n'
-        display.stop()
-
-
-
-def run_django():
-    subprocess.Popen(['./src/testproject/manage.py', 'runserver'],
-        stderr=open(os.devnull, 'w'),
-        stdout=open(os.devnull, 'w')
-        )
-    print '----------------------------------------------------------------------'
-    print 'waiting for django to come up...'
-    while True:
-        try:
-            resp = urllib.urlopen('http://localhost:8000/')
-            if resp.code == 200:
-                break
-        except IOError:
-            time.sleep(0.2)
-    print 'django found. continuing...'
-    return
-
-
 
 def get_opts():
-    parser = get_run_options()
+    parser = get_remote_options()
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
 
