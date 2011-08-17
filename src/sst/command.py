@@ -117,5 +117,5 @@ def get_remote_options():
                       default=None,
                       help=('url to WebDriver endpoint '
                             '(eg: http://host:port/wd/hub), '
-                            'when using a remote Selenium'))
+                            'when using a remote Selenium RC'))
     return parser
