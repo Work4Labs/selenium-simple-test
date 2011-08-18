@@ -204,6 +204,16 @@ password on the url below::
 
     $./sst-remote -d examples -u http://<your-user>:<your-api-key>@ondemand.saucelabs.com:80/wd/hub
 
+If you want to use a local Selenium RC server instead, get the
+'selenium-server-standalone-<version>.jar' file from
+'http://code.google.com/p/selenium/downloads/list' and fire up a server with::
+
+    $java -jar selenium-server-standalone-<version>.jar
+
+Then in another terminal run 'sst-remote' with::
+
+    $./sst-remote -d examples -u http://127.0.0.1:4444/wd/hub
+
 -----------------------------------
 Command line options for sst-remote
 -----------------------------------
@@ -211,7 +221,7 @@ Command line options for sst-remote
 Usage: sst-remote [testname]
 
 - Calling sst-remote without any arguments runs all tests in
-the local 'test' directory.
+the local 'tests' directory.
 
 - Calling sst-remote with testname(s) as arguments will just run
 those tests. The testnames should not include the '.py' at
@@ -228,18 +238,19 @@ Options:
   -h, --help            show this help message and exit
   -d DIR_NAME           directory of test case files
   -r REPORT_FORMAT      results report format (html, xml, console)
-  -b BROWSER_TYPE       select webdriver (Firefox, Chrome, InternetExplorer,
-                        etc)
+  -b BROWSER_TYPE       select remote browser (firefox, googlechrome, 
+                        iexplorer, etc)
   -j                    disable javascript in browser
   -m SHARED_MODULES     directory for shared modules
   -q                    output less debugging info during test run
   -s                    save screenshots on failures
   --failfast            stop test execution after first failure
   --debug               drop into debugger on test fail or error
-  -p BROWSER_PLATFORM   desired platform, when using a remote Selenium
+  -p BROWSER_PLATFORM   desired platform (XP, VISTA, LINUX), when using a 
+                        remote Selenium RC
   -v BROWSER_VERSION    desired browser version, when using a remote Selenium
   -n SESSION_NAME       identifier for this test run session, when using a
-                        remote Selenium
+                        remote Selenium RC
   -u WEBDRIVER_REMOTE_URL
                         url to WebDriver endpoint (eg:
                         http://host:port/wd/hub), when using a remote Selenium RC

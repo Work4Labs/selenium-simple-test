@@ -163,8 +163,8 @@ def start(browser_type=None, browser_version='',
 
         browser = getattr(webdriver, browser_type)(profile)
     else:
-        desired_capabilities = {"browserName": browser_type,
-                                "platform": browser_platform,
+        desired_capabilities = {"browserName": browser_type.lower(),
+                                "platform": browser_platform.upper(),
                                 "version": browser_version,
                                 "javascriptEnabled": not javascript_disabled,
                                 "name": session_name}

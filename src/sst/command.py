@@ -34,7 +34,7 @@ except ImportError as e:
 usage = """Usage: %prog [testname]
 
 - Calling %prog without any arguments runs all tests in
-the local 'test' directory.
+the local 'tests' directory.
 
 - Calling %prog with testname(s) as arguments will just run
 those tests. The testnames should not include the '.py' at
@@ -104,7 +104,8 @@ def get_remote_options():
     parser = get_common_options()
     parser.add_option('-p', dest='browser_platform',
                       default='ANY',
-                      help='desired platform, when using a remote Selenium')
+                      help=('desired platform (XP, VISTA, LINUX, etc), '
+                            'when using a remote Selenium RC'))
     parser.add_option('-v', dest='browser_version',
                       default='',
                       help=('desired browser version, when using a '
@@ -112,7 +113,7 @@ def get_remote_options():
     parser.add_option('-n', dest='session_name',
                       default=None,
                       help=('identifier for this test run session, '
-                            'when using a remote Selenium'))
+                            'when using a remote Selenium RC'))
     parser.add_option('-u', dest='webdriver_remote_url',
                       default=None,
                       help=('url to WebDriver endpoint '
