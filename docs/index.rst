@@ -220,18 +220,18 @@ Command line options for sst-remote
 
 Usage: sst-remote [testname]
 
-- Calling sst-remote without any arguments runs all tests in
-the local 'tests' directory.
+* Calling sst-remote without any arguments runs all tests in
+  the local 'tests' directory.
 
-- Calling sst-remote with testname(s) as arguments will just run
-those tests. The testnames should not include the '.py' at
-the end of the filename.
+* Calling sst-remote with testname(s) as arguments will just run
+  those tests. The testnames should not include the '.py' at
+  the end of the filename.
 
-- You may optionally create a data file for data-driven
-testing.  Create a '^' delimited txt data file with the same
-name as the test, plus the '.csv' extension.  This will
-run a test using each row in the data file (1st row of data
-file is variable name mapping)
+* You may optionally create a data file for data-driven
+  testing.  Create a '^' delimited txt data file with the same
+  name as the test, plus the '.csv' extension.  This will
+  run a test using each row in the data file (1st row of data
+  file is variable name mapping)
 
 
 Options:
