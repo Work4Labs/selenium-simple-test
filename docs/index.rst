@@ -60,7 +60,7 @@ reported on the launchpad project.
     License
 -----------
 
-SST is Free Open Source Software, **Apache2** Licensed.
+SST is Free Open Source Software, Apache2 Licensed.
 
 
 -------------------------------
@@ -133,9 +133,9 @@ Create a .py file in the 'selenium-simple-test/tests' directory, and add your co
 Then call your test from the command line, using sst-run (located inside your
 'selenium-simple-test' directory)::
 
-    $./sst-run mytest.py
+    $./sst-run mytest
     or
-    $ python sst-run mytest.py
+    $ python sst-run mytest
 
 
 ------------------------
@@ -271,7 +271,7 @@ For example, a simple test setup might look like::
 
 and you would call this from the command line::
 
-    $./sst-run -d mytests
+    $ ./sst-run -d mytests
 
 A more complex setup might look like::
 
@@ -289,7 +289,7 @@ A more complex setup might look like::
 
 and you would still call this from the command like::
 
-    $./sst-run -d mytests
+    $ ./sst-run -d mytests
 
 SST will find all of the tests in subdirectories and execute them. SST won't look
 in directories starting with an underscore. This allows you to put Python packages
