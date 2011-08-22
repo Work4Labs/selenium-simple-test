@@ -12,7 +12,7 @@ import os
 
 NAME = 'sst'
 PACKAGES = ['sst', 'sst.selftests']
-SCRIPTS = ['sst-run']
+SCRIPTS = ['sst-run', 'sst-remote']
 DESCRIPTION = 'Selenium Simple Test Framework'
 URL = 'https://launchpad.net/selenium-simple-test'
 
