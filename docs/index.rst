@@ -31,9 +31,9 @@ SST consists of:
 At runtime, scripts are converted to a standard Python unittest suite and executed.
 
 
----------------------
- Download and Install
----------------------
+------------------------
+    Download and Install
+------------------------
 
 SST can be pip installed!
 
@@ -99,9 +99,9 @@ SST depends on Selenium (2.x), so first make sure Selenium/Webdriver is working 
  * this should open your Firefox browser and navigate to the Ubuntu homepage.
 
 
------------------------
-Example SST test script
------------------------
+---------------------------
+    Example SST test script
+---------------------------
 
 a sample test case in SST::
 
@@ -124,19 +124,20 @@ SST provides a large set of "actions" for you to us in your tests.
    actions
 
 
---------------------------------
-Running your first test with SST
---------------------------------
+------------------------------------
+    Running your first test with SST
+------------------------------------
 
 Create a .py file in the 'selenium-simple-test/tests' directory, and add your code.
 
 Then call your test from the command line, using sst-run (located inside your
 'selenium-simple-test' directory)::
 
-    $./sst-run mytest
+    $ ./sst-run mytest
     or
     $ python sst-run mytest
 
+* note you don't add the .py extension to your tests.
 
 ------------------------
     Running the examples
@@ -144,7 +145,7 @@ Then call your test from the command line, using sst-run (located inside your
 
 SST ships with a few trivial example scripts.  You can run them like this::
 
-    $./sst-run -d examples
+    $ ./sst-run -d examples
 
 
 --------------------------
@@ -155,7 +156,7 @@ SST ships with a set of self-tests based on a test Django project.
 
 You can run the suite of self tests (and the test django server) like this::
 
-    $./sst-run --test
+    $ ./sst-run --test
 
 
 --------------------------------
@@ -188,9 +189,9 @@ Options:
   --failfast         stop test execution after first failure
   --debug            drop into debugger on test fail or error
 
----------------------------------
-Using a remote Selenium RC server
----------------------------------
+-------------------------------------
+    Using a remote Selenium RC server
+-------------------------------------
 
 SST also supports running tests through a Selenium RC server, which amongst
 other things allows for running your tests in the cloud through SauceLabs'
@@ -202,21 +203,21 @@ your API key, then just like above, run the example tests by simply providing
 the url for SauceLabs' server on the command line, replacing your username and
 password on the url below::
 
-    $./sst-remote -d examples -u http://<your-user>:<your-api-key>@ondemand.saucelabs.com:80/wd/hub
+    $ ./sst-remote -d examples -u http://<your-user>:<your-api-key>@ondemand.saucelabs.com:80/wd/hub
 
 If you want to use a local Selenium RC server instead, get the
 'selenium-server-standalone-<version>.jar' file from
 'http://code.google.com/p/selenium/downloads/list' and fire up a server with::
 
-    $java -jar selenium-server-standalone-<version>.jar
+    $ java -jar selenium-server-standalone-<version>.jar
 
 Then in another terminal run 'sst-remote' with::
 
-    $./sst-remote -d examples -u http://127.0.0.1:4444/wd/hub
+    $ ./sst-remote -d examples -u http://127.0.0.1:4444/wd/hub
 
------------------------------------
-Command line options for sst-remote
------------------------------------
+---------------------------------------
+    Command line options for sst-remote
+---------------------------------------
 
 Usage: sst-remote [testname]
 
@@ -297,9 +298,9 @@ directly in your test directories if you want. A better option is to use the
 shared directory.
 
 
------------------
- Shared directory
------------------
+--------------------
+    Shared directory
+--------------------
 
 SST allows you to have a directory called `shared` in the top level directory
 of your tests, which is added to `sys.path`. Here you can keep helper modules
@@ -315,7 +316,7 @@ walk up from the test directory to the current directory looking for one. This
 allows you to run tests just from a subdirectory without having to explicitly
 specify where the shared directory is::
 
-    ./sst-run -d tests/some/subdirectory
+    $ ./sst-run -d tests/some/subdirectory
 
 
 ----------------------
@@ -365,3 +366,4 @@ Version 0.1.0 -- 2011/08/05
 ---------------------------
 
 * Initial release
+
