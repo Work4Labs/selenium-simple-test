@@ -67,7 +67,7 @@ __all__ = [
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
-    'take_screenshot', 'debug'
+    'take_screenshot', 'debug', 'get_page_source'
 ]
 
 
@@ -767,3 +767,8 @@ def get_element_by_css(selector):
 
 def _waitforbody():
     waitfor(get_element, tag='body')
+
+
+def get_page_source():
+    """Gets the source of the current page."""
+    return browser.page_source
