@@ -48,6 +48,7 @@ from pdb import set_trace as debug
 from sst import config
 
 from selenium import webdriver
+from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
@@ -67,7 +68,7 @@ __all__ = [
     'select_value_is', 'set_select', 'get_link_url', 'exists_element',
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
-    'take_screenshot', 'debug', 'get_page_source'
+    'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
 ]
 
 
@@ -320,6 +321,24 @@ def checkbox_set(id_or_elem, new_value):
     current_value = checkbox.is_selected()
     if new_value != current_value:
         checkbox_toggle(id_or_elem)
+
+
+def make_keycode(key_to_make):
+    """
+    Take a key and return a keycode"""
+    k = keys.Keys()
+    keycode = k.__getattribute__(key_to_make.upper())
+    return keycode
+
+
+def simulate_keys(id_or_elem, key_to_press):
+    """
+    Assert that the element is available.  Simulate keys pressed in current 
+    window or element. Constructs the key object for send_keys"""
+    key_element = _get_elem(id_or_elem)
+    _print('Simulating keypress on %r with %r key' % (id_or_elem, key_to_press))
+    key_code = make_keycode(key_to_press)
+    key_element.send_keys(key_code)
 
 
 _textfields = (
