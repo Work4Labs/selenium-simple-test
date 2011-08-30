@@ -9,7 +9,7 @@ title_is('The Page Title')
 textfield_write('text_1', 'Foobar..')
 
 simulate_keys('text_1', 'BACK_SPACE')
-simulate_keys('text_1', 'back_space')
+simulate_keys('text_1', 'back_space')  # not case sensitive
 simulate_keys('text_1', 'SPACE')
 simulate_keys('text_1', 'Space')
 
