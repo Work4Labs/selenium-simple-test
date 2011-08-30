@@ -323,7 +323,7 @@ def checkbox_set(id_or_elem, new_value):
         checkbox_toggle(id_or_elem)
 
 
-def make_keycode(key_to_make):
+def _make_keycode(key_to_make):
     """
     Take a key and return a keycode"""
     k = keys.Keys()
