@@ -337,7 +337,7 @@ def simulate_keys(id_or_elem, key_to_press):
     window or element. Constructs the key object for send_keys"""
     key_element = _get_elem(id_or_elem)
     _print('Simulating keypress on %r with %r key' % (id_or_elem, key_to_press))
-    key_code = make_keycode(key_to_press)
+    key_code = _make_keycode(key_to_press)
     key_element.send_keys(key_code)
 
 
