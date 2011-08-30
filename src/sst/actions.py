@@ -333,8 +333,13 @@ def _make_keycode(key_to_make):
 
 def simulate_keys(id_or_elem, key_to_press):
     """
-    Assert that the element is available.  Simulate keys pressed in current 
-    window or element. Constructs the key object for send_keys"""
+    Simulate key sent to specified element.  (available keys located in `selenium/webdriver/common/keys.py`).
+    
+    e.g.::
+    
+        simulate_keys('text_1', 'BACK_SPACE')
+        
+    """
     key_element = _get_elem(id_or_elem)
     _print('Simulating keypress on %r with %r key' % (id_or_elem, key_to_press))
     key_code = _make_keycode(key_to_press)
