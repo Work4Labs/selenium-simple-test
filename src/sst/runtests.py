@@ -103,7 +103,7 @@ def runtests(test_names, test_dir='tests', report_format='console',
             print 'Please install junitxml to use XML output'
             sys.exit(1)
         _make_results_dir()
-        fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
+        fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
         alltests.run(result)
