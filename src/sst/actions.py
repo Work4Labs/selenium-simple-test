@@ -463,7 +463,7 @@ def url_contains(text, regex=False):
             _raise(msg)
 
 
-_TIMEOUT = 5
+_TIMEOUT = 10
 _POLL = 0.1
 
 def set_wait_timeout(timeout, poll=None):
