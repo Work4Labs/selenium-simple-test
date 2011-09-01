@@ -469,7 +469,7 @@ _POLL = 0.1
 def set_wait_timeout(timeout, poll=None):
     """
     Set the timeout, in seconds, used by`waitfor`. The default at the start of
-    a test is always 5 seconds.
+    a test is always 10 seconds.
 
     The optional second argument, is how long (in seconds) `waitfor` should
     wait in between checking its condition (the poll frequency). The default
