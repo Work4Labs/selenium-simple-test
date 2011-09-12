@@ -420,7 +420,7 @@ def link_click(id_or_elem, check=False, wait=True):
     if check:
         url_is(link_url)
 
-def element_click(id_or_elem, check=False, wait=True):
+def element_click(id_or_elem, wait=True):
     """
     Click on an element of any kind not specific to links or buttons.
 
