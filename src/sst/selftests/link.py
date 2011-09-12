@@ -16,3 +16,4 @@ url_is('/begin')
 
 link_click('the_band_link')
 url_is('/')
+

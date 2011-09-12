@@ -69,6 +69,7 @@ __all__ = [
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
+    'element_click',
 ]
 
 
@@ -418,6 +419,20 @@ def link_click(id_or_elem, check=False, wait=True):
     # don't check by default
     if check:
         url_is(link_url)
+
+def element_click(id_or_elem, wait=True):
+    """
+    Click on an element of any kind not specific to links or buttons.
+
+    By default this action will wait until a page with a body element is
+    available after the click. You can switch off this behaviour by passing
+    `wait=False`."""
+
+    _print('Clicking element %r' % id_or_elem)
+    id_or_elem.click()
+
+    if wait:
+        _waitforbody()
 
 
 def title_is(title):
