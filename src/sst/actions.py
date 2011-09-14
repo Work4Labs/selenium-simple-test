@@ -405,7 +405,7 @@ def link_click(id_or_elem, check=False, wait=True):
     action asserts that the resulting url is the link url.
 
     By default this action will wait until a page with a body element is
-    available fter the click. You can switch off this behaviour by passing
+    available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     _print('Clicking link %r' % id_or_elem)
     link = is_link(id_or_elem)
@@ -777,7 +777,7 @@ def button_click(id_or_elem, wait=True):
     """Click the specified button.
 
     By default this action will wait until a page with a body element is
-    available fter the click. You can switch off this behaviour by passing
+    available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     _print('Clicking button %r' % id_or_elem)
     button = is_button(id_or_elem)
