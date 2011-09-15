@@ -69,7 +69,7 @@ __all__ = [
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
-    'element_click',
+    'element_click', 'get_element_by_xpath', 'get_elements_by_xpath',
 ]
 
 
@@ -798,6 +798,23 @@ def get_elements_by_css(selector):
 def get_element_by_css(selector):
     """Find an element by css selector."""
     elements = get_elements_by_css(selector)
+    if len(elements) != 1:
+        msg = 'Could not identify element: %s elements found' % len(elements)
+        _raise(msg)
+    return elements[0]
+
+
+def get_elements_by_xpath(selector):
+    """Find all elements that match a xpath."""
+    try:
+        return browser.find_elements_by_xpath(selector)
+    except (WebDriverException, NoSuchElementException) as e:
+        _raise('Error finding elements: (%s)' % (e,))
+
+
+def get_element_by_xpath(selector):
+    """Find an element by xpath."""
+    elements = get_elements_by_xpath(selector)
     if len(elements) != 1:
         msg = 'Could not identify element: %s elements found' % len(elements)
         _raise(msg)
