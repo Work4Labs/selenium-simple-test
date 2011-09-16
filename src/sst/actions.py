@@ -219,7 +219,6 @@ def _fix_url(url):
     return url
 
 
-
 def get_argument(name, default=_sentinel):
     """
     Get an argument from the one the test was called with.
@@ -419,6 +418,7 @@ def link_click(id_or_elem, check=False, wait=True):
     # don't check by default
     if check:
         url_is(link_url)
+
 
 def element_click(id_or_elem, wait=True):
     """
@@ -805,7 +805,7 @@ def get_element_by_css(selector):
 
 
 def get_elements_by_xpath(selector):
-    """Find all elements that match a xpath."""
+    """Find all elements that match an xpath."""
     try:
         return browser.find_elements_by_xpath(selector)
     except (WebDriverException, NoSuchElementException) as e:
