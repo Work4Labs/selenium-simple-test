@@ -154,16 +154,17 @@ def start(browser_type=None, browser_version='',
         browser_type = config.browser_type
 
     _print('\nStarting %s:' % browser_type)
+    
     if webdriver_remote is None:
-        profile = getattr(webdriver, '%sProfile' % browser_type)()
-
         if browser_type == 'Firefox':
+            # profile features are FF only
+            profile = getattr(webdriver, '%sProfile' % browser_type)()
             profile.set_preference('intl.accept_languages', '"en"')
-
-        if javascript_disabled:
-            profile.set_preference('javascript.enabled', False)
-
-        browser = getattr(webdriver, browser_type)(profile)
+            if javascript_disabled:
+                profile.set_preference('javascript.enabled', False)
+            browser = getattr(webdriver, browser_type)(profile)
+        else:
+            browser = getattr(webdriver, browser_type)()
     else:
         desired_capabilities = {"browserName": browser_type.lower(),
                                 "platform": browser_platform.upper(),
