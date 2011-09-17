@@ -35,3 +35,4 @@ text_is('text_1', '')
 textfield_write('pass_1', 'qaT3st')
 text_is('pass_1', 'qaT3st')
 fails(text_is, 'pass_1', 'fake_text')
+
