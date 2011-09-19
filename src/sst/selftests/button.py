@@ -15,3 +15,13 @@ button_click('lonely', wait=False)
 button_click('mainform')
 url_is('/begin')
 title_is('The Next Page')
+
+link_click('the_band_link')
+url_is('/')
+
+link_click('longscroll_link')
+url_is('/longscroll')
+
+# button is initially scrolled out of view
+button_click('mainform')
+url_is('/begin')

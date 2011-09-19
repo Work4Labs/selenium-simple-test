@@ -9,6 +9,10 @@ def begin(request):
     return render_to_response('begin.html', {'title': 'The Next Page'})
 
 
+def longscroll(request):
+    return render_to_response('longscroll.html', {'title': 'Long Scroll Page'})
+    
+
 def nojs(request):
     return render_to_response('nojs.html', {'title': 'No JavaScript Test'})
 
