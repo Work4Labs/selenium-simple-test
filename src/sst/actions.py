@@ -428,9 +428,9 @@ def element_click(id_or_elem, wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
-
+    elem = _get_elem(id_or_elem)
     _print('Clicking element %r' % id_or_elem)
-    id_or_elem.click()
+    elem.click()
 
     if wait:
         _waitforbody()
