@@ -266,15 +266,21 @@ def run_test(name, **kwargs):
     return context.run_test(name, kwargs)
 
 
-def goto(url=''):
+def goto(url='', wait=True):
     """
     Goto a specific URL. If the url provided is a relative url it will be added
     to the base url. You can change the base url for the test with
-    `set_base_url`."""
+    `set_base_url`.
+    
+    By default this action will wait until a page with a body element is
+    available after the click. You can switch off this behaviour by passing
+    `wait=False`."""
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
-    _waitforbody()
+    
+    if wait:
+        _waitforbody()
 
 
 def is_checkbox(id_or_elem):
@@ -824,7 +830,7 @@ def get_element_by_xpath(selector):
 
 
 def _waitforbody():
-    browser.switch_to_default_content()
+    browser.switch_to_default_content() # workaround for null-window issue
     waitfor(get_element, tag='body')
 
 
