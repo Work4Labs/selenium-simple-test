@@ -274,6 +274,7 @@ def goto(url=''):
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
+    _waitforbody()
 
 
 def is_checkbox(id_or_elem):
@@ -823,6 +824,7 @@ def get_element_by_xpath(selector):
 
 
 def _waitforbody():
+    browser.switch_to_default_content()
     waitfor(get_element, tag='body')
 
 
