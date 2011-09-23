@@ -9,6 +9,40 @@ fails(get_element)
 elem = get_element(tag='title')
 text_is(elem, 'The Page Title')
 
+
+
+elem = get_element(id='longscroll_link')
+text_is(elem, 'Here is another link')
+
+elem = get_element(tag='a', id='longscroll_link')
+text_is(elem, 'Here is another link')
+
+#elem = get_element(css_class='link class 1')  # failing!
+#text_is(elem, 'Here is another link')
+
+#elem = get_element(tag='a', css_class='link class 1')  # failing!
+#text_is(elem, 'Here is another link')
+
+#elem = get_element(tag='a', id='longscroll_link', css_class='link class 1')  # failing!
+#text_is(elem, 'Here is another link')
+
+elem = get_element(tag='a', id='longscroll_link', href='/longscroll')
+text_is(elem, 'Here is another link')
+
+elem = get_element(tag='a', id='longscroll_link', href='/longscroll', text='Here is another link')
+text_is(elem, 'Here is another link')
+
+elem = get_element(id='longscroll_link', href='/longscroll', text='Here is another link')
+text_is(elem, 'Here is another link')
+
+elem = get_element(href='/longscroll', text='Here is another link')
+text_is(elem, 'Here is another link')
+
+elem = get_element(href='/longscroll')
+text_is(elem, 'Here is another link')
+
+
+
 # should fail if no elements match
 fails(get_element, tag='foobar')
 fails(get_element, id='foobar')
@@ -42,7 +76,7 @@ text_is(elem, 'Foo bar baz')
 elem = get_element(text='Foo bar baz')
 text_is(elem, 'Foo bar baz')
 
-# find table row
+# find table row by text
 get_element(tag='td', text='Get text from TD')
 
 # should fail for a partial match
