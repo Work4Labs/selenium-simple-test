@@ -15,34 +15,34 @@ text_is(elem, 'The Page Title')
 # test attribute combos
 
 elem = get_element(id='longscroll_link')
-text_is(elem, 'Here is another link')
+text_is(elem, 'link to longscroll page')
 
 elem = get_element(tag='a', id='longscroll_link')
-text_is(elem, 'Here is another link')
+text_is(elem, 'link to longscroll page')
 
 #elem = get_element(css_class='link class 1')  # failing!
-#text_is(elem, 'Here is another link')
+#text_is(elem, 'link to longscroll page')
 
 #elem = get_element(tag='a', css_class='link class 1')  # failing!
-#text_is(elem, 'Here is another link')
+#text_is(elem, 'link to longscroll page')
 
 #elem = get_element(tag='a', id='longscroll_link', css_class='link class 1')  # failing!
-#text_is(elem, 'Here is another link')
+#text_is(elem, 'link to longscroll page')
 
 elem = get_element(tag='a', id='longscroll_link', href='/longscroll')
-text_is(elem, 'Here is another link')
+text_is(elem, 'link to longscroll page')
 
-elem = get_element(tag='a', id='longscroll_link', href='/longscroll', text='Here is another link')
-text_is(elem, 'Here is another link')
+elem = get_element(tag='a', id='longscroll_link', href='/longscroll', text='link to longscroll page')
+text_is(elem, 'link to longscroll page')
 
-elem = get_element(id='longscroll_link', href='/longscroll', text='Here is another link')
-text_is(elem, 'Here is another link')
+elem = get_element(id='longscroll_link', href='/longscroll', text='link to longscroll page')
+text_is(elem, 'link to longscroll page')
 
-elem = get_element(href='/longscroll', text='Here is another link')
-text_is(elem, 'Here is another link')
+elem = get_element(href='/longscroll', text='link to longscroll page')
+text_is(elem, 'link to longscroll page')
 
 elem = get_element(href='/longscroll')
-text_is(elem, 'Here is another link')
+text_is(elem, 'link to longscroll page')
 
 
 
