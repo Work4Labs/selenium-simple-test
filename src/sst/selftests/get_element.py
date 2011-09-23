@@ -1,6 +1,8 @@
 from sst.actions import *
 
 goto('/')
+title_is('The Page Title')
+
 
 # need at least one parameter
 fails(get_element)
@@ -10,6 +12,7 @@ elem = get_element(tag='title')
 text_is(elem, 'The Page Title')
 
 
+# test attribute combos
 
 elem = get_element(id='longscroll_link')
 text_is(elem, 'Here is another link')
