@@ -19,3 +19,15 @@ def nojs(request):
 
 def html5(request):
     return render_to_response('html5.html')
+
+
+def popup(request):
+    return render_to_response('popup_with_frame.html', {'title': 'Popup Window'})
+
+
+def frame_a(request):
+    return render_to_response('frame_a.html')
+
+
+def frame_b(request):
+    return render_to_response('frame_b.html')
