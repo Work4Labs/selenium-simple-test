@@ -20,22 +20,22 @@
 
 
 """
-Tests are comprised of Python scripts in a "tests" directory. Files whose names
-begin with an underscore will *not* be executed as test scripts.
+Tests are comprised of Python scripts in a "tests" directory. Files whose
+names begin with an underscore will *not* be executed as test scripts.
 
-Test scripts drive the browser through selenium/webdriver by importing and using
-actions.
+Test scripts drive the browser with Selenium WebDriver by importing and
+using actions.
 
 The standard set of actions are imported by starting the test scripts with::
 
     from sst.actions import *
 
 
-Actions that work on page elements usually take either an element id or an
+Actions that work on page elements take either an element id or an
 element object as their first argument. If the element you are working with
 doesn't have a specific id you can get the element object with the
 `get_element` action. `get_element` allows you to find an element by its
-tagname, text, class or other attributes. See the `get_element` documentation.
+id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
@@ -45,17 +45,16 @@ import time
 
 from pdb import set_trace as debug
 
-from sst import config
+from unittest2 import SkipTest
 
 from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException
-)
+    InvalidElementStateException, WebDriverException)
 
-from unittest2 import SkipTest
+from sst import config
 
 
 __all__ = [
@@ -91,7 +90,6 @@ class _Sentinel(object):
     def __repr__(self):
         return 'default'
 _sentinel = _Sentinel()
-
 
 
 def _raise(msg):
@@ -154,7 +152,7 @@ def start(browser_type=None, browser_version='',
         browser_type = config.browser_type
 
     _print('\nStarting %s:' % browser_type)
-    
+
     if webdriver_remote is None:
         if browser_type == 'Firefox':
             # profile features are FF only
@@ -207,8 +205,8 @@ def _make_results_dir():
 
 def sleep(secs):
     """
-    Delay execution for a given number of seconds. The argument may be a floating
-    point number for subsecond precision."""
+    Delay execution for a given number of seconds. The argument may be a
+    floating point number for subsecond precision."""
     time.sleep(secs)
 
 
@@ -271,14 +269,14 @@ def goto(url='', wait=True):
     Goto a specific URL. If the url provided is a relative url it will be added
     to the base url. You can change the base url for the test with
     `set_base_url`.
-    
+
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
-    
+
     if wait:
         _waitforbody()
 
@@ -314,7 +312,8 @@ def checkbox_toggle(id_or_elem):
     before = checkbox.is_selected()
     checkbox.click()
     after = checkbox.is_selected()
-    msg = 'Checkbox: %r - was not toggled, value remains: %r' % (id_or_elem, before)
+    msg = 'Checkbox: %r - was not toggled, value remains: %r' \
+        % (id_or_elem, before)
     if before == after:
         _raise(msg)
 
@@ -341,33 +340,36 @@ def _make_keycode(key_to_make):
 
 def simulate_keys(id_or_elem, key_to_press):
     """
-    Simulate key sent to specified element.  (available keys located in `selenium/webdriver/common/keys.py`).
-    
+    Simulate key sent to specified element.
+    (available keys located in `selenium/webdriver/common/keys.py`)
+
     e.g.::
-    
+
         simulate_keys('text_1', 'BACK_SPACE')
-        
+
     """
     key_element = _get_elem(id_or_elem)
-    _print('Simulating keypress on %r with %r key' % (id_or_elem, key_to_press))
+    _print('Simulating keypress on %r with %r key' \
+        % (id_or_elem, key_to_press))
     key_code = _make_keycode(key_to_press)
     key_element.send_keys(key_code)
 
 
 _textfields = (
     'text', 'password', 'textarea',
-    'email', 'url', 'search', 'number'
-)
+    'email', 'url', 'search', 'number')
+
+
 def is_textfield(id_or_elem):
     """
     Assert that the element is a textfield, textarea or password box. Takes an
     id or an element object. Raises a failure exception if the element
     specified doesn't exist or isn't a textfield."""
     elem = _get_elem(id_or_elem)
-    _elem_is_type(elem, id_or_elem, *_textfields)
+    _elem_is_type(elem, id_or_elem, *_textfields)  # see _textfields tuple
     return elem
-        
-    
+
+
 def textfield_write(id_or_elem, new_text, check=True):
     """
     Set the specified text into the textfield. If the text fails to write (the
@@ -382,8 +384,9 @@ def textfield_write(id_or_elem, new_text, check=True):
         return
     _print('Check text wrote correctly')
     current_text = textfield.get_attribute('value')
-    msg = 'Textfield: %r - did not write. Text was: %r' % (id_or_elem, current_text)
     if current_text != new_text:
+        msg = 'Textfield: %r - did not write. Text was: %r' \
+            % (id_or_elem, current_text)
         _raise(msg)
 
 
@@ -452,7 +455,9 @@ def title_is(title):
 
 
 def title_contains(text, regex=False):
-    """Assert the page title contains the specified text (or regex pattern)."""
+    """Assert the page title contains the specified text.
+
+    set `regex=True` to use a regex pattern."""
     real_title = browser.title
     msg = 'Title is: %r. Does not contain %r' % (real_title, text)
     if regex:
@@ -475,7 +480,9 @@ def url_is(url):
 
 
 def url_contains(text, regex=False):
-    """Assert the current url contains the specified text (regex pattern)."""
+    """Assert the current url contains the specified text.
+
+    set `regex=True` to use a regex pattern."""
     real_url = browser.current_url
     msg = 'Url is %r.\nDoes not contain %r' % (real_url, text)
     if regex:
@@ -488,6 +495,7 @@ def url_contains(text, regex=False):
 
 _TIMEOUT = 10
 _POLL = 0.1
+
 
 def set_wait_timeout(timeout, poll=None):
     """
@@ -516,17 +524,19 @@ def _get_name(obj):
 
 def waitfor(condition, *args, **kwargs):
     """
-    Wait for an action to pass. Useful for checking the results of actions that
-    may take some time to complete.
+    Wait for an action to pass. Useful for checking the results of actions
+    that may take some time to complete.
 
-    This action takes a condition function and any arguments it should be called
-    with. The condition function can either be an action or a function that
-    returns True for success and False for failure. For example::
+    This action takes a condition function and any arguments it should be
+    called with. The condition function can either be an action or a function
+    that returns True for success and False for failure. For example::
 
         waitfor(title_is, 'Some page title')
 
-    If the specified condition does not become true within 5 seconds then `waitfor`
-    fails. You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
+    If the specified condition does not become true within 10 seconds then
+    `waitfor` fails.
+
+    You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
     global VERBOSE
     _print('Waiting for %s' % _get_name(condition))
 
@@ -585,7 +595,7 @@ def _elem_is_type(elem, name, *elem_types):
     try:
         result = elem.get_attribute('type')
     except NoSuchAttributeException:
-        msg = "Element has no type attribute"
+        msg = 'Element has no type attribute'
         _raise(msg)
     if not result in elem_types:
         msg = 'Element %r is not one of %r' % (name, elem_types)
@@ -600,26 +610,28 @@ def is_select(id_or_elem):
 
 
 def set_select(id_or_elem, text_in):
-    """Set the select drop list to a text value provided to the function."""
+    """Set the select drop-list to a text value specified."""
     _print('Setting %r option list to %s' % (id_or_elem, text_in))
     elem = is_select(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
             element.click()
             return
-    msg = 'The following option could not be found in the list: %s' % text_in
+    msg = 'The following option could not be found in the list: %r' % text_in
     _raise(msg)
 
 
 def select_value_is(id_or_elem, text_in):
-    """Assert the specified element is a select list with the specified value."""
+    """Assert the specified select drop-list is set to the specified value."""
     elem = is_select(id_or_elem)
-    # Because there is no way to connect the current text of a select element we have to use 'value'
+    # Because there is no way to connect the current
+    # text of a select element we have to use 'value'
     current = elem.get_attribute('value')
-    for element in elem.find_elements_by_tag_name("option"):
-        if text_in == element.text and current == element.get_attribute('value'):
-            return
-    msg = 'The option is not currently set to the following expected value: %s' % text_in
+    for element in elem.find_elements_by_tag_name('option'):
+        if text_in == element.text and \
+            current == element.get_attribute('value'):
+                return
+    msg = 'The option is not currently set to: %r' % text_in
     _raise(msg)
 
 
@@ -678,7 +690,9 @@ def text_is(id_or_elem, text):
 
 
 def text_contains(id_or_elem, text, regex=False):
-    """Assert the specified element contains the specified text (regex pattern)."""
+    """Assert the specified element contains the specified text.
+
+    set `regex=True` to use a regex pattern."""
     elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
@@ -716,25 +730,25 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
                                 key, value in kwargs.items()])
     try:
         if text is not None and not selector_string:
-            elements = browser.find_elements_by_xpath('//*[text() = %r]' % text)
+            elems = browser.find_elements_by_xpath('//*[text() = %r]' % text)
         else:
             if not selector_string:
                 msg = 'Could not identify element: no arguments provided'
                 _raise(msg)
-            elements = browser.find_elements_by_css_selector(selector_string)
+            elems = browser.find_elements_by_css_selector(selector_string)
     except (WebDriverException, NoSuchElementException) as e:
-        msg = 'Element not found (%s)' % (e,)
+        msg = 'Element not found: %s' % e
         _raise(msg)
 
     if text is not None:
         # if text was specified, filter elements
-        elements = [element for element in elements if _check_text(element, text)]
+        elems = [element for element in elems if _check_text(element, text)]
 
-    if len(elements) == 0:
+    if len(elems) == 0:
         msg = 'Could not identify elements: 0 elements found'
         _raise(msg)
 
-    return elements
+    return elems
 
 
 def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
@@ -749,13 +763,13 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like, so long as they
     uniquely identify one element."""
-    elements = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+    elems = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
 
-    if len(elements) != 1:
-        msg = 'Could not identify element: %s elements found' % len(elements)
+    if len(elems) != 1:
+        msg = 'Could not identify element: %s elements found' % len(elems)
         _raise(msg)
 
-    return elements[0]
+    return elems[0]
 
 
 def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
@@ -796,11 +810,12 @@ def button_click(id_or_elem, wait=True):
 
 
 def get_elements_by_css(selector):
-    """Find all elements that match a css selector"""
+    """Find all elements that match a css selector."""
     try:
         return browser.find_elements_by_css_selector(selector)
     except (WebDriverException, NoSuchElementException) as e:
-        _raise('Error finding elements: (%s)' % (e,))
+        msg = 'Element not found: %s' % e
+        _raise(msg)
 
 
 def get_element_by_css(selector):
@@ -817,7 +832,8 @@ def get_elements_by_xpath(selector):
     try:
         return browser.find_elements_by_xpath(selector)
     except (WebDriverException, NoSuchElementException) as e:
-        _raise('Error finding elements: (%s)' % (e,))
+        msg = 'Element not found: %s' % e
+        _raise(msg)
 
 
 def get_element_by_xpath(selector):
@@ -830,7 +846,7 @@ def get_element_by_xpath(selector):
 
 
 def _waitforbody():
-    browser.switch_to_default_content() # workaround for null-window issue
+    browser.switch_to_default_content()  # workaround for null-window issue
     waitfor(get_element, tag='body')
 
 
