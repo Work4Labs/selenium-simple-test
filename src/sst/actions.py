@@ -52,7 +52,8 @@ from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
     NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException)
+    InvalidElementStateException, WebDriverException,
+    NoSuchWindowException, NoSuchFrameException)
 
 from sst import config
 
@@ -69,6 +70,7 @@ __all__ = [
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
     'element_click', 'get_element_by_xpath', 'get_elements_by_xpath',
+    'switch_to_window', 'switch_to_frame'
 ]
 
 
@@ -853,3 +855,36 @@ def _waitforbody():
 def get_page_source():
     """Gets the source of the current page."""
     return browser.page_source
+
+
+def switch_to_window(window_name=None):
+    """Switch focus to the specified window.
+    
+    if no window is given, switch focus to the default window."""
+    if window_name is None:
+        _print('Switching to default window')
+        browser.switch_to_window('')
+    else:
+        try:
+            browser.switch_to_window(window_name)
+        except NoSuchWindowException:
+            msg = 'Could not find window: %r' % window_name
+            _raise(msg)
+
+
+def switch_to_frame(index_or_name=None):
+    """Switch focus to the specified frame (by index or name).
+    
+    if no frame is given, switch focus to the default content frame."""
+    if index_or_name is None:
+        _print('Switching to default content frame')
+        browser.switch_to_default_content()
+    else:
+        _print('Switching to frame: %r' % index_or_name)
+        try:
+            browser.switch_to_frame(index_or_name)
+        except NoSuchFrameException:
+            msg = 'Could not find frame: %r' % index_or_name
+            _raise(msg)
+
+

@@ -1,6 +1,11 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <script language="javascript" type="text/javascript">
+        function OpenAlert() {
+            alert('Be alert!');
+        }
+    </script>
 </head>
 
 <body>
@@ -125,7 +130,10 @@
     </p>
 
     <input type="submit" value="Begin" id="mainform" />
-
+    
   </form>
+  
+  <a id="popup_link" href="popup_with_frame.html" target="_NEW_WINDOW">Popup</a>
+  
 </body>
 </html>

@@ -1,0 +1,34 @@
+from sst.actions import *
+
+
+goto('/')
+link_click('popup_link')
+
+# switch to new window/tab
+switch_to_window('_NEW_WINDOW')
+title_is('Popup Window')
+
+# switch back to default/main window/tab
+switch_to_window()
+title_is('The Page Title')
+
+# switch to new window/tab
+switch_to_window(window_name='_NEW_WINDOW')
+title_is('Popup Window')
+
+# verify we can access content in new window
+elem = get_element(tag='p', id='popup_id', text='Popup text here')
+text_is(elem, 'Popup text here')
+
+# switch back to default/main window/tab
+switch_to_window('')
+title_is('The Page Title')
+
+# fails when the window name does not exist
+fails(switch_to_window, window_name='not_a_window')
+
+# fails when the window name does not exist
+fails(switch_to_window, 'not_a_window')
+
+# verify we are still back on main window
+title_is('The Page Title')
