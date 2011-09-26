@@ -358,8 +358,8 @@ def simulate_keys(id_or_elem, key_to_press):
 
 
 _textfields = (
-    'text', 'password', 'textarea',
-    'email', 'url', 'search', 'number')
+    'text', 'password', 'textarea', 'email', 
+    'url', 'search', 'number', 'file')
 
 
 def is_textfield(id_or_elem):
