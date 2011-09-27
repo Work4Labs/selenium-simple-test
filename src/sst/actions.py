@@ -69,9 +69,8 @@ __all__ = [
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
-    'element_click', 'get_element_by_xpath', 'get_elements_by_xpath',
-    'switch_to_window', 'switch_to_frame'
-]
+    'is_displayed', 'element_click', 'get_element_by_xpath',
+    'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame']
 
 
 browser = None
@@ -285,7 +284,9 @@ def goto(url='', wait=True):
 
 def is_checkbox(id_or_elem):
     """
-    Assert that the element is a checkbox. Takes an id or an element object.
+    Assert that the element is a checkbox.
+
+    Takes an id or an element object.
     Raises a failure exception if the element specified doesn't exist or isn't
     a checkbox."""
     elem = _get_elem(id_or_elem)
@@ -358,15 +359,17 @@ def simulate_keys(id_or_elem, key_to_press):
 
 
 _textfields = (
-    'text', 'password', 'textarea', 'email', 
+    'text', 'password', 'textarea', 'email',
     'url', 'search', 'number', 'file')
 
 
 def is_textfield(id_or_elem):
     """
-    Assert that the element is a textfield, textarea or password box. Takes an
-    id or an element object. Raises a failure exception if the element
-    specified doesn't exist or isn't a textfield."""
+    Assert that the element is a textfield, textarea or password box.
+
+    Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist
+    or isn't a textfield."""
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, *_textfields)  # see _textfields tuple
     return elem
@@ -393,7 +396,11 @@ def textfield_write(id_or_elem, new_text, check=True):
 
 
 def is_link(id_or_elem):
-    """Assert that the element is a link."""
+    """
+    Assert that the element is a link.
+
+    Raises a failure exception if the element specified doesn't exist or
+    isn't a link"""
     link = _get_elem(id_or_elem)
     href = link.get_attribute('href')
     if href is None:
@@ -433,6 +440,20 @@ def link_click(id_or_elem, check=False, wait=True):
         url_is(link_url)
 
 
+def is_displayed(id_or_elem):
+    """
+    Assert that the element is displayed.
+
+    Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist or isn't
+    displayed. Returns the element if it is displayed."""
+    element = _get_elem(id_or_elem)
+    if not element.is_displayed():
+        message = 'Element is not displayed'
+        _raise(message)
+    return element
+
+
 def element_click(id_or_elem, wait=True):
     """
     Click on an element of any kind not specific to links or buttons.
@@ -457,7 +478,8 @@ def title_is(title):
 
 
 def title_contains(text, regex=False):
-    """Assert the page title contains the specified text.
+    """
+    Assert the page title contains the specified text.
 
     set `regex=True` to use a regex pattern."""
     real_title = browser.title
@@ -482,7 +504,8 @@ def url_is(url):
 
 
 def url_contains(text, regex=False):
-    """Assert the current url contains the specified text.
+    """
+    Assert the current url contains the specified text.
 
     set `regex=True` to use a regex pattern."""
     real_url = browser.current_url
@@ -638,7 +661,12 @@ def select_value_is(id_or_elem, text_in):
 
 
 def is_radio(id_or_elem):
-    """Assert the specified element is a radio button."""
+    """
+    Assert the specified element is a radio button.
+
+    Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist or isn't
+    a radio button"""
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, 'radio')
     return elem
@@ -647,7 +675,11 @@ def is_radio(id_or_elem):
 def radio_value_is(id_or_elem, value):
     """
     Assert the specified element is a radio button with the specified value;
-    True for selected and False for unselected."""
+    True for selected and False for unselected.
+
+    Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist or isn't
+    a radio button"""
     elem = is_radio(id_or_elem)
     selected = elem.is_selected()
     msg = 'Radio %r should be set to: %s.' % (id_or_elem, value)
@@ -680,7 +712,10 @@ def _get_text(elem):
 
 
 def text_is(id_or_elem, text):
-    """Assert the specified element text is as specified."""
+    """Assert the specified element text is as specified.
+
+    Raises a failure exception if the element specified doesn't exist or isn't
+    as specified"""
     elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
@@ -692,7 +727,8 @@ def text_is(id_or_elem, text):
 
 
 def text_contains(id_or_elem, text, regex=False):
-    """Assert the specified element contains the specified text.
+    """
+    Assert the specified element contains the specified text.
 
     set `regex=True` to use a regex pattern."""
     elem = _get_elem(id_or_elem)
@@ -765,7 +801,8 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like, so long as they
     uniquely identify one element."""
-    elems = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+    elems = get_elements(tag=tag, css_class=css_class,
+                         id=id, text=text, **kwargs)
 
     if len(elems) != 1:
         msg = 'Could not identify element: %s elements found' % len(elems)
@@ -789,7 +826,11 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
 
 def is_button(id_or_elem):
-    """Assert that the specified element is a button."""
+    """Assert that the specified element is a button.
+
+    Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist or isn't
+    a button"""
     elem = _get_elem(id_or_elem)
     if elem.tag_name == 'button':
         return elem
@@ -798,7 +839,8 @@ def is_button(id_or_elem):
 
 
 def button_click(id_or_elem, wait=True):
-    """Click the specified button.
+    """
+    Click the specified button.
 
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
@@ -858,8 +900,9 @@ def get_page_source():
 
 
 def switch_to_window(window_name=None):
-    """Switch focus to the specified window.
-    
+    """
+    Switch focus to the specified window.
+
     if no window is given, switch focus to the default window."""
     if window_name is None:
         _print('Switching to default window')
@@ -873,8 +916,9 @@ def switch_to_window(window_name=None):
 
 
 def switch_to_frame(index_or_name=None):
-    """Switch focus to the specified frame (by index or name).
-    
+    """
+    Switch focus to the specified frame (by index or name).
+
     if no frame is given, switch focus to the default content frame."""
     if index_or_name is None:
         _print('Switching to default content frame')
@@ -886,5 +930,3 @@ def switch_to_frame(index_or_name=None):
         except NoSuchFrameException:
             msg = 'Could not find frame: %r' % index_or_name
             _raise(msg)
-
-
