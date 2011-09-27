@@ -757,17 +757,18 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like."""
     selector_string = ''
-    if tag is not None:
+    if tag:
         selector_string = tag
-    if css_class is not None:
-        selector_string += ('.%s' % (css_class,))
-    if id is not None:
-        selector_string += ('#%s' % (id,))
+    if css_class:
+        css_class_selector = css_class.strip().replace(' ', '.')
+        selector_string += ('.%s' % css_class_selector)
+    if id:
+        selector_string += ('#%s' % id)
 
     selector_string += ''.join(['[%s=%r]' % (key, value) for
                                 key, value in kwargs.items()])
     try:
-        if text is not None and not selector_string:
+        if text and not selector_string:
             elems = browser.find_elements_by_xpath('//*[text() = %r]' % text)
         else:
             if not selector_string:
@@ -778,11 +779,11 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
         msg = 'Element not found: %s' % e
         _raise(msg)
 
-    if text is not None:
+    if text:
         # if text was specified, filter elements
         elems = [element for element in elems if _check_text(element, text)]
 
-    if len(elems) == 0:
+    if not elems:
         msg = 'Could not identify elements: 0 elements found'
         _raise(msg)
 

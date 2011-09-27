@@ -19,12 +19,12 @@ elem = get_element(tag='a', id='longscroll_link')
 text_is(elem, 'link to longscroll page')
 
 # unique id + non-unique css_class
-#elem = get_element(id='longscroll_link', css_class='link class 1')  # failing!
-#text_is(elem, 'link to longscroll page')
+elem = get_element(id='longscroll_link', css_class='link class a1')
+text_is(elem, 'link to longscroll page')
 
 # tag + unique id + non-unique css_class
-#elem = get_element(tag='a', id='longscroll_link', css_class='link class 1')  # failing!
-#text_is(elem, 'link to longscroll page')
+elem = get_element(tag='a', id='longscroll_link', css_class='link class a1')
+text_is(elem, 'link to longscroll page')
 
 # unique id + tag
 elem = get_element(tag='a', id='longscroll_link')
@@ -89,5 +89,3 @@ elem = get_element(tag='input', id='radio_with_id_1')
 is_radio(elem)
 elem = get_element(type='radio', name='radio_with_id', checked='1')
 is_radio(elem)
-
-
