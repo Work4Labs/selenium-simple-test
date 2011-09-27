@@ -69,8 +69,8 @@ __all__ = [
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
-    'element_click', 'get_element_by_xpath', 'get_elements_by_xpath',
-    'switch_to_window', 'switch_to_frame'
+    'element_is_displayed', 'element_click', 'get_element_by_xpath', 
+    'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame'
 ]
 
 
@@ -431,6 +431,18 @@ def link_click(id_or_elem, check=False, wait=True):
     # don't check by default
     if check:
         url_is(link_url)
+
+
+def element_is_displayed(id_or_elem):
+    """
+    Assert that the element is displayed. Takes an id or an element object. 
+    Raises a failure exception if the element specified doesn't exist or isn't
+    displayed. Returns the element if it is displayed."""
+    element = _get_elem(id_or_elem)
+    if not element.is_displayed():
+        message = 'Element is not displayed'
+        _raise(message)
+    return element
 
 
 def element_click(id_or_elem, wait=True):
