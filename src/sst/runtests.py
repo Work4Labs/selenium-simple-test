@@ -36,8 +36,6 @@ from .context import populate_context
 __all__ = ['runtests']
 
 
-
-
 def runtests(test_names, test_dir='tests', report_format='console',
              browser_type='Firefox', browser_version='',
              browser_platform='ANY', session_name=None,
@@ -53,7 +51,7 @@ def runtests(test_names, test_dir='tests', report_format='console',
 
     test_dir = _get_full_path(test_dir)
     if not os.path.isdir(test_dir):
-        msg = 'Specified directory %r does not exist' % (test_dir,)
+        msg = 'Specified directory %r does not exist' % test_dir
         print msg
         sys.exit(1)
 
@@ -80,7 +78,7 @@ def runtests(test_names, test_dir='tests', report_format='console',
     alltests = TestSuite(suites)
 
     if not alltests.countTestCases():
-        print "Error: Didn't find any tests"
+        print 'Error: Did not find any tests'
         sys.exit(1)
 
     if report_format == 'console':
@@ -111,7 +109,7 @@ def runtests(test_names, test_dir='tests', report_format='console',
 
     missing = test_names - found_tests
     for name in missing:
-        msg = "Warning: test %r not found" % name
+        msg = 'Warning: test %r not found' % name
         print >> sys.stderr, msg
 
 
@@ -128,7 +126,6 @@ def _make_results_dir():
         os.makedirs(config.results_directory)
     except OSError:
         pass  # already exists
-
 
 
 def find_shared_directory(test_dir, shared_directory):
@@ -183,7 +180,7 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
             continue
         elif not test_names:
             if entry.startswith('_'):
-                # ignore entries that start with an underscore unless explcitly specified
+                # ignore entries starting with underscore unless specified
                 continue
         found.add(entry[:-3])
 
@@ -220,13 +217,15 @@ def get_case(test_dir, entry, browser_type, browser_version,
     context_provided = context is not None
     context = context or {}
     path = os.path.join(test_dir, entry)
+
     def setUp(self):
         sys.path.append(test_dir)
         with open(path) as h:
             source = h.read() + '\n'
             self.code = compile(source, path, 'exec')
 
-        js_disabled = javascript_disabled or 'JAVASCRIPT_DISABLED' in self.code.co_names
+        js_disabled = javascript_disabled or \
+            'JAVASCRIPT_DISABLED' in self.code.co_names
         populate_context(context, path, browser_type, js_disabled)
 
         original = actions.VERBOSE
@@ -238,26 +237,29 @@ def get_case(test_dir, entry, browser_type, browser_version,
             actions.VERBOSE = original
         start(browser_type, browser_version, browser_platform,
               session_name, js_disabled, webdriver_remote_url)
+
     def tearDown(self):
         sys.path.remove(test_dir)
         stop()
+
     def test(self):
         if context_provided:
-            print 'Loading data row %s' % context['_row_num']
+            print 'Loading data row %r' % context['_row_num']
         try:
             exec self.code in context
         except EndTest:
             pass
         except:
             if screenshots_on:
-                filename = 'screenshot-%s-%s.png' % (datetime.datetime.now(), entry[:-3])
-                filename = filename.replace(' ', '_')
+                now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                filename = 'screenshot-%s-%s.png' % (now, entry[:-3])
                 take_screenshot(filename)
             if debug:
                 pdb.post_mortem()
             raise
+
     def run(self, result=None):
-        # Had to move some bits from original implementation of TestCase.run to
+        # moved bits from original implementation of TestCase.run to
         # keep the way it works
         if result is None:
             result = self.defaultTestResult()
@@ -286,7 +288,7 @@ def get_data(csv_path):
       rows beneath that are filled with data values
     """
     rows = []
-    print 'Reading data from %s...' % csv_path,
+    print 'Reading data from %r...' % csv_path,
     row_num = 0
     with open(csv_path) as f:
         headers = f.readline().rstrip().split('^')

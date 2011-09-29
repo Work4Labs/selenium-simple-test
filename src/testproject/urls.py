@@ -12,6 +12,9 @@ urlpatterns = patterns('',
     (r'longscroll', 'simple.views.longscroll'),
     (r'nojs', 'simple.views.nojs'),
     (r'html5', 'simple.views.html5'),
+    (r'popup', 'simple.views.popup'),
+    (r'frame_a', 'simple.views.frame_a'),
+    (r'frame_b', 'simple.views.frame_b'),
     (r'', 'simple.views.index'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'

@@ -1,6 +1,11 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <script language="javascript" type="text/javascript">
+        function OpenAlert() {
+            alert('Be alert!');
+        }
+    </script>
 </head>
 
 <body>
@@ -11,10 +16,10 @@
   <p class="some_class">More text</p>
   <p class="some_class">And yet more</p>
 
-  <a class="link class 1" id="the_band_link" href="/begin">Here is a link</a>
+  <a class="link class a1" id="the_band_link" href="/begin">Here is a link</a>
   
   <div id="the_div">
-    <a class="link class 1" id="longscroll_link" href="/longscroll">Here is another link</a>
+    <a class="link class a1" id="longscroll_link" name="longscroll", href="/longscroll">link to longscroll page</a>
   </div>
   
   <form method="post" action="/begin">
@@ -120,12 +125,19 @@
         <td><label for="text_2">Password: </label></td>
         <td><input type="password" name="password1" id="pass_1" /></td>
       </tr>
+      <tr>
+	<td><input type="file" name="file_input" id="file_input" /></td>
+	<td><label for="file_input">A File Input</label></td>
+      </tr>
     </table>
 
     </p>
 
     <input type="submit" value="Begin" id="mainform" />
-
+    
   </form>
+  
+  <a id="popup_link" href="popup_with_frame.html" target="_NEW_WINDOW">Popup</a>
+  <input type="hidden" id="hidden_input" />
 </body>
 </html>
