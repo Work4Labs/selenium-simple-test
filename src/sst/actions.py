@@ -892,7 +892,6 @@ def get_element_by_xpath(selector):
 
 
 def _waitforbody():
-    browser.switch_to_default_content()  # workaround for null-window issue
     waitfor(get_element, tag='body')
 
 
