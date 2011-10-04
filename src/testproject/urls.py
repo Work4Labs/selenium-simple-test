@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     (r'popup', 'simple.views.popup'),
     (r'frame_a', 'simple.views.frame_a'),
     (r'frame_b', 'simple.views.frame_b'),
+    (r'alerts', 'simple.views.alerts'),
     (r'', 'simple.views.index'),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs'

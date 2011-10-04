@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Page with JavaScript alerts</title>
+    <script type="text/javascript">
+      function show_alert() {
+        alert("JavaScript alert text");
+      }
+
+      function show_confirm() {
+        var confirmed = confirm("JavaScript confirm text");
+        if(confirmed) {
+          alert("Confirm accepted");
+        } else {
+          alert("Confirm dismissed");
+        }
+      }
+
+      function show_prompt() {
+        var entered_text = prompt("JavaScript prompt text");
+        if(entered_text != null) {
+          alert(entered_text);
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <button type="button" id="show-alert" onclick="show_alert()">Show javascript alert</button>
+    <button type="button" id="show-confirm" onclick="show_confirm()">Show javascript confirm</button>
+    <button type="button" id="show-prompt" onclick="show_prompt()">Show javascript prompt</button>
+  </body>
+</html>
