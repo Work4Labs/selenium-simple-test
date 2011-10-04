@@ -938,6 +938,7 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     Optionally, it takes the expected text of the Popup box to check it, 
     and the text to write in the prompt."""
     window_handle = browser.current_window_handle
+    waitfor(browser.switch_to_alert)
     alert = browser.switch_to_alert()
     if expected_text and expected_text != alert.text:
         error_message = 'Element text should be %r.\nIt is %r.' \
@@ -958,7 +959,11 @@ def alert_accept(expected_text=None, text_to_write=None):
     Accept a JavaScript alert, confirmation or prompt. 
 
     Optionally, it takes the expected text of the Popup box to check it,
-    and the text to write in the prompt."""
+    and the text to write in the prompt.
+
+    Note that the action that opens the alert should not wait for a page with 
+    a body element. This means that you should call functions like 
+    element_click with the argument wait=Fase."""
     _alert_action('accept', expected_text, text_to_write)
 
 def alert_dismiss(expected_text=None, text_to_write=None):
@@ -966,5 +971,9 @@ def alert_dismiss(expected_text=None, text_to_write=None):
     Dismiss a JavaScript alert.
 
     Optionally, it takes the expected text of the Popup box to check it.,
-    and the text to write in the prompt."""
+    and the text to write in the prompt.
+
+    Note that the action that opens the alert should not wait for a page with
+    a body element. This means that you should call functions like   
+    element_click with the argument wait=Fase."""
     _alert_action('dismiss', expected_text, text_to_write)
