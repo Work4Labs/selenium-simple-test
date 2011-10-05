@@ -940,9 +940,10 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     window_handle = browser.current_window_handle
     waitfor(browser.switch_to_alert)
     alert = browser.switch_to_alert()
-    if expected_text and expected_text != alert.text:
+    alert_text = alert.text
+    if expected_text and expected_text != alert_text:
         error_message = 'Element text should be %r.\nIt is %r.' \
-            % (expected_text, alert.text)
+            % (expected_text, alert_text)
         _raise(error_message)
     if text_to_write:
         alert.send_keys(text_to_write)
