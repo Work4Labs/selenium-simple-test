@@ -31,3 +31,6 @@ def frame_a(request):
 
 def frame_b(request):
     return render_to_response('frame_b.html')
+
+def alerts(request):
+    return render_to_response('alerts.html')
