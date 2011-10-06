@@ -226,17 +226,23 @@ def get_case(test_dir, entry, browser_type, browser_version,
 
         js_disabled = javascript_disabled or \
             'JAVASCRIPT_DISABLED' in self.code.co_names
+            
         populate_context(context, path, browser_type, js_disabled)
 
         original = actions.VERBOSE
         actions.VERBOSE = False
         try:
             reset_base_url()
-            set_wait_timeout(5, 0.1)
+            set_wait_timeout(10, 0.1)
         finally:
             actions.VERBOSE = original
+        config.javascript_disabled = javascript_disabled
+        
+        assume_trusted_cert_issuer = 'ASSUME_TRUSTED_CERT_ISSUER' in self.code.co_names
+        
         start(browser_type, browser_version, browser_platform,
-              session_name, js_disabled, webdriver_remote_url)
+              session_name, js_disabled, assume_trusted_cert_issuer,
+              webdriver_remote_url)
 
     def tearDown(self):
         sys.path.remove(test_dir)

@@ -144,7 +144,8 @@ def _print(text):
 
 def start(browser_type=None, browser_version='',
           browser_platform='ANY', session_name='',
-          javascript_disabled=False, webdriver_remote=None):
+          javascript_disabled=False, assume_trusted_cert_issuer=False,
+          webdriver_remote=None):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""
@@ -160,6 +161,8 @@ def start(browser_type=None, browser_version='',
             # profile features are FF only
             profile = getattr(webdriver, '%sProfile' % browser_type)()
             profile.set_preference('intl.accept_languages', '"en"')
+            if assume_trusted_cert_issuer:
+                profile.set_preference('webdriver_assume_untrusted_issuer', False)
             if javascript_disabled:
                 profile.set_preference('javascript.enabled', False)
             browser = getattr(webdriver, browser_type)(profile)
