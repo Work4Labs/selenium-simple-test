@@ -226,7 +226,6 @@ def get_case(test_dir, entry, browser_type, browser_version,
 
         js_disabled = javascript_disabled or \
             'JAVASCRIPT_DISABLED' in self.code.co_names
-            
         populate_context(context, path, browser_type, js_disabled)
 
         original = actions.VERBOSE
@@ -236,7 +235,6 @@ def get_case(test_dir, entry, browser_type, browser_version,
             set_wait_timeout(10, 0.1)
         finally:
             actions.VERBOSE = original
-        config.javascript_disabled = javascript_disabled
         
         assume_trusted_cert_issuer = 'ASSUME_TRUSTED_CERT_ISSUER' in self.code.co_names
         
