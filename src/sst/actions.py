@@ -907,24 +907,24 @@ def switch_to_window(window_name=None, index=None):
     """
     Switch focus to the specified window.
 
-    if no window is given, switch focus to the default window."""
-    if window_name is None and index is None:
+    if no window_name or index is given, switch focus to the default window."""
+    if not window_name and not index:
         _print('Switching to default window')
         browser.switch_to_window('')
-    elif window_name is not None:
+    elif window_name:
         try:
-            _print('Switching to ' + window_name + ' window')
+            _print('Switching to window: %r' % window_name)
             browser.switch_to_window(window_name)
         except NoSuchWindowException:
             msg = 'Could not find window: %r' % window_name
             _raise(msg)
     else:
+        window_list = browser.window_handles
+        if len(window_list) <= index:
+            msg = 'Index %r is greater than available windows.' % index
+            _raise(msg)
         try:
-            window_list = browser.window_handles
-            if len(window_list) <= index:
-                msg = 'Index of %r is greater than the number of available windows.' % index
-                _raise(msg)
-            _print('Switching to ' + window_list[index] + ' window')
+            _print('Switching to window: %r' % window_list[index])
             browser.switch_to_window(window_list[index])
         except NoSuchWindowException:
             msg = 'Could not find window: %r' % window_list[index]
