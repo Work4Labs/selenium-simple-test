@@ -387,7 +387,8 @@ def textfield_write(id_or_elem, new_text, check=True):
     `check=False`."""
     _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = is_textfield(id_or_elem)
-    textfield.clear()
+    while textfield.get_attribute('value'):
+        textfield.send_keys(keys.Keys().BACK_SPACE)
     textfield.send_keys(new_text)
     if not check:
         return

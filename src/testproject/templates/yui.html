@@ -1,0 +1,43 @@
+<html>
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<head>
+    <title>Page using the YUI library</title>
+</head>
+
+<body>
+
+    <form>
+        <label for='text_with_default_value'>Text field with default value</label>
+        <input id='text_with_default_value' value='1'>
+    </form>
+
+<script type="text/javascript">
+
+/**
+ * Returns true if the input is an int.
+ *
+ * @params input The value to check.
+ * @return true if the input is an int. Otherwise, false.
+ */
+function is_int(input) {
+    return !isNaN(input) && parseInt(input) == input;
+}
+
+/**
+ * Use YUI to listen to the on change event of the text input, and return to
+ * the default value if it's not a number greater than 0.
+ */
+YUI().use('node', function(Y) {
+    var input = Y.one('#text_with_default_value');
+
+    input.on('change', function(e) {
+       var value = input.get('value');
+
+       if (value == '' || !is_int(value) || value < 1) {
+           input.set('value', 1);
+       }
+    });
+});
+</script>
+</body>
+</html>
