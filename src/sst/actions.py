@@ -71,7 +71,7 @@ __all__ = [
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
     'is_displayed', 'element_click', 'get_element_by_xpath',
     'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame',
-    'alert_accept', 'alert_dismiss']
+    'alert_accept', 'alert_dismiss',]
 
 
 browser = None
@@ -904,19 +904,34 @@ def get_page_source():
     return browser.page_source
 
 
-def switch_to_window(window_name=None):
+def switch_to_window(index_or_name=None):
     """
-    Switch focus to the specified window.
+    Switch focus to the specified window (by index or name).
 
     if no window is given, switch focus to the default window."""
-    if window_name is None:
+    if index_or_name is None:
         _print('Switching to default window')
         browser.switch_to_window('')
-    else:
+    elif isinstance(index_or_name, int):
+        index = index_or_name
+        window_handles = browser.window_handles
+        if index >= len(window_handles):
+            msg = 'Index %r is greater than available windows.' % index
+            _raise(msg)
+        window = window_handles[index]
         try:
-            browser.switch_to_window(window_name)
+            _print('Switching to window: %r' % window)
+            browser.switch_to_window(window)
         except NoSuchWindowException:
-            msg = 'Could not find window: %r' % window_name
+            msg = 'Could not find window: %r' % window
+            _raise(msg)
+    else:
+        name = index_or_name
+        try:
+            _print('Switching to window: %r' % name)
+            browser.switch_to_window(name)
+        except NoSuchWindowException:
+            msg = 'Could not find window: %r' % name
             _raise(msg)
 
 
