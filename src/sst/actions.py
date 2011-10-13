@@ -569,12 +569,11 @@ def waitfor(condition, *args, **kwargs):
     You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
     global VERBOSE
     _print('Waiting for %s' % _get_name(condition))
-
     original = VERBOSE
     VERBOSE = False
     try:
         max_time = time.time() + _TIMEOUT
-        msg = condition.__name__
+        msg = _get_name(condition)
         while True:
             try:
                 result = condition(*args, **kwargs)
@@ -583,7 +582,6 @@ def waitfor(condition, *args, **kwargs):
             else:
                 if result != False:
                     break
-
             if time.time() > max_time:
                 error = 'Timed out waiting for: ' + msg
                 _raise(error)
