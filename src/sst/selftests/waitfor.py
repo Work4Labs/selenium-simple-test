@@ -54,4 +54,4 @@ CALLS = 0
 waitfor(get_condition(wait=0.2))
 assert CALLS <= 3
 
-set_wait_timeout(10)
+set_wait_timeout(10, 0.1)
