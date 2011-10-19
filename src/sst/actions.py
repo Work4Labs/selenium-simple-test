@@ -71,7 +71,7 @@ __all__ = [
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
     'is_displayed', 'element_click', 'get_element_by_xpath',
     'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame',
-    'alert_accept', 'alert_dismiss',]
+    'alert_accept', 'alert_dismiss', 'window_close']
 
 
 browser = None
@@ -901,6 +901,10 @@ def get_page_source():
     """Gets the source of the current page."""
     return browser.page_source
 
+def window_close():
+    """ Closes the current window """
+    _print('Closing the current window')
+    browser.close()
 
 def switch_to_window(index_or_name=None):
     """
