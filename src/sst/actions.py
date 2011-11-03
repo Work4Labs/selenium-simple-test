@@ -71,7 +71,7 @@ __all__ = [
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
     'is_displayed', 'element_click', 'get_element_by_xpath',
     'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame',
-    'alert_accept', 'alert_dismiss', 'window_close']
+    'alert_accept', 'alert_dismiss', 'window_close', 'get_current_url']
 
 
 browser = None
@@ -85,7 +85,7 @@ class EndTest(StandardError):
     pass
 
 
-debug.__doc__ = """Start the debugger (a shortcut for `pdb.set_trace()`."""
+debug.__doc__ = """Start the debugger, a shortcut for `pdb.set_trace()`."""
 
 
 class _Sentinel(object):
@@ -425,6 +425,11 @@ def get_link_url(id_or_elem):
     return link_url
 
 
+def get_current_url():
+    """Gets the URL of the current page."""
+    return browser.current_url
+    
+    
 def link_click(id_or_elem, check=False, wait=True):
     """
     Click the specified link. As some links do redirects the location you end
