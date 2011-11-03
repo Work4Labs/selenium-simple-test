@@ -389,7 +389,10 @@ def textfield_write(id_or_elem, new_text, check=True):
     textfield = is_textfield(id_or_elem)
     textfield.send_keys(keys.Keys().CONTROL, 'a')
     textfield.send_keys(keys.Keys().DELETE)
-    textfield.send_keys(str(new_text))
+    if isinstance(new_text, unicode):
+        textfield.send_keys(new_text)
+    else:
+        textfield.send_keys(str(new_text))
     if not check:
         return
     _print('Check text wrote correctly')
