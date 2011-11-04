@@ -846,6 +846,8 @@ def is_button(id_or_elem):
     elem = _get_elem(id_or_elem)
     if elem.tag_name == 'button':
         return elem
+    if elem.get_attribute('type') == 'button':
+        return elem
     _elem_is_type(elem, id_or_elem, 'submit')
     return elem
 
