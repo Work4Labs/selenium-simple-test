@@ -72,7 +72,7 @@ Requirements:
     * $ sudo apt-get install xvfb xserver-xephyr
     * $ sudo pip install pyvirtualdisplay
 
-- You can intall all of these automatically from the requirements.txt file with:
+- You can install all of these automatically from the requirements.txt file with:
     * $ sudo pip install -r requirements.txt
 
 SST is primarily being developed on Linux, specifically Ubuntu. It should work
