@@ -30,12 +30,9 @@ At runtime, scripts are converted to a standard Python unittest suite and execut
 Install
 =======
 
-SST can be pip installed!
+SST can be pip installed directly fromt he bzr repo:
 
-    pip install -U sst
-
-Or you can download the current release from the `pypi page
-<http://pypi.python.org/pypi/sst>`_.
+    $ sudo pip install -e bzr+https://code.launchpad.net/selenium-simple-test#egg=sst
 
 The current development version can be found at:
 
