@@ -28,7 +28,8 @@ from unittest2 import TestSuite, TextTestRunner, TestCase
 
 from sst import actions, config
 from .actions import (
-    start, stop, reset_base_url, set_wait_timeout, take_screenshot, EndTest
+    start, stop, reset_base_url, set_wait_timeout, take_screenshot, 
+    get_page_source, EndTest
 )
 from .context import populate_context
 
@@ -256,8 +257,13 @@ def get_case(test_dir, entry, browser_type, browser_version,
         except:
             if screenshots_on:
                 now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-                filename = 'screenshot-%s-%s.png' % (now, entry[:-3])
+                tc_name = entry[:-3]
+                filename = 'screenshot-%s-%s.png' % (now, tc_name)
                 take_screenshot(filename)
+                filename = 'pagesource-%s-%s.html' % (now, tc_name)
+                path = os.path.join(config.results_directory, filename)
+                with open(path, 'w') as f:
+                    f.write(get_page_source())  
             if debug:
                 pdb.post_mortem()
             raise
