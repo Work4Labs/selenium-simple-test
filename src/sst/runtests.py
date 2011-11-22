@@ -73,6 +73,7 @@ def runtests(test_names, test_dir='tests', report_format='console',
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_directory and
+        not os.path.abspath(root).startswith(shared_directory+os.path.sep) and 
         not os.path.split(root)[1].startswith('_')
     )
 
