@@ -19,6 +19,7 @@
 #
 
 import ast
+import codecs
 import datetime
 import os
 import pdb
@@ -261,9 +262,10 @@ def get_case(test_dir, entry, browser_type, browser_version,
                 tc_name = entry[:-3]
                 filename = 'screenshot-%s-%s.png' % (now, tc_name)
                 take_screenshot(filename)
+                # also dump page source
                 filename = 'pagesource-%s-%s.html' % (now, tc_name)
                 path = os.path.join(config.results_directory, filename)
-                with open(path, 'w') as f:
+                with codecs.open(path, 'w', encoding='utf-8') as f:
                     f.write(get_page_source())  
             if debug:
                 pdb.post_mortem()
