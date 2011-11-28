@@ -49,7 +49,7 @@ def main():
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
-        display = Display(visible=0, size=(1024, 768))
+        display = Display(visible=0, size=(1280, 1024))
         display.start()
 
     if cmd_opts.run_tests:
