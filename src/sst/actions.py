@@ -979,6 +979,8 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     waitfor(browser.switch_to_alert)
     alert = browser.switch_to_alert()
     alert_text = alert.text
+    if isinstance(alert_text, dict):
+        alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
         error_message = 'Element text should be %r.\nIt is %r.' \
             % (expected_text, alert_text)
