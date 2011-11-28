@@ -379,16 +379,21 @@ def is_textfield(id_or_elem):
     return elem
 
 
-def textfield_write(id_or_elem, new_text, check=True):
+def textfield_write(id_or_elem, new_text, check=True, clear=True):
     """
     Set the specified text into the textfield. If the text fails to write (the
     textfield contents after writing are different to the specified text) this
     function will fail. You can switch off the checking by passing
-    `check=False`."""
+    `check=False`.  The field is cleared before written to. You can switch this
+    off by passing `clear=False`."""
     _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = is_textfield(id_or_elem)
-    textfield.send_keys(keys.Keys().CONTROL, 'a')
-    textfield.send_keys(keys.Keys().DELETE)
+        
+    # clear field like this, don't use clear()
+    if clear:
+        textfield.send_keys(keys.Keys().CONTROL, 'a')
+        textfield.send_keys(keys.Keys().DELETE)
+
     if isinstance(new_text, unicode):
         textfield.send_keys(new_text)
     else:
