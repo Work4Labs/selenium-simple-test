@@ -160,7 +160,7 @@ def start(browser_type=None, browser_version='',
         if browser_type == 'Firefox':
             # profile features are FF only
             profile = getattr(webdriver, '%sProfile' % browser_type)()
-            profile.set_preference('intl.accept_languages', '"en"')
+            profile.set_preference('intl.accept_languages', 'en')
             if assume_trusted_cert_issuer:
                 profile.set_preference('webdriver_assume_untrusted_issuer', False)
             if javascript_disabled:
@@ -329,7 +329,7 @@ def checkbox_set(id_or_elem, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    _print('Setting checkbox %r to %s' % (id_or_elem, new_value))
+    _print('Setting checkbox %r to %r' % (id_or_elem, new_value))
     checkbox = is_checkbox(id_or_elem)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
