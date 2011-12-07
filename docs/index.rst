@@ -107,8 +107,8 @@ a sample test case in SST::
 
     from sst.actions import *
 
-    goto('http://www.ubuntu.com/')
-    title_contains('Ubuntu homepage')
+    go_to('http://www.ubuntu.com/')
+    assert_title_contains('Ubuntu homepage')
 
 
 ---------------------

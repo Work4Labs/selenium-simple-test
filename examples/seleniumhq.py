@@ -1,4 +1,4 @@
 from sst.actions import *
 
-goto('http://seleniumhq.org/')
-title_is('Selenium - Web Browser Automation')
+go_to('http://seleniumhq.org/')
+assert_title('Selenium - Web Browser Automation')

@@ -23,35 +23,35 @@ def get_condition(result=True, wait=0, raises=False,
         return False
     return condition
 
-goto('/')
+go_to('/')
 set_wait_timeout(0.1)
 
-waitfor(get_condition(True))
-fails(waitfor, get_condition(False))
+wait_for(get_condition(True))
+fails(wait_for, get_condition(False))
 
-waitfor(get_condition(raises=True))
-fails(waitfor, get_condition(False, raises=True))
+wait_for(get_condition(raises=True))
+fails(wait_for, get_condition(False, raises=True))
 
-waitfor(url_is, '/')
-fails(waitfor, url_is, '/thing')
+wait_for(assert_url, '/')
+fails(wait_for, assert_url, '/thing')
 
-waitfor(url_is, url='/')
-fails(waitfor, url_is, url='/thing')
+wait_for(assert_url, url='/')
+fails(wait_for, assert_url, url='/thing')
 
 CALLS = 0
 set_wait_timeout(0.1, 0.01)
-fails(waitfor, get_condition(wait=0.2))
+fails(wait_for, get_condition(wait=0.2))
 assert CALLS > 6
 
-fails(waitfor, get_condition(wait=0.2, raises=True))
+fails(wait_for, get_condition(wait=0.2, raises=True))
 
 set_wait_timeout(0.5)
-waitfor(get_condition(wait=0.2))
-waitfor(get_condition(wait=0.2, raises=True))
+wait_for(get_condition(wait=0.2))
+wait_for(get_condition(wait=0.2, raises=True))
 
 set_wait_timeout(0.3, 0.1)
 CALLS = 0
-waitfor(get_condition(wait=0.2))
+wait_for(get_condition(wait=0.2))
 assert CALLS <= 3
 
 set_wait_timeout(10, 0.1)

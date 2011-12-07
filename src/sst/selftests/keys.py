@@ -3,17 +3,17 @@ from sst.actions import *
 # tests for simulate_keys
 
 
-goto('/')
-title_is('The Page Title')
+go_to('/')
+assert_title('The Page Title')
 
-textfield_write('text_1', 'Foobar..')
+write_textfield('text_1', 'Foobar..')
 
 simulate_keys('text_1', 'BACK_SPACE')
 simulate_keys('text_1', 'back_space')  # not case sensitive
 simulate_keys('text_1', 'SPACE')
 simulate_keys('text_1', 'Space')
 
-text_is('text_1', 'Foobar  ')
+assert_text('text_1', 'Foobar  ')
 
 
 # available keys (from selenium/webdriver/common/keys.py):

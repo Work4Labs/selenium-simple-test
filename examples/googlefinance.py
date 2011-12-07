@@ -1,18 +1,18 @@
 from sst.actions import *
 
 
-goto('http://www.google.com/')
-title_contains('Google')
+go_to('http://www.google.com/')
+assert_title_contains('Google')
 
 set_base_url('http://www.google.com/')
-goto('/finance')
+go_to('/finance')
 
-url_is('/finance')
-fails(url_is, '/foo')
+assert_url('/finance')
+fails(assert_url, '/foo')
 
-title_contains('Google Finance: Stock market')
+assert_title_contains('Google Finance: Stock market')
 
-textfield_write(get_element(name='q'), 'IBM')
-button_click(get_element(tag='input', value='Get quotes'))
+write_textfield(get_element(name='q'), 'IBM')
+click_button(get_element(tag='input', value='Get quotes'))
 
-url_contains('IBM')
+assert_url_contains('IBM')

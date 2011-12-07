@@ -1,10 +1,10 @@
 import os
 from sst.actions import *
 
-"""Test the is_displayed action."""
+"""Test the assert_displayed action."""
 
 
-goto('/')
+go_to('/')
 
-is_displayed('select_with_id_1')
-fails(is_displayed, 'hidden_input')
+assert_displayed('select_with_id_1')
+fails(assert_displayed, 'hidden_input')

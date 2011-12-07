@@ -1,6 +1,6 @@
 from sst.actions import *
 
-goto('/')
+go_to('/')
 
 get_element_by_css('#headline')
 get_element_by_css('.unique_class')

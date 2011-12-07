@@ -1,10 +1,10 @@
 from sst.actions import *
 
 
-goto('http://finance.search.yahoo.com/')
-title_contains('Yahoo!')
+go_to('http://finance.search.yahoo.com/')
+assert_title_contains('Yahoo!')
 element = get_element(id='yschsp')
-textfield_write(element, 'AMZN', clear=False)
+write_textfield(element, 'AMZN', clear=False)
 element = get_element(id='yschbt')
-button_click(element)
-title_contains('AMZN - Yahoo')
+click_button(element)
+assert_title_contains('AMZN - Yahoo')

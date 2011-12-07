@@ -1,9 +1,9 @@
 from sst.actions import *
 
-goto('/')
+go_to('/')
 url = get_current_url()
 assert (url == 'http://localhost:8000/')
 
-goto('/begin')
+go_to('/begin')
 url = get_current_url()
 assert (url == 'http://localhost:8000/begin')
