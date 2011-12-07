@@ -1,30 +1,30 @@
 from sst.actions import *
 
-goto('/')
+go_to('/')
 
-is_button('mainform')
-is_button('lonely')
-fails(is_button, 'headline')
-fails(is_button, 'foobar')
+assert_button('mainform')
+assert_button('lonely')
+fails(assert_button, 'headline')
+fails(assert_button, 'foobar')
 
-is_button(get_element(value='Begin', tag='input'))
-
-# this button has no behaviour, but the action should not fail
-button_click('lonely', wait=False)
+assert_button(get_element(value='Begin', tag='input'))
 
 # this button has no behaviour, but the action should not fail
-button_click('lonely2', wait=False)
+click_button('lonely', wait=False)
 
-button_click('mainform')
-url_is('/begin')
-title_is('The Next Page')
+# this button has no behaviour, but the action should not fail
+click_button('lonely2', wait=False)
 
-link_click('the_band_link')
-url_is('/')
+click_button('mainform')
+assert_url('/begin')
+assert_title('The Next Page')
 
-link_click('longscroll_link')
-url_is('/longscroll')
+click_link('the_band_link')
+assert_url('/')
+
+click_link('longscroll_link')
+assert_url('/longscroll')
 
 # button is initially scrolled out of view
-button_click('mainform')
-url_is('/begin')
+click_button('mainform')
+assert_url('/begin')

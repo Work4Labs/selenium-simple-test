@@ -2,7 +2,7 @@ from sst.actions import *
 
 # test get_page_source()
 
-goto('/')
+go_to('/')
 
 txt = get_page_source()
 

@@ -1,36 +1,36 @@
 from sst.actions import *
 
-# tests goto, url_is, title_is, set_base_url
+# tests go_to, assert_url, assert_title, set_base_url
 # reset_base_url, get_base_url
 
-goto('/')
+go_to('/')
 
-url_is('/')
-fails(url_is, '/foo')
+assert_url('/')
+fails(assert_url, '/foo')
 
-title_is('The Page Title')
-fails(title_is, 'this is not the title')
+assert_title('The Page Title')
+fails(assert_title, 'this is not the title')
 
-title_contains('The Page')
-title_contains('.*Pag[E|e]', regex=True)
-fails(title_contains, 'foobar')
+assert_title_contains('The Page')
+assert_title_contains('.*Pag[E|e]', regex=True)
+fails(assert_title_contains, 'foobar')
 
 set_base_url('localhost:8000')
 assert get_base_url() == 'http://localhost:8000/'
 
 set_base_url('http://localhost:8000/begin/')
 assert get_base_url() == 'http://localhost:8000/begin/'
-goto('/')
+go_to('/')
 
-# url_is adds the base url for relative urls
+# assert_url adds the base url for relative urls
 # so test both ways
-url_is('http://localhost:8000/begin/')
-url_is('/')
+assert_url('http://localhost:8000/begin/')
+assert_url('/')
 
-fails(url_is, 'http://localhost:8000/')
-fails(url_is, '/begin/')
+fails(assert_url, 'http://localhost:8000/')
+fails(assert_url, '/begin/')
 
 reset_base_url()
 assert get_base_url() == 'http://localhost:8000/'
-goto('/')
-url_is('http://localhost:8000/')
+go_to('/')
+assert_url('http://localhost:8000/')

@@ -9,10 +9,10 @@ assert(len(list_field) > 1)
 assert((list_field[0] == 1) or (list_field[0] == 'a'))
 assert isinstance(should_pass, bool)
 
-goto('/')
-title_is('The Page Title')
-textfield_write(get_element(name='textfield1'), textfield1) # textfield1 comes from the associated csv data file
-textfield_write(get_element(name='password1'), password1)
-button_click(get_element(tag='input', value='Begin'))
-title_is('The Next Page')
+go_to('/')
+assert_title('The Page Title')
+write_textfield(get_element(name='textfield1'), textfield1) # textfield1 comes from the associated csv data file
+write_textfield(get_element(name='password1'), password1)
+click_button(get_element(tag='input', value='Begin'))
+assert_title('The Next Page')
 

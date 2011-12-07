@@ -4,7 +4,7 @@ from sst.actions import *
 #
 # see: http://seleniumhq.org/docs/appendix_locating_techniques.html 
 
-goto('/')
+go_to('/')
 
 get_element_by_xpath("//p[contains(@class, 'unique_class')]")
 get_element_by_xpath("//a[contains(@id, 'band_link')]")

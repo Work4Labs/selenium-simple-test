@@ -1,32 +1,32 @@
 from sst.actions import *
 
-goto('/')
+go_to('/')
 
-is_link('the_band_link')
-is_link(get_element(id='the_band_link'))
+assert_link('the_band_link')
+assert_link(get_element(id='the_band_link'))
 
 # fails for non existent element
-fails(is_link, 'foobar')
+fails(assert_link, 'foobar')
 
 # fails for element that exists but isn't a link
-fails(is_link, 'radio_with_id_1')
+fails(assert_link, 'radio_with_id_1')
 
 
-link_click('the_band_link', wait=False)
-url_is('/begin')
+click_link('the_band_link', wait=False)
+assert_url('/begin')
 
-link_click('the_band_link')
-url_is('/')
+click_link('the_band_link')
+assert_url('/')
 
-link_click('longscroll_link')
-url_is('/longscroll')
+click_link('longscroll_link')
+assert_url('/longscroll')
 
-link_click('homepage_link_top')
-url_is('/')
+click_link('homepage_link_top')
+assert_url('/')
 
-link_click('longscroll_link')
-url_is('/longscroll')
+click_link('longscroll_link')
+assert_url('/longscroll')
 
 # link is initially scrolled out of view
-link_click('homepage_link_bottom') 
-url_is('/')
+click_link('homepage_link_bottom') 
+assert_url('/')
