@@ -59,19 +59,19 @@ from sst import config
 
 
 __all__ = [
-    'start', 'stop', 'title_is', 'title_contains', 'goto', 'waitfor', 'fails',
-    'is_radio', 'set_base_url', 'reset_base_url', 'radio_value_is',
-    'radio_select', 'text_is', 'text_contains', 'is_checkbox', 'get_element',
-    'get_elements', 'checkbox_value_is', 'checkbox_toggle', 'checkbox_set',
-    'is_link', 'is_button', 'button_click', 'link_click', 'is_textfield',
-    'textfield_write', 'url_contains', 'url_is', 'sleep', 'is_select',
-    'select_value_is', 'set_select', 'get_link_url', 'exists_element',
+    'start', 'stop', 'assert_title', 'assert_title_contains', 'go_to', 'wait_for', 'fails',
+    'assert_radio', 'set_base_url', 'reset_base_url', 'assert_radio_value',
+    'set_radio_value', 'assert_text', 'assert_text_contains', 'assert_checkbox', 'get_element',
+    'get_elements', 'assert_checkbox_value', 'toggle_checkbox', 'set_checkbox_value',
+    'assert_link', 'assert_button', 'click_button', 'click_link', 'assert_textfield',
+    'write_textfield', 'assert_url_contains', 'assert_url', 'sleep', 'assert_dropdown',
+    'assert_dropdown_value', 'set_dropdown_value', 'get_link_url', 'exists_element',
     'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
     'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
     'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
-    'is_displayed', 'element_click', 'get_element_by_xpath',
+    'assert_displayed', 'click_element', 'get_element_by_xpath',
     'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame',
-    'alert_accept', 'alert_dismiss', 'window_close', 'get_current_url']
+    'accept_alert', 'dismiss_alert', 'close_window', 'get_current_url']
 
 
 browser = None
@@ -100,7 +100,7 @@ def _raise(msg):
 
 
 def set_base_url(url):
-    """Set the url used for relative arguments to the `goto` action."""
+    """Set the url used for relative arguments to the `go_to` action."""
     global BASE_URL
     if not url.endswith('/'):
         url += '/'
@@ -111,7 +111,7 @@ def set_base_url(url):
 
 
 def get_base_url():
-    """Return the base url used by `goto`."""
+    """Return the base url used by `go_to`."""
     return BASE_URL
 
 
@@ -160,7 +160,7 @@ def start(browser_type=None, browser_version='',
         if browser_type == 'Firefox':
             # profile features are FF only
             profile = getattr(webdriver, '%sProfile' % browser_type)()
-            profile.set_preference('intl.accept_languages', '"en"')
+            profile.set_preference('intl.accept_languages', 'en')
             if assume_trusted_cert_issuer:
                 profile.set_preference('webdriver_assume_untrusted_issuer', False)
             if javascript_disabled:
@@ -269,7 +269,7 @@ def run_test(name, **kwargs):
     return context.run_test(name, kwargs)
 
 
-def goto(url='', wait=True):
+def go_to(url='', wait=True):
     """
     Goto a specific URL. If the url provided is a relative url it will be added
     to the base url. You can change the base url for the test with
@@ -286,7 +286,7 @@ def goto(url='', wait=True):
         _waitforbody()
 
 
-def is_checkbox(id_or_elem):
+def assert_checkbox(id_or_elem):
     """
     Assert that the element is a checkbox.
 
@@ -298,24 +298,24 @@ def is_checkbox(id_or_elem):
     return elem
 
 
-def checkbox_value_is(id_or_elem, value):
+def assert_checkbox_value(id_or_elem, value):
     """
     Assert checkbox value. Takes an element id or object plus either True or
     False. Raises a failure exception if the element specified doesn't exist
     or isn't a checkbox."""
-    checkbox = is_checkbox(id_or_elem)
+    checkbox = assert_checkbox(id_or_elem)
     real = checkbox.is_selected()
     msg = 'Checkbox: %r - Has Value: %r' % (id_or_elem, real)
     if real != value:
         _raise(msg)
 
 
-def checkbox_toggle(id_or_elem):
+def toggle_checkbox(id_or_elem):
     """
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
     _print('Toggling checkbox: %r' % id_or_elem)
-    checkbox = is_checkbox(id_or_elem)
+    checkbox = assert_checkbox(id_or_elem)
     before = checkbox.is_selected()
     checkbox.click()
     after = checkbox.is_selected()
@@ -325,16 +325,16 @@ def checkbox_toggle(id_or_elem):
         _raise(msg)
 
 
-def checkbox_set(id_or_elem, new_value):
+def set_checkbox_value(id_or_elem, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    _print('Setting checkbox %r to %s' % (id_or_elem, new_value))
-    checkbox = is_checkbox(id_or_elem)
+    _print('Setting checkbox %r to %r' % (id_or_elem, new_value))
+    checkbox = assert_checkbox(id_or_elem)
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
     if new_value != current_value:
-        checkbox_toggle(id_or_elem)
+        toggle_checkbox(id_or_elem)
 
 
 def _make_keycode(key_to_make):
@@ -367,7 +367,7 @@ _textfields = (
     'url', 'search', 'number', 'file')
 
 
-def is_textfield(id_or_elem):
+def assert_textfield(id_or_elem):
     """
     Assert that the element is a textfield, textarea or password box.
 
@@ -379,16 +379,21 @@ def is_textfield(id_or_elem):
     return elem
 
 
-def textfield_write(id_or_elem, new_text, check=True):
+def write_textfield(id_or_elem, new_text, check=True, clear=True):
     """
     Set the specified text into the textfield. If the text fails to write (the
     textfield contents after writing are different to the specified text) this
     function will fail. You can switch off the checking by passing
-    `check=False`."""
+    `check=False`.  The field is cleared before written to. You can switch this
+    off by passing `clear=False`."""
     _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
-    textfield = is_textfield(id_or_elem)
-    textfield.send_keys(keys.Keys().CONTROL, 'a')
-    textfield.send_keys(keys.Keys().DELETE)
+    textfield = assert_textfield(id_or_elem)
+        
+    # clear field like this, don't use clear()
+    if clear:
+        textfield.send_keys(keys.Keys().CONTROL, 'a')
+        textfield.send_keys(keys.Keys().DELETE)
+
     if isinstance(new_text, unicode):
         textfield.send_keys(new_text)
     else:
@@ -403,7 +408,7 @@ def textfield_write(id_or_elem, new_text, check=True):
         _raise(msg)
 
 
-def is_link(id_or_elem):
+def assert_link(id_or_elem):
     """
     Assert that the element is a link.
 
@@ -420,7 +425,7 @@ def is_link(id_or_elem):
 def get_link_url(id_or_elem):
     """Return the URL from a link."""
     _print('Getting url from link %r' % id_or_elem)
-    link = is_link(id_or_elem)
+    link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
     return link_url
 
@@ -430,7 +435,7 @@ def get_current_url():
     return browser.current_url
     
     
-def link_click(id_or_elem, check=False, wait=True):
+def click_link(id_or_elem, check=False, wait=True):
     """
     Click the specified link. As some links do redirects the location you end
     up at is not checked by default. If you pass in `check=True` then this
@@ -440,7 +445,7 @@ def link_click(id_or_elem, check=False, wait=True):
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     _print('Clicking link %r' % id_or_elem)
-    link = is_link(id_or_elem)
+    link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
     link.click()
 
@@ -450,10 +455,10 @@ def link_click(id_or_elem, check=False, wait=True):
     # some links do redirects - so we
     # don't check by default
     if check:
-        url_is(link_url)
+        assert_url(link_url)
 
 
-def is_displayed(id_or_elem):
+def assert_displayed(id_or_elem):
     """
     Assert that the element is displayed.
 
@@ -467,7 +472,7 @@ def is_displayed(id_or_elem):
     return element
 
 
-def element_click(id_or_elem, wait=True):
+def click_element(id_or_elem, wait=True):
     """
     Click on an element of any kind not specific to links or buttons.
 
@@ -482,7 +487,7 @@ def element_click(id_or_elem, wait=True):
         _waitforbody()
 
 
-def title_is(title):
+def assert_title(title):
     """Assert the page title is as specified."""
     real_title = browser.title
     msg = 'Title is: %r. Should be: %r' % (real_title, title)
@@ -490,7 +495,7 @@ def title_is(title):
         _raise(msg)
 
 
-def title_contains(text, regex=False):
+def assert_title_contains(text, regex=False):
     """
     Assert the page title contains the specified text.
 
@@ -505,7 +510,7 @@ def title_contains(text, regex=False):
             _raise(msg)
 
 
-def url_is(url):
+def assert_url(url):
     """
     Assert the current url is as specified. Can be an absolute url or
     relative to the base url."""
@@ -516,7 +521,7 @@ def url_is(url):
         _raise(msg)
 
 
-def url_contains(text, regex=False):
+def assert_url_contains(text, regex=False):
     """
     Assert the current url contains the specified text.
 
@@ -537,10 +542,10 @@ _POLL = 0.1
 
 def set_wait_timeout(timeout, poll=None):
     """
-    Set the timeout, in seconds, used by`waitfor`. The default at the start of
+    Set the timeout, in seconds, used by`wait_for`. The default at the start of
     a test is always 10 seconds.
 
-    The optional second argument, is how long (in seconds) `waitfor` should
+    The optional second argument, is how long (in seconds) `wait_for` should
     wait in between checking its condition (the poll frequency). The default
     at the start of a test is always 0.1 seconds."""
     global _TIMEOUT
@@ -560,7 +565,7 @@ def _get_name(obj):
         return repr(obj)
 
 
-def waitfor(condition, *args, **kwargs):
+def wait_for(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
     that may take some time to complete.
@@ -569,12 +574,12 @@ def waitfor(condition, *args, **kwargs):
     called with. The condition function can either be an action or a function
     that returns True for success and False for failure. For example::
 
-        waitfor(title_is, 'Some page title')
+        wait_for(assert_title, 'Some page title')
 
     If the specified condition does not become true within 10 seconds then
-    `waitfor` fails.
+    `wait_for` fails.
 
-    You can set the timeout for `waitfor` by calling `set_wait_timeout`."""
+    You can set the timeout for `wait_for` by calling `set_wait_timeout`."""
     global VERBOSE
     _print('Waiting for %s' % _get_name(condition))
     original = VERBOSE
@@ -638,17 +643,17 @@ def _elem_is_type(elem, name, *elem_types):
         _raise(msg)
 
 
-def is_select(id_or_elem):
+def assert_dropdown(id_or_elem):
     """Assert the specified element is a select drop-list."""
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, 'select-one')
     return elem
 
 
-def set_select(id_or_elem, text_in):
+def set_dropdown_value(id_or_elem, text_in):
     """Set the select drop-list to a text value specified."""
     _print('Setting %r option list to %s' % (id_or_elem, text_in))
-    elem = is_select(id_or_elem)
+    elem = assert_dropdown(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
             element.click()
@@ -657,9 +662,9 @@ def set_select(id_or_elem, text_in):
     _raise(msg)
 
 
-def select_value_is(id_or_elem, text_in):
+def assert_dropdown_value(id_or_elem, text_in):
     """Assert the specified select drop-list is set to the specified value."""
-    elem = is_select(id_or_elem)
+    elem = assert_dropdown(id_or_elem)
     # Because there is no way to connect the current
     # text of a select element we have to use 'value'
     current = elem.get_attribute('value')
@@ -671,7 +676,7 @@ def select_value_is(id_or_elem, text_in):
     _raise(msg)
 
 
-def is_radio(id_or_elem):
+def assert_radio(id_or_elem):
     """
     Assert the specified element is a radio button.
 
@@ -683,7 +688,7 @@ def is_radio(id_or_elem):
     return elem
 
 
-def radio_value_is(id_or_elem, value):
+def assert_radio_value(id_or_elem, value):
     """
     Assert the specified element is a radio button with the specified value;
     True for selected and False for unselected.
@@ -691,17 +696,17 @@ def radio_value_is(id_or_elem, value):
     Takes an id or an element object.
     Raises a failure exception if the element specified doesn't exist or isn't
     a radio button"""
-    elem = is_radio(id_or_elem)
+    elem = assert_radio(id_or_elem)
     selected = elem.is_selected()
     msg = 'Radio %r should be set to: %s.' % (id_or_elem, value)
     if value != selected:
         _raise(msg)
 
 
-def radio_select(id_or_elem):
+def set_radio_value(id_or_elem):
     """Select the specified radio button."""
     _print('Selecting radio button item %r' % id_or_elem)
-    elem = is_radio(id_or_elem)
+    elem = assert_radio(id_or_elem)
     elem.click()
 
 
@@ -722,7 +727,7 @@ def _get_text(elem):
     return text
 
 
-def text_is(id_or_elem, text):
+def assert_text(id_or_elem, text):
     """Assert the specified element text is as specified.
 
     Raises a failure exception if the element specified doesn't exist or isn't
@@ -737,7 +742,7 @@ def text_is(id_or_elem, text):
         _raise(msg)
 
 
-def text_contains(id_or_elem, text, regex=False):
+def assert_text_contains(id_or_elem, text, regex=False):
     """
     Assert the specified element contains the specified text.
 
@@ -837,7 +842,7 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
         return False
 
 
-def is_button(id_or_elem):
+def assert_button(id_or_elem):
     """Assert that the specified element is a button.
 
     Takes an id or an element object.
@@ -852,7 +857,7 @@ def is_button(id_or_elem):
     return elem
 
 
-def button_click(id_or_elem, wait=True):
+def click_button(id_or_elem, wait=True):
     """
     Click the specified button.
 
@@ -860,7 +865,7 @@ def button_click(id_or_elem, wait=True):
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     _print('Clicking button %r' % id_or_elem)
-    button = is_button(id_or_elem)
+    button = assert_button(id_or_elem)
     button.click()
 
     if wait:
@@ -904,14 +909,14 @@ def get_element_by_xpath(selector):
 
 
 def _waitforbody():
-    waitfor(get_element, tag='body')
+    wait_for(get_element, tag='body')
 
 
 def get_page_source():
     """Gets the source of the current page."""
     return browser.page_source
 
-def window_close():
+def close_window():
     """ Closes the current window """
     _print('Closing the current window')
     browser.close()
@@ -971,9 +976,13 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     Optionally, it takes the expected text of the Popup box to check it,
     and the text to write in the prompt."""
     window_handle = browser.current_window_handle
-    waitfor(browser.switch_to_alert)
+    wait_for(browser.switch_to_alert)
     alert = browser.switch_to_alert()
     alert_text = alert.text
+    # XXX workaround because Selenium sometimes returns the value in a
+    # dictionary. See http://code.google.com/p/selenium/issues/detail?id=2955
+    if isinstance(alert_text, dict):
+        alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
         error_message = 'Element text should be %r.\nIt is %r.' \
             % (expected_text, alert_text)
@@ -989,7 +998,7 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     browser.switch_to_window(window_handle)
 
 
-def alert_accept(expected_text=None, text_to_write=None):
+def accept_alert(expected_text=None, text_to_write=None):
     """
     Accept a JavaScript alert, confirmation or prompt.
 
@@ -998,11 +1007,11 @@ def alert_accept(expected_text=None, text_to_write=None):
 
     Note that the action that opens the alert should not wait for a page with
     a body element. This means that you should call functions like
-    element_click with the argument wait=Fase."""
+    click_element with the argument wait=Fase."""
     _alert_action('accept', expected_text, text_to_write)
 
 
-def alert_dismiss(expected_text=None, text_to_write=None):
+def dismiss_alert(expected_text=None, text_to_write=None):
     """
     Dismiss a JavaScript alert.
 
@@ -1011,5 +1020,5 @@ def alert_dismiss(expected_text=None, text_to_write=None):
 
     Note that the action that opens the alert should not wait for a page with
     a body element. This means that you should call functions like
-    element_click with the argument wait=Fase."""
+    click_element with the argument wait=Fase."""
     _alert_action('dismiss', expected_text, text_to_write)

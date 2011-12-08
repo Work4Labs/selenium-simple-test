@@ -1,36 +1,36 @@
 from sst.actions import *
 
 
-goto('/')
-link_click('popup_link')
+go_to('/')
+click_link('popup_link')
 
 # switch to new window/tab
 switch_to_window(index_or_name='_NEW_WINDOW')
-title_is('Popup Window')
+assert_title('Popup Window')
 
 # switch back to default/main window/tab
 switch_to_window()
-title_is('The Page Title')
+assert_title('The Page Title')
 
 # switch to new window/tab
 switch_to_window('_NEW_WINDOW')
-title_is('Popup Window')
+assert_title('Popup Window')
 
 # verify we can access content in new window
 elem = get_element(tag='p', id='popup_id', text='Popup text here')
-text_is(elem, 'Popup text here')
+assert_text(elem, 'Popup text here')
 
 # switch back to default/main window/tab
 switch_to_window(index_or_name='')
-title_is('The Page Title')
+assert_title('The Page Title')
 
 # switch to new window/tab using index
 switch_to_window(index_or_name=1)
-title_is('Popup Window')
+assert_title('Popup Window')
 
 # switch back to default/main window using index
 switch_to_window(0)
-title_is('The Page Title')
+assert_title('The Page Title')
 
 # fails when the window name does not exist
 fails(switch_to_window, index_or_name='not_a_window')
@@ -45,5 +45,5 @@ fails(switch_to_window, index_or_name=99)
 fails(switch_to_window, 99)
 
 # verify we are still back on main window
-title_is('The Page Title')
+assert_title('The Page Title')
 

@@ -1,8 +1,8 @@
 from sst.actions import *
 
-goto('/')
+go_to('/')
 
-url_contains('http://localhost:8000')
-url_contains('localhost')
-url_contains('lo[C|c]a.*host', regex=True)
-fails(url_contains, 'foobar')
+assert_url_contains('http://localhost:8000')
+assert_url_contains('localhost')
+assert_url_contains('lo[C|c]a.*host', regex=True)
+fails(assert_url_contains, 'foobar')

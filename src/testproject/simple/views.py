@@ -1,3 +1,6 @@
+import os
+import signal
+
 from django.shortcuts import render_to_response
 
 
@@ -30,3 +33,6 @@ def alerts(request):
 
 def yui(request):
     return render_to_response('yui.html')
+
+def kill_django(request):
+    os.kill(os.getpid(), signal.SIGKILL)

@@ -49,7 +49,7 @@ def main():
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
-        display = Display(visible=0, size=(1024, 768))
+        display = Display(visible=0, size=(1280, 1024))
         display.start()
 
     if cmd_opts.run_tests:
@@ -74,8 +74,8 @@ def main():
 
     if cmd_opts.run_tests:
         print '\nkilling django...'
-        os.system("kill $(ps aux | grep 'manage.py' | awk '{print $2}')")
-
+        kill_django()
+        
     if cmd_opts.xserver_headless:
         print '\nstopping virtual display...\n'
         display.stop()
@@ -101,10 +101,19 @@ def run_django():
 
 
 
+def kill_django():
+    try:
+        urllib.urlopen('http://localhost:8000/kill_django')
+    except IOError:
+        pass
+
+
+
 def get_opts():
     parser = get_run_options()
     (cmd_opts, args) = parser.parse_args()
     return (cmd_opts, args)
+
 
 
 if __name__ == '__main__':

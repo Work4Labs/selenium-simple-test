@@ -3,8 +3,8 @@ from sst.actions import *
 """ negative (fails) tests for object identification """
 
 
-goto('/')
-title_is('The Page Title')
+go_to('/')
+assert_title('The Page Title')
 
 
 # need at least one parameter

@@ -1,13 +1,13 @@
 from sst.actions import *
 
-# tests for text_is, text_contains
+# tests for assert_text, text_contains
 
-goto('/')
+go_to('/')
 
 title = get_element(tag='title')
-text_is(title, 'The Page Title')
-text_contains(title, 'The Page')
-fails(text_contains, title, 'foobar')
+assert_text(title, 'The Page Title')
+assert_text_contains(title, 'The Page')
+fails(assert_text_contains, title, 'foobar')
 
 body = get_element(tag='body')
-text_contains(body, '.*[C|c]ountry.*', regex=True)
+assert_text_contains(body, '.*[C|c]ountry.*', regex=True)
