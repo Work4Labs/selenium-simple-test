@@ -16,7 +16,7 @@ SCRIPTS = ['sst-run', 'sst-remote']
 DESCRIPTION = 'Selenium Simple Test Framework'
 URL = 'https://launchpad.net/selenium-simple-test'
 
-readme = os.path.join(this_dir, 'README.txt')
+readme = os.path.join(this_dir, 'README')
 LONG_DESCRIPTION = open(readme).read()
 
 CLASSIFIERS = [
