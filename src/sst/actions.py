@@ -59,19 +59,22 @@ from sst import config
 
 
 __all__ = [
-    'start', 'stop', 'assert_title', 'assert_title_contains', 'go_to', 'wait_for', 'fails',
-    'assert_radio', 'set_base_url', 'reset_base_url', 'assert_radio_value',
-    'set_radio_value', 'assert_text', 'assert_text_contains', 'assert_checkbox', 'get_element',
-    'get_elements', 'assert_checkbox_value', 'toggle_checkbox', 'set_checkbox_value',
-    'assert_link', 'assert_button', 'click_button', 'click_link', 'assert_textfield',
-    'write_textfield', 'assert_url_contains', 'assert_url', 'sleep', 'assert_dropdown',
-    'assert_dropdown_value', 'set_dropdown_value', 'get_link_url', 'exists_element',
-    'set_wait_timeout', 'get_argument', 'run_test', 'get_base_url',
-    'end_test', 'skip', 'get_element_by_css', 'get_elements_by_css',
-    'take_screenshot', 'debug', 'get_page_source', 'simulate_keys',
-    'assert_displayed', 'click_element', 'get_element_by_xpath',
-    'get_elements_by_xpath', 'switch_to_window', 'switch_to_frame',
-    'accept_alert', 'dismiss_alert', 'close_window', 'get_current_url']
+    'accept_alert', 'assert_button', 'assert_checkbox', 
+    'assert_checkbox_value', 'assert_displayed', 'assert_dropdown', 
+    'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio', 
+    'assert_radio_value', 'assert_text', 'assert_text_contains', 
+    'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url', 
+    'assert_url_contains', 'click_button', 'click_element', 'click_link', 
+    'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element', 
+    'fails', 'get_argument', 'get_base_url', 'get_current_url', 'get_element', 
+    'get_element_by_css', 'get_element_by_xpath', 'get_elements', 
+    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url', 
+    'get_page_source', 'go_to', 'reset_base_url', 'run_test', 'set_base_url', 
+    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value', 
+    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop', 
+    'switch_to_frame', 'switch_to_window', 'take_screenshot', 
+    'toggle_checkbox', 'wait_for', 'write_textfield',
+]
 
 
 browser = None
@@ -728,7 +731,8 @@ def _get_text(elem):
 
 
 def assert_text(id_or_elem, text):
-    """Assert the specified element text is as specified.
+    """
+    Assert the specified element text is as specified.
 
     Raises a failure exception if the element specified doesn't exist or isn't
     as specified"""
@@ -842,8 +846,22 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
         return False
 
 
+def assert_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+    """
+    Assert an element exists by any of several attributes.
+    
+    You can specify as many or as few attributes as you like."""
+    try:
+        elems = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+        return elems
+    except AssertionError:
+        msg = 'Could not assert element exists'
+        _raise(msg)
+        
+        
 def assert_button(id_or_elem):
-    """Assert that the specified element is a button.
+    """
+    Assert that the specified element is a button.
 
     Takes an id or an element object.
     Raises a failure exception if the element specified doesn't exist or isn't
