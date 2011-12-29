@@ -109,7 +109,7 @@ def set_base_url(url):
         url += '/'
     if not url.startswith('http'):
         url = 'http://' + url
-    _print('Setting base url to: %s' % url)
+    _print('Setting base url to: %r' % url)
     BASE_URL = url
 
 
@@ -142,7 +142,7 @@ def skip(reason=''):
 
 def _print(text):
     if VERBOSE:
-        print text
+        print '    %s' % text
 
 
 def start(browser_type=None, browser_version='',
@@ -156,8 +156,11 @@ def start(browser_type=None, browser_version='',
 
     if browser_type is None:
         browser_type = config.browser_type
-
-    _print('\nStarting %s:' % browser_type)
+    
+    if VERBOSE:
+        _print('')
+        
+    _print('Starting %s:' % browser_type)
 
     if webdriver_remote is None:
         if browser_type == 'Firefox':
@@ -215,6 +218,7 @@ def sleep(secs):
     """
     Delay execution for a given number of seconds. The argument may be a
     floating point number for subsecond precision."""
+    _print('Sleeping %s secs' % secs)
     time.sleep(secs)
 
 
@@ -519,7 +523,7 @@ def assert_url(url):
     relative to the base url."""
     url = _fix_url(url)
     real_url = browser.current_url
-    msg = 'Url is: %r\nShould be: %r' % (real_url, url)
+    msg = 'Url is: %r.  Should be: %r' % (real_url, url)
     if url != real_url:
         _raise(msg)
 
@@ -530,7 +534,7 @@ def assert_url_contains(text, regex=False):
 
     set `regex=True` to use a regex pattern."""
     real_url = browser.current_url
-    msg = 'Url is %r.\nDoes not contain %r' % (real_url, text)
+    msg = 'Url is %r.  Does not contain %r' % (real_url, text)
     if regex:
         if not re.search(text, real_url):
             _raise(msg)
@@ -616,6 +620,7 @@ def fails(action, *args, **kwargs):
     this action raises the appropriate failure exception. Alll other
     exceptions will be propagated normally."""
     try:
+        _print('trying Action failure:')
         action(*args, **kwargs)
     except AssertionError:
         return
@@ -655,7 +660,7 @@ def assert_dropdown(id_or_elem):
 
 def set_dropdown_value(id_or_elem, text_in):
     """Set the select drop-list to a text value specified."""
-    _print('Setting %r option list to %s' % (id_or_elem, text_in))
+    _print('Setting %r option list to %r' % (id_or_elem, text_in))
     elem = assert_dropdown(id_or_elem)
     for element in elem.find_elements_by_tag_name('option'):
         if element.text == text_in:
@@ -742,7 +747,7 @@ def assert_text(id_or_elem, text):
         msg = 'Element %r has no text attribute' % id_or_elem
         _raise(msg)
     if real != text:
-        msg = 'Element text should be %r.\nIt is %r.' % (text, real)
+        msg = 'Element text should be %r.  It is %r.' % (text, real)
         _raise(msg)
 
 
@@ -1002,7 +1007,7 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     if isinstance(alert_text, dict):
         alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
-        error_message = 'Element text should be %r.\nIt is %r.' \
+        error_message = 'Element text should be %r.  It is %r.' \
             % (expected_text, alert_text)
         _raise(error_message)
     if text_to_write:
@@ -1026,6 +1031,7 @@ def accept_alert(expected_text=None, text_to_write=None):
     Note that the action that opens the alert should not wait for a page with
     a body element. This means that you should call functions like
     click_element with the argument wait=Fase."""
+    _print('Accepting Alert')
     _alert_action('accept', expected_text, text_to_write)
 
 
@@ -1039,4 +1045,6 @@ def dismiss_alert(expected_text=None, text_to_write=None):
     Note that the action that opens the alert should not wait for a page with
     a body element. This means that you should call functions like
     click_element with the argument wait=Fase."""
+    _print('Dismissing Alert')
     _alert_action('dismiss', expected_text, text_to_write)
+
