@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-# run this script to create an index.rst file for inout to Sphinx.
+# run this script to create an actions.rst file for input to Sphinx.
+#
+# requires: python-sphinx
 #
 # from the command line run `sphinx-build` against the docs directory:
 # $ sphinx-build -b html docs sst_docs
@@ -30,16 +32,21 @@ with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
         h.write(text)
         h.write('\n')
 
-    foo = """
-=====================
-    Actions Reference
-=====================
+    head1 = """
+=======================
+    SST - API Reference
+=======================
 
 """
-    h.write(foo)
-
-
+    h.write(head1)
     _write(actions.__doc__)
+    head2 = """
+----------------
+    Actions API:
+----------------
+
+"""
+    h.write(head2)
     _write('\n')
 
     for entry in sorted(actions.__all__):

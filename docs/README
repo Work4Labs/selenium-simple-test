@@ -1,13 +1,12 @@
-to build the SST docs:
+Build the SST docs/website:
+---------------------------
 
-- install sphinx ($sudo apt-get install python-sphinx)
-- run 'make_rst.py', which will produce the .rst docs
-- go up to the main sst directory and run: $ sphinx-build -b html docs sst_docs
+* install sphinx (`$ sudo apt-get install python-sphinx`)
+* run `make_actions_rst.py`, which will create `actions.rst`
+* move `docs/assets/nature.css_t` to
+    `/sphinx/themes/nature/static/nature.css_t`
+* go up to the main SST directory and run: `sphinx-build -b html docs sst_docs`
 
-this will produce HTML documentation in the sst_docs directory. Open
-index.html with your browser.
+This will produce HTML documentation in the sst_docs directory. Open
+`index.html` with your browser.
 
-(Note that `python-sphinx` will only work with Ubuntu Natty. For
-Maverick or earlier you will need a more recent version of Sphinx.
-The easiest way to do this is to create a virtualenv and install
-Sphinx into that.)
