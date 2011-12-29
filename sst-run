@@ -83,21 +83,39 @@ def main():
 
 
 def run_django():
-    subprocess.Popen(['./src/testproject/manage.py', 'runserver'],
+    """Start django server for running local self-tests."""
+    manage_file = './src/testproject/manage.py'
+    url = 'http://localhost:8000/'
+    
+    if not os.path.isfile(manage_file):
+        print 'Error: can not find the django testproject.'
+        print '%r does not exist' % manage_file
+        print 'you must run self-tests from the dev branch or package source.'
+        sys.exit(1)
+    try:
+        import django
+    except ImportError:
+        print 'Error: can not find django module.'
+        print 'you must have django installed to run the test project.'
+        sys.exit(1)
+    subprocess.Popen([manage_file, 'runserver'],
         stderr=open(os.devnull, 'w'),
         stdout=open(os.devnull, 'w')
         )
     print '----------------------------------------------------------------------'
     print 'waiting for django to come up...'
-    while True:
+    attempts = 30
+    for count in xrange(attempts):
         try:
-            resp = urllib.urlopen('http://localhost:8000/')
+            resp = urllib.urlopen(url)
             if resp.code == 200:
                 break
         except IOError:
-            time.sleep(0.2)
+            time.sleep(0.2)        
+        if count >= attempts - 1:  # timeout
+            print 'Error: can not get a valid response from %r' % url
+            sys.exit(1)
     print 'django found. continuing...'
-    return
 
 
 
