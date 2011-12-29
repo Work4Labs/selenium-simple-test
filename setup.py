@@ -11,10 +11,10 @@ import os
 
 
 NAME = 'sst'
-PACKAGES = ['sst', 'sst.selftests']
+PACKAGES = ['sst',]
 SCRIPTS = ['sst-run', 'sst-remote']
-DESCRIPTION = 'Selenium Simple Test Framework'
-URL = 'https://launchpad.net/selenium-simple-test'
+DESCRIPTION = 'SST Web Test Framework'
+URL = 'http://testutils.org/sst'
 
 readme = os.path.join(this_dir, 'README')
 LONG_DESCRIPTION = open(readme).read()
@@ -24,7 +24,7 @@ CLASSIFIERS = [
     'Environment :: Console',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
-    'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
+    'License :: OSI Approved :: Apache Software License',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.6',
@@ -37,8 +37,8 @@ CLASSIFIERS = [
 ]
 
 AUTHOR = 'Canonical ISD Team'
-AUTHOR_EMAIL = 'test@example.com'
-KEYWORDS = ("selenium test testing").split(' ')
+AUTHOR_EMAIL = 'corey@goldb.org'
+KEYWORDS = ('selenium test testing web automation').split(' ')
 
 params = dict(
     name=NAME,
@@ -46,8 +46,6 @@ params = dict(
     packages=PACKAGES,
     scripts=SCRIPTS,
     package_dir={'': 'src'},
-    package_data={'sst.selftests': ['*.csv', '_package/*.*', 'shared/*.*',
-                                    'shared/subdir/*.*', 'subdirectory/*.*']},
 
     # metadata for upload to PyPI
     author=AUTHOR,
