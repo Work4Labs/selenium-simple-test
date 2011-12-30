@@ -1,3 +1,4 @@
+    
 import os
 import sys
 
@@ -5,9 +6,6 @@ this_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(this_dir, 'src'))
 
 from sst import __version__
-
-import os
-
 
 
 NAME = 'sst'

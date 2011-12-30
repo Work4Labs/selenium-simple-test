@@ -26,25 +26,16 @@ import optparse
 try:
     import selenium
 except ImportError as e:
-    print 'Error importing Selenium WebDriver.  Selenium 2.x python bindings are required.'
     print e
+    print 'Error importing Selenium WebDriver.  Selenium 2.x python bindings are required.'
     sys.exit(1)
 
 
-usage = """Usage: %prog [testname]
-
-- Calling %prog without any arguments runs all tests in
-the local 'tests' directory.
+usage = """Usage: %prog [testname] [options]
 
 - Calling %prog with testname(s) as arguments will just run
-those tests. The testnames should not include the '.py' at
+those tests. The testnames should not include '.py' at
 the end of the filename.
-
-- You may optionally create a data file for data-driven
-testing.  Create a '^' delimited txt data file with the same
-name as the test, plus the '.csv' extension.  This will
-run a test using each row in the data file (1st row of data
-file is variable name mapping)
 """
 
 
@@ -58,7 +49,7 @@ def clear_old_results():
 def get_common_options():
     parser = optparse.OptionParser(usage=usage)
     parser.add_option('-d', dest='dir_name',
-                      default='tests',
+                      default='.',
                       help='directory of test case files')
     parser.add_option('-r', dest='report_format',
                       default='console',
