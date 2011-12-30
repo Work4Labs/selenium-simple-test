@@ -20,11 +20,11 @@
 
 
 """
-Tests are comprised of Python scripts in a "tests" directory. Files whose
-names begin with an underscore will *not* be executed as test scripts.
+Tests are comprised of Python scripts. Files whose names begin with an 
+underscore will *not* be executed as test scripts.
 
 Test scripts drive the browser with Selenium WebDriver by importing and
-using actions.
+using SST actions.
 
 The standard set of actions are imported by starting the test scripts with::
 

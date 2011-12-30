@@ -34,10 +34,10 @@ except ImportError:
     sys.path.append(os.path.join(this_dir, 'src'))
     import sst
 
-from sst.command import get_run_options, clear_old_results
+from sst.command import (get_run_options, clear_old_results)
 
 
-def main():
+def main():       
     (cmd_opts, args) = get_opts()
 
     clear_old_results()
@@ -129,7 +129,7 @@ def kill_django():
 
 def get_opts():
     parser = get_run_options()
-    (cmd_opts, args) = parser.parse_args()
+    (cmd_opts, args) = parser.parse_args()       
     return (cmd_opts, args)
 
 
