@@ -17,6 +17,9 @@ URL = 'http://testutils.org/sst'
 readme = os.path.join(this_dir, 'README')
 LONG_DESCRIPTION = open(readme).read()
 
+requirements = os.path.join(this_dir, 'requirements.txt')
+REQUIREMENTS = filter(None, open(requirements).read().splitlines())
+
 CLASSIFIERS = [
     'Development Status :: 3 - Alpha',
     'Environment :: Console',
@@ -36,7 +39,7 @@ CLASSIFIERS = [
 
 AUTHOR = 'Canonical ISD Team'
 AUTHOR_EMAIL = 'corey@goldb.org'
-KEYWORDS = ('selenium test testing web automation').split(' ')
+KEYWORDS = ('selenium webdriver test testing web automation').split(' ')
 
 params = dict(
     name=NAME,
@@ -44,7 +47,8 @@ params = dict(
     packages=PACKAGES,
     scripts=SCRIPTS,
     package_dir={'': 'src'},
-
+    install_requires = REQUIREMENTS,
+    
     # metadata for upload to PyPI
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
@@ -55,5 +59,5 @@ params = dict(
     classifiers=CLASSIFIERS,
 )
 
-from distutils.core import setup
+from setuptools import setup
 setup(**params)
