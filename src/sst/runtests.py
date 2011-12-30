@@ -80,6 +80,9 @@ def runtests(test_names, test_dir='tests', report_format='console',
 
     alltests = TestSuite(suites)
 
+    print '  %s test cases loaded\n' % alltests.countTestCases()
+    print '----------------------------------------------------------------------' 
+        
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
         sys.exit(1)
@@ -101,7 +104,7 @@ def runtests(test_names, test_dir='tests', report_format='console',
         try:
             import junitxml
         except ImportError:
-            print 'Please install junitxml to use XML output'
+            print 'Error: Please install junitxml to use XML output'
             sys.exit(1)
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
@@ -301,7 +304,7 @@ def get_data(csv_path):
       rows beneath that are filled with data values
     """
     rows = []
-    print 'Reading data from %r...' % csv_path,
+    print '  Reading data from %r...' % os.path.split(csv_path)[-1],
     row_num = 0
     with open(csv_path) as f:
         headers = f.readline().rstrip().split('^')

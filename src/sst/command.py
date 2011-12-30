@@ -27,7 +27,7 @@ try:
     import selenium
 except ImportError as e:
     print e
-    print 'Error importing Selenium WebDriver.  Selenium 2.x python bindings are required.'
+    print 'Error: can not import Selenium WebDriver.  Selenium 2.x python bindings are required.'
     sys.exit(1)
 
 
@@ -67,6 +67,9 @@ def get_common_options():
     parser.add_option('-q', dest='quiet', action='store_true',
                       default=False,
                       help='output less debugging info during test run')
+    parser.add_option('-V', dest='print_version', action='store_true',
+                      default=False,
+                      help='print version info and exit')
     parser.add_option('-s', dest='screenshots_on', action='store_true',
                       default=False,
                       help='save screenshots on failures')
