@@ -231,7 +231,7 @@ putting the following at the start of the test::
     * unittest2
     * junitxml
     * pyvirtualdisplay
-    * django==1.1.2 (needed for internal self-tests only)
+    * django (needed for internal self-tests only)
     
 ------------------------
     Running the examples

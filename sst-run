@@ -44,6 +44,10 @@ def main():
 
     (cmd_opts, args) = get_opts()
     
+    if cmd_opts.dir_name == '.' and not args:
+        print 'Error: you must supply a test case name or specifiy a directory.'
+        sys.exit(1)    
+    
     if cmd_opts.print_version:
         print 'SST %s' % sst.__version__
         sys.exit()
@@ -73,6 +77,7 @@ def main():
         print '  screenshots on error: %r' % cmd_opts.screenshots_on
         print '  failfast: %r' % cmd_opts.failfast
         print '  debug: %r' % cmd_opts.debug
+        print '  headless xserver: %r' % cmd_opts.xserver_headless
         print ''                                
     
     
