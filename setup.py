@@ -67,7 +67,7 @@ params = dict(
     version=__version__,
     packages=PACKAGES,
     scripts=SCRIPTS,
-    package_dir={'': 'src', 'selftests': 'src/selftests'},
+    package_dir={'': 'src',},
     install_requires = REQUIREMENTS,
     
     # metadata for upload to PyPI
