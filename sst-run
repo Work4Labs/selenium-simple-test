@@ -42,12 +42,13 @@ def main():
     (cmd_opts, args) = get_opts()
     
     if cmd_opts.print_version:
-        print 'SST %s' % sst.__version__
+        print 'SST version: %s' % sst.__version__
         sys.exit()
     
     if cmd_opts.dir_name == '.' and not args and not cmd_opts.run_tests:
         print 'Error: you must supply a test case name or specifiy a directory.'
-        print 'run "%s -h" or "%s --help" to see run options.' % (__file__, __file__)
+        prog = os.path.split(__file__)[-1]
+        print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
         sys.exit(1) 
     
     print '----------------------------------------------------------------------'
