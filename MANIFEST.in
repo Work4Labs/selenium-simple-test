@@ -1,3 +1,4 @@
+include requirements.txt
 recursive-include examples *.py
 recursive-include src/testproject *.py *.html *.js *.css *.db
 recursive-include src/sst/selftests *.py *.csv
