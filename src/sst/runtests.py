@@ -79,7 +79,8 @@ def runtests(test_names, test_dir='tests', report_format='console',
     )
 
     alltests = TestSuite(suites)
-
+    
+    print ''
     print '  %s test cases loaded\n' % alltests.countTestCases()
     print '----------------------------------------------------------------------' 
         

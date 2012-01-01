@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#   Copyright (c) 2011 Canonical Ltd.
+#   Copyright (c) 2011-2012 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
@@ -31,11 +31,12 @@ from sst import __version__
 NAME = 'sst'
 PACKAGES = ['sst',]
 SCRIPTS = ['sst-run', 'sst-remote']
-DESCRIPTION = 'SST Web Test Framework'
+DESCRIPTION = 'SST - Web Test Framework'
 URL = 'http://testutils.org/sst'
+LICENSE = 'Apache'
 
 readme = os.path.join(this_dir, 'README')
-LONG_DESCRIPTION = open(readme).read()
+LONG_DESCRIPTION = '\n%s' % open(readme).read()
 
 requirements = os.path.join(this_dir, 'requirements.txt')
 REQUIREMENTS = filter(None, open(requirements).read().splitlines())

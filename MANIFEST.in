@@ -1,3 +1,5 @@
-include examples/*.py
-recursive-include docs *.txt *.rst *.py *.png *.css *.html README
+recursive-include examples *.py
+recursive-include src/testproject *.py *.html *.js *.css *.db
+recursive-include src/sst/selftests *.py *.csv
+recursive-include docs *.txt *.rst *.py *.png *.css *.css_t README
 

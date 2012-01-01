@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#   Copyright (c) 2011 Canonical Ltd.
+#   Copyright (c) 2011-2012 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test

@@ -93,7 +93,7 @@ These actions are defined in the following API:
 Usage: `sst-run <options> [testname]`
 
 * Calling sst-run with testname(s) as arguments will just run
-  those tests. The testnames should not include the '.py' at
+  those tests. The testnames should not include '.py' at
   the end of the filename.
 
 * You may optionally create a data file for data-driven
@@ -111,15 +111,16 @@ Options::
   -j                 disable javascript in browser
   -m SHARED_MODULES  directory for shared modules
   -q                 output less debugging info during test run
+  -V                 print version info and exit
   -s                 save screenshots on failures
   --failfast         stop test execution after first failure
   --debug            drop into debugger on test fail or error
   --test             run selftests
   -x                 run tests in headless xserver
 
--------------------------
-    Organizing your tests
--------------------------
+--------------------
+    Organizing tests
+--------------------
 
 For logical organization of tests, you can use directories in your filesystem.
 SST will recursively walk your directory tree and gather all tests for
@@ -231,7 +232,7 @@ putting the following at the start of the test::
     * unittest2
     * junitxml
     * pyvirtualdisplay
-    * django (needed for internal self-tests only)
+    * django (optional - needed for internal self-tests only)
     
 ------------------------
     Running the examples
