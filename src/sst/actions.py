@@ -549,7 +549,7 @@ _POLL = 0.1
 
 def set_wait_timeout(timeout, poll=None):
     """
-    Set the timeout, in seconds, used by`wait_for`. The default at the start of
+    Set the timeout, in seconds, used by `wait_for`. The default at the start of
     a test is always 10 seconds.
 
     The optional second argument, is how long (in seconds) `wait_for` should
@@ -595,15 +595,18 @@ def wait_for(condition, *args, **kwargs):
         max_time = time.time() + _TIMEOUT
         msg = _get_name(condition)
         while True:
+            e = None
             try:
                 result = condition(*args, **kwargs)
-            except AssertionError:
+            except AssertionError as e:
                 pass
             else:
                 if result != False:
                     break
             if time.time() > max_time:
-                error = 'Timed out waiting for: ' + msg
+                error = 'Timed out waiting for: %s' % msg
+                if e:                    
+                    error += '\nError during wait: %s' % e
                 _raise(error)
             time.sleep(_POLL)
     finally:
