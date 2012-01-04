@@ -595,6 +595,7 @@ def wait_for(condition, *args, **kwargs):
         max_time = time.time() + _TIMEOUT
         msg = _get_name(condition)
         while True:
+            e = None
             try:
                 result = condition(*args, **kwargs)
             except AssertionError as e:
@@ -604,7 +605,7 @@ def wait_for(condition, *args, **kwargs):
                     break
             if time.time() > max_time:
                 error = 'Timed out waiting for: %s' % msg
-                if e:
+                if e:                    
                     error += '\nError during wait: %s' % e
                 _raise(error)
             time.sleep(_POLL)
