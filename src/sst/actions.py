@@ -603,9 +603,9 @@ def wait_for(condition, *args, **kwargs):
                 if result != False:
                     break
             if time.time() > max_time:
-                error = 'Timed out waiting for: %s'
+                error = 'Timed out waiting for: %s' % msg
                 if e:
-                    error = error + '\nError during wait: %s' % (msg, e)
+                    error += '\nError during wait: %s' % e
                 _raise(error)
             time.sleep(_POLL)
     finally:
