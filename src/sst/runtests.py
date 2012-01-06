@@ -38,7 +38,7 @@ from .context import populate_context
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='tests', report_format='console',
+def runtests(test_names, test_dir='.', report_format='console',
              browser_type='Firefox', browser_version='',
              browser_platform='ANY', session_name=None,
              javascript_disabled=False, webdriver_remote_url=None,
