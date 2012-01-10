@@ -25,7 +25,7 @@ import os
 import pdb
 import sys
 
-from unittest2 import TestSuite, TextTestRunner, TestCase
+from unittest2 import TestSuite, TextTestRunner, TestCase, SkipTest
 
 from sst import actions, config
 from .actions import (
