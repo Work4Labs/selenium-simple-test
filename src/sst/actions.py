@@ -285,6 +285,10 @@ def go_to(url='', wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
+    if browser is None:
+        print 'You must call start() before you can perform actions'
+        return
+        
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
@@ -776,14 +780,29 @@ def assert_text_contains(id_or_elem, text, regex=False):
 def _check_text(elem, text):
     return _get_text(elem) == text
 
+    
+def _match_text(elem, regex):
+    text = _get_text(elem)
+    if text is None:
+        return False
+    return bool(re.search(text, regex))
 
-def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
+
+def get_elements(tag=None, css_class=None, id=None, text=None, 
+                 text_regex=None, **kwargs):
     """
     This function will find and return all matching elements by any of several
     attributes. If the elements cannot be found from the attributes you
     provide, the call will fail with an exception.
 
-    You can specify as many or as few attributes as you like."""
+    You can specify as many or as few attributes as you like.
+    
+    `text_regex` finds elements by doing a regular expression search against
+    the text of elements. It cannot be used in conjunction with the `text`
+    argument and cannot be the *only* argument to find elements."""
+    if text and text_regex:
+        raise TypeError("You can't use text and text_regex arguments")
+        
     selector_string = ''
     if tag:
         selector_string = tag
@@ -810,6 +829,8 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     if text:
         # if text was specified, filter elements
         elems = [element for element in elems if _check_text(element, text)]
+    elif text_regex:
+        elems = [elem for elem in elems if _match_text(elem, text_regex)]       
 
     if not elems:
         msg = 'Could not identify elements: 0 elements found'
@@ -818,7 +839,8 @@ def get_elements(tag=None, css_class=None, id=None, text=None, **kwargs):
     return elems
 
 
-def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+def get_element(tag=None, css_class=None, id=None, text=None, 
+                text_regex=None, **kwargs):
     """
     This function will find and return an element by any of several
     attributes. If the element cannot be found from the attributes you
@@ -829,9 +851,13 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     for passing to other actions that work with element objects.
 
     You can specify as many or as few attributes as you like, so long as they
-    uniquely identify one element."""
+    uniquely identify one element.
+    
+    `text_regex` finds elements by doing a regular expression search against
+    the text of elements. It cannot be used in conjunction with the `text`
+    argument and cannot be the *only* argument to find elements."""
     elems = get_elements(tag=tag, css_class=css_class,
-                         id=id, text=text, **kwargs)
+                         id=id, text=text, text_regex=text_regex, **kwargs)
 
     if len(elems) != 1:
         msg = 'Could not identify element: %s elements found' % len(elems)
@@ -840,7 +866,8 @@ def get_element(tag=None, css_class=None, id=None, text=None, **kwargs):
     return elems[0]
 
 
-def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+def exists_element(tag=None, css_class=None, id=None, text=None, 
+                   text_regex=None, **kwargs):
     """
     This function will find if an element exists by any of several
     attributes. It returns True if the element is found or False
@@ -848,19 +875,22 @@ def exists_element(tag=None, css_class=None, id=None, text=None, **kwargs):
 
     You can specify as many or as few attributes as you like."""
     try:
-        get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+        get_elements(tag=tag, css_class=css_class, id=id, text=text, 
+                     text_regex=text_regex, **kwargs)
         return True
     except AssertionError:
         return False
 
 
-def assert_element(tag=None, css_class=None, id=None, text=None, **kwargs):
+def assert_element(tag=None, css_class=None, id=None, text=None, 
+                   text_regex=None, **kwargs):
     """
     Assert an element exists by any of several attributes.
     
     You can specify as many or as few attributes as you like."""
     try:
-        elems = get_elements(tag=tag, css_class=css_class, id=id, text=text, **kwargs)
+        elems = get_elements(tag=tag, css_class=css_class, id=id, text=text, 
+                             text_regex=text_regex, **kwargs)
         return elems
     except AssertionError:
         msg = 'Could not assert element exists'
@@ -942,10 +972,12 @@ def get_page_source():
     """Gets the source of the current page."""
     return browser.page_source
 
+
 def close_window():
     """ Closes the current window """
     _print('Closing the current window')
     browser.close()
+
 
 def switch_to_window(index_or_name=None):
     """
