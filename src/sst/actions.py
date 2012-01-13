@@ -782,10 +782,8 @@ def _check_text(elem, text):
 
     
 def _match_text(elem, regex):
-    text = _get_text(elem)
-    if text is None:
-        return False
-    return bool(re.search(text, regex))
+    text = _get_text(elem) or ''
+    return bool(re.search(regex, text))
 
 
 def get_elements(tag=None, css_class=None, id=None, text=None, 
