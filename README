@@ -110,7 +110,7 @@ Options::
   -h, --help         show this help message and exit
   -d DIR_NAME        directory of test case files
   -r REPORT_FORMAT   results report format (html, xml, console)
-  -b BROWSER_TYPE    select webdriver (Firefox, Chrome, InternetExplorer, etc)
+  -b BROWSER_TYPE    select webdriver (Firefox, Chrome, Ie, etc)
   -j                 disable javascript in browser
   -m SHARED_MODULES  directory for shared modules
   -q                 output less debugging info during test run
@@ -128,12 +128,12 @@ Options::
 
 After installing sst, you can experiment with it from the python interactive
 interpreter by calling `start()` to launch the browser (Firefox by default). 
-After that you can call any of the actions as you would use them in a test::
+After that, you can call any of the actions as you would use them in a test::
 
     >>> from sst.actions import *
     >>> start()
-    
-        Starting Firefox:
+
+        Starting Firefox
     >>> go_to('http://google.com')
         Going to... http://google.com
         Waiting for get_element

@@ -160,7 +160,7 @@ def start(browser_type=None, browser_version='',
     if VERBOSE:
         _print('')
         
-    _print('Starting %s:' % browser_type)
+    _print('Starting %s' % browser_type)
 
     if webdriver_remote is None:
         if browser_type == 'Firefox':
