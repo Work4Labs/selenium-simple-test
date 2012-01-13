@@ -15,6 +15,7 @@
 :License: Apache License, Version 2.0
 :Author: Copyright (c) 2011-2012 Canonical Ltd.
 
+
 ---------------------------------
     Automated Testing with Python
 ---------------------------------
@@ -41,11 +42,13 @@ SST consists of:
 Test output can be displayed to the console, saved as an HTML report, or 
 JUnit-compatible XML for compatibility with CI systems.
 
+
 -----------
     Install
 -----------
 
-SST can be installed from `PyPI <http://pypi.python.org/pypi/sst>`_ using `pip <http://www.pip-installer.org>`_::
+SST can be installed from `PyPI <http://pypi.python.org/pypi/sst>`_ using 
+`pip <http://www.pip-installer.org>`_::
     
     pip install -U sst
 
@@ -55,6 +58,7 @@ For example, on an Ubuntu/Debian system, you could Install SST (system-wide) lik
     $ sudo pip install -U sst
     
 * note: `xvfb` is only needed if you want to run SST in headless mode
+ 
  
 ---------------------------
     Example SST test script
@@ -66,6 +70,7 @@ a sample test case in SST::
 
     go_to('http://www.ubuntu.com/')
     assert_title_contains('Ubuntu homepage')
+
 
 ------------------------------------
     Running a test with SST
@@ -79,6 +84,7 @@ Then call your test script from the command line, using `sst-run`::
 
 * note: you don't add the .py extension to your test invocation
 
+
 -------------------------------
     API reference (sst.actions)
 -------------------------------
@@ -88,6 +94,7 @@ SST provides a set of "actions" (functions) for use in your tests.
 These actions are defined in the following API:
 
  * `API Reference <http://testutils.org/sst/actions.html>`_
+ 
  
 ------------------------------------
     Command line options for sst-run
@@ -110,7 +117,7 @@ Options::
   -h, --help         show this help message and exit
   -d DIR_NAME        directory of test case files
   -r REPORT_FORMAT   results report format (html, xml, console)
-  -b BROWSER_TYPE    select webdriver (Firefox, Chrome, InternetExplorer, etc)
+  -b BROWSER_TYPE    select webdriver (Firefox, Chrome, Ie, etc)
   -j                 disable javascript in browser
   -m SHARED_MODULES  directory for shared modules
   -q                 output less debugging info during test run
@@ -120,6 +127,25 @@ Options::
   --debug            drop into debugger on test fail or error
   --test             run selftests
   -x                 run tests in headless xserver
+
+
+-----------------
+  Interactive use
+-----------------
+
+After installing sst, you can experiment with it from the python interactive
+interpreter by calling `start()` to launch the browser (Firefox by default). 
+After that, you can call any of the actions as you would use them in a test::
+
+    >>> from sst.actions import *
+    >>> start()
+
+        Starting Firefox
+    >>> go_to('http://google.com')
+        Going to... http://google.com
+        Waiting for get_element
+    >>> 
+
 
 --------------------
     Organizing tests
@@ -162,6 +188,7 @@ them. SST won't look in directories starting with an underscore. This allows you
 to put Python packages/modules directly in your test directories if you want. A 
 better option is to use the shared directory.
 
+
 --------------------
     Shared directory
 --------------------
@@ -179,6 +206,7 @@ If there is no `shared` directory in the test directory, then `sst-run` will
 walk up from the test directory to the current directory looking for one. This
 allows you to run tests just from a subdirectory without having to explicitly
 specify where the shared directory is.
+
 
 ---------------------
     sst.config module
@@ -201,6 +229,7 @@ environment. The `sst.config` module has the following information::
     # full path to the results directory
     config.results_directory
 
+
 ------------------------
     Disabling Javascript
 ------------------------
@@ -210,13 +239,17 @@ putting the following at the start of the test::
 
     JAVASCRIPT_DISABLED = True
     
+    
 --------------------------------
     Development on Ubuntu/Debian
 --------------------------------
 
-* SST is primarily being developed on Linux, specifically Ubuntu. It should work fine on other platforms, but any issues (or even better - patches) should be reported on the Launchpad project.
+* SST is primarily being developed on Linux, specifically Ubuntu. It should work 
+  fine on other platforms, but any issues (or even better - patches) should be 
+  reported on the Launchpad project.
 
-* Get a copy of SST Trunk, install requirements, and run self-tests/examples from the branch::
+* Get a copy of SST Trunk, install requirements, and run self-tests/examples 
+  from the branch::
 
     $ sudo apt-get install bzr python-pip xvfb
     $ bzr branch lp:selenium-simple-test
@@ -227,7 +260,8 @@ putting the following at the start of the test::
 
 * `Launchpad Project <https://launchpad.net/selenium-simple-test>`_
 
-* `Browse the Source (Trunk) <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
+* `Browse the Source (Trunk) 
+  <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
 
 * To manually setup dependencies, SST uses the following non-stdlib packages:
     
@@ -237,32 +271,39 @@ putting the following at the start of the test::
     * pyvirtualdisplay
     * django (optional - needed for internal self-tests only)
     
+    
 ------------------------
     Running the examples
 ------------------------
 
-SST source code repository and package download contain some trivial example scripts.
+SST source code repository and package download contain some trivial example
+scripts.
 
 You can run them from your local sst directory like this::
 
     $ ./sst-run -d examples
 
+
 --------------------------
     Running the self-tests
 --------------------------
 
-SST source code repository and package download contain a set of self-tests based on an included test Django project.
+SST source code repository and package download contain a set of self-tests 
+based on an included test Django project.
 
-You can run the suite of self-tests (and the test Django server) from your local branch like this::
+You can run the suite of self-tests (and the test Django server) from your local
+branch like this::
 
     $ ./sst-run --test
+
 
 -----------------
     Related links
 -----------------
 
 * `Selenium Project Home <http://selenium.googlecode.com>`_
-* `Selenium WebDriver (from 'Architecture of Open Source Applications') <http://www.aosabook.org/en/selenium.html>`_
+* `Selenium WebDriver (from 'Architecture of Open Source Applications') 
+  <http://www.aosabook.org/en/selenium.html>`_
 * `Python Unittest <http://docs.python.org/library/unittest.html>`_
 * `unittest2 <http://pypi.python.org/pypi/unittest2/>`_
 
