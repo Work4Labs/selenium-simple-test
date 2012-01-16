@@ -22,3 +22,11 @@ fails(assert_table_has_rows, 'one-row', 2)
 
 assert_table_row_contains('one-row', 0,
                           ['Cell 0', 'Cell 1', 'Cell 2', 'Cell 3'])
+
+fails(assert_table_row_contains, 'one-row', 0,
+      ['Wrong', 'Cell 1', 'Cell 2', 'Cell 3'])
+fails(assert_table_row_contains, 'one-row', 0,
+      ['Cell 0', 'Cell 1', 'Cell 2'])
+fails(assert_table_row_contains, 'one-row', 0,
+      ['Cell 0', 'Cell 1', 'Cell 2', 'Extra'])
+fails(assert_table_row_contains, 'one-row', 1, [])

@@ -626,8 +626,8 @@ def fails(action, *args, **kwargs):
     `fails` succeeds. If the function does *not* raise an AssertionError then
     this action raises the appropriate failure exception. Alll other
     exceptions will be propagated normally."""
+    _print('Trying action: %s' % _get_name(action))
     try:
-        _print('trying Action failure:')
         action(*args, **kwargs)
     except AssertionError:
         return
@@ -1132,4 +1132,15 @@ def assert_table_row_contains(id_or_elem, row, contents):
     if not elem.tag_name == 'table':
         _raise('Element %r is not a table.' % (id_or_elem,))
     body = elem.find_elements_by_tag_name('tbody')
-    raise AssertionError
+    if not body:
+        _raise('Table %r has no tbody.' % (id_or_elem,))
+    rows = body[0].find_elements_by_tag_name('tr')
+    if len(rows) <= row:
+        msg = 'Asked to fetch row %s. Highest row is %s' % (row, len(rows) - 1)
+        _raise(msg)
+    columns = rows[row].find_elements_by_tag_name('td')
+    cells = [_get_text(elem) for elem in columns]
+    if not cells == contents:
+        msg = ('Expected row contents: %r\nActual contents: %r' %
+               (contents, cells))
+        _raise(msg)
