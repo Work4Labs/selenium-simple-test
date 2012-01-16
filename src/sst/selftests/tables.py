@@ -19,3 +19,6 @@ fails(assert_table_has_rows, 'no-body', 0)
 
 fails(assert_table_has_rows, 'one-row', 0)
 fails(assert_table_has_rows, 'one-row', 2)
+
+assert_table_row_contains('one-row', 0,
+                          ['Cell 0', 'Cell 1', 'Cell 2', 'Cell 3'])

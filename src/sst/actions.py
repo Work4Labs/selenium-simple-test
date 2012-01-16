@@ -63,7 +63,7 @@ __all__ = [
     'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
     'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio',
     'assert_radio_value', 'assert_table_headers', 'assert_table_has_rows',
-    'assert_text', 'assert_text_contains',
+    'assert_table_row_contains', 'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
     'assert_url_contains', 'click_button', 'click_element', 'click_link',
     'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element',
@@ -1114,3 +1114,22 @@ def assert_table_has_rows(id_or_elem, num_rows):
     if not len(rows) == num_rows:
         msg = 'Expected %s rows. Found %s.' % (num_rows, len(rows))
         _raise(msg)
+
+
+def assert_table_row_contains(id_or_elem, row, contents):
+    """
+    Assert the specified row (starting from 0) in the specified table
+    contains the specified contents.
+
+    contents should be a sequence of strings, where each string is the same
+    as the text of the corresponding column.
+
+    The row will be looked for inside the <tbody>, to check headers use
+    `ssert_table_headers`.
+    """
+    _print('Checking the contents of table %r, row %s.' % (id_or_elem, row))
+    elem = _get_elem(id_or_elem)
+    if not elem.tag_name == 'table':
+        _raise('Element %r is not a table.' % (id_or_elem,))
+    body = elem.find_elements_by_tag_name('tbody')
+    raise AssertionError
