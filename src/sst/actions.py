@@ -62,7 +62,8 @@ __all__ = [
     'accept_alert', 'assert_button', 'assert_checkbox',
     'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
     'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio',
-    'assert_radio_value', 'assert_text', 'assert_text_contains',
+    'assert_radio_value', 'assert_table_headers', 'assert_table_has_rows',
+    'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
     'assert_url_contains', 'click_button', 'click_element', 'click_link',
     'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element',
@@ -1080,3 +1081,18 @@ def dismiss_alert(expected_text=None, text_to_write=None):
     _print('Dismissing Alert')
     _alert_action('dismiss', expected_text, text_to_write)
 
+def assert_table_headers(id_or_elem, headers):
+    """
+    Assert table `id_or_elem` has headers where the text matches the sequence
+    `headers`.
+    """
+    elem = _get_elem(id_or_elem)
+    raise AssertionError
+
+
+def assert_table_has_rows(id_or_elem, num_rows):
+    """
+    Assert the specified table has the specified number of rows.
+    """
+    elem = _get_elem(id_or_elem)
+    raise AssertionError
