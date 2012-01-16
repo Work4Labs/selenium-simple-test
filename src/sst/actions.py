@@ -1083,16 +1083,34 @@ def dismiss_alert(expected_text=None, text_to_write=None):
 
 def assert_table_headers(id_or_elem, headers):
     """
-    Assert table `id_or_elem` has headers where the text matches the sequence
-    `headers`.
+    Assert table `id_or_elem` has headers (<th> tags) where the text matches
+    the sequence `headers`.
     """
+    _print('Checking headers for %r' % (id_or_elem,))
     elem = _get_elem(id_or_elem)
-    raise AssertionError
+    if not elem.tag_name == 'table':
+        _raise('Element %r is not a table.' % (id_or_elem,))
+    header_elems = elem.find_elements_by_tag_name('th')
+    header_text = [_get_text(elem) for elem in header_elems]
+    if not header_text == headers:
+        msg = ('Expected headers:%r\nActual headers%r\n' %
+               (headers, header_text))
+        _raise(msg)
 
 
 def assert_table_has_rows(id_or_elem, num_rows):
     """
-    Assert the specified table has the specified number of rows.
+    Assert the specified table has the specified number of rows (<tr> tags
+    inside the <tbody>).
     """
+    _print('Checking table %r has %s rows' % (id_or_elem, num_rows))
     elem = _get_elem(id_or_elem)
-    raise AssertionError
+    if not elem.tag_name == 'table':
+        _raise('Element %r is not a table.' % (id_or_elem,))
+    body = elem.find_elements_by_tag_name('tbody')
+    if not body:
+        _raise('Table %r has no tbody.' % (id_or_elem,))
+    rows = body[0].find_elements_by_tag_name('tr')
+    if not len(rows) == num_rows:
+        msg = 'Expected %s rows. Found %s.' % (num_rows, len(rows))
+        _raise(msg)
