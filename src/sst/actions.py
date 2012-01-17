@@ -61,8 +61,9 @@ from sst import config
 __all__ = [
     'accept_alert', 'assert_button', 'assert_checkbox',
     'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
-    'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio',
-    'assert_radio_value', 'assert_table_headers', 'assert_table_has_rows',
+    'assert_dropdown_value', 'assert_element', 'assert_attribute',
+    'assert_link', 'assert_radio', 'assert_radio_value',
+    'assert_table_headers', 'assert_table_has_rows',
     'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
     'assert_url_contains', 'click_button', 'click_element', 'click_link',
@@ -1151,4 +1152,24 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
     if not success:
         msg = ('Expected row contents: %r\nActual contents: %r' %
                (contents, cells))
+        _raise(msg)
+
+
+def assert_attribute(id_or_elem, attribute, value, regex=False):
+    """
+    assert that the specified `attribute` on the element is equal to the
+    `value`.
+
+    If `regex` is True (default is False) then the value will be compared to
+    the attribute using a regular expression search.
+    """
+    _print('Checking attribute %s of %s' % (attribute, id_or_elem))
+    elem = _get_elem(id_or_elem)
+    actual = elem.get_attribute(attribute)
+    if not regex:
+        success = value == actual
+    else:
+        success = actual is not None and re.search(value, actual)
+    if not success:
+        msg = 'Expected attribute: %r\nActual attribute: %r' % (value, actual)
         _raise(msg)
