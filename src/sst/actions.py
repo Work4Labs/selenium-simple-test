@@ -1146,6 +1146,8 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
     cells = [_get_text(elem) for elem in columns]
     if not regex:
         success = cells == contents
+    elif len(contents) != len(cells):
+        success = False
     else:
         success = all(re.search(expected, actual) for expected, actual in
                       zip(contents, cells))

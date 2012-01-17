@@ -36,3 +36,5 @@ fails(assert_table_row_contains_text, 'one-row', 0,
 fails(assert_table_row_contains_text, 'one-row', 1, [])
 fails(assert_table_row_contains_text, 'one-row', 0,
       ['Wrong', 'Cell 1', 'Cell 2', 'Cell 3'], regex=True)
+fails(assert_table_row_contains_text, 'one-row', 0,
+      ['Cell 0', 'Cell 1', 'Cell 2'], regex=True)
