@@ -258,8 +258,10 @@ def get_case(test_dir, entry, browser_type, browser_version,
             print 'Loading data row %r' % context['_row_num']
         try:
             exec self.code in context
-        except (EndTest, SkipTest):
+        except EndTest:
             pass
+        except SkipTest:
+            raise
         except:
             if screenshots_on:
                 now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
