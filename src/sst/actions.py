@@ -1124,8 +1124,11 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
     contents should be a sequence of strings, where each string is the same
     as the text of the corresponding column.
 
+    If `regex` is True (the default is False) then each cell is checked
+    with a regular expression search.
+
     The row will be looked for inside the <tbody>, to check headers use
-    `ssert_table_headers`.
+    `assert_table_headers`.
     """
     _print('Checking the contents of table %r, row %s.' % (id_or_elem, row))
     elem = _get_elem(id_or_elem)
