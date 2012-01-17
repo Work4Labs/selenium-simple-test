@@ -20,7 +20,7 @@
 
 
 """
-Tests are comprised of Python scripts. Files whose names begin with an 
+Tests are comprised of Python scripts. Files whose names begin with an
 underscore will *not* be executed as test scripts.
 
 Test scripts drive the browser with Selenium WebDriver by importing and
@@ -59,20 +59,20 @@ from sst import config
 
 
 __all__ = [
-    'accept_alert', 'assert_button', 'assert_checkbox', 
-    'assert_checkbox_value', 'assert_displayed', 'assert_dropdown', 
-    'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio', 
-    'assert_radio_value', 'assert_text', 'assert_text_contains', 
-    'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url', 
-    'assert_url_contains', 'click_button', 'click_element', 'click_link', 
-    'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element', 
-    'fails', 'get_argument', 'get_base_url', 'get_current_url', 'get_element', 
-    'get_element_by_css', 'get_element_by_xpath', 'get_elements', 
-    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url', 
-    'get_page_source', 'go_to', 'reset_base_url', 'run_test', 'set_base_url', 
-    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value', 
-    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop', 
-    'switch_to_frame', 'switch_to_window', 'take_screenshot', 
+    'accept_alert', 'assert_button', 'assert_checkbox',
+    'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
+    'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio',
+    'assert_radio_value', 'assert_text', 'assert_text_contains',
+    'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
+    'assert_url_contains', 'click_button', 'click_element', 'click_link',
+    'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element',
+    'fails', 'get_argument', 'get_base_url', 'get_current_url', 'get_element',
+    'get_element_by_css', 'get_element_by_xpath', 'get_elements',
+    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
+    'get_page_source', 'go_to', 'reset_base_url', 'run_test', 'set_base_url',
+    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
+    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
+    'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'write_textfield',
 ]
 
@@ -156,10 +156,10 @@ def start(browser_type=None, browser_version='',
 
     if browser_type is None:
         browser_type = config.browser_type
-    
+
     if VERBOSE:
         _print('')
-        
+
     _print('Starting %s' % browser_type)
 
     if webdriver_remote is None:
@@ -286,9 +286,8 @@ def go_to(url='', wait=True):
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     if browser is None:
-        print 'You must call start() before you can perform actions'
-        return
-        
+        start()
+
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
@@ -399,7 +398,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     off by passing `clear=False`."""
     _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = assert_textfield(id_or_elem)
-        
+
     # clear field like this, don't use clear()
     if clear:
         textfield.send_keys(keys.Keys().CONTROL, 'a')
@@ -444,8 +443,8 @@ def get_link_url(id_or_elem):
 def get_current_url():
     """Gets the URL of the current page."""
     return browser.current_url
-    
-    
+
+
 def click_link(id_or_elem, check=False, wait=True):
     """
     Click the specified link. As some links do redirects the location you end
@@ -609,7 +608,7 @@ def wait_for(condition, *args, **kwargs):
                     break
             if time.time() > max_time:
                 error = 'Timed out waiting for: %s' % msg
-                if e:                    
+                if e:
                     error += '\nError during wait: %s' % e
                 _raise(error)
             time.sleep(_POLL)
@@ -780,13 +779,13 @@ def assert_text_contains(id_or_elem, text, regex=False):
 def _check_text(elem, text):
     return _get_text(elem) == text
 
-    
+
 def _match_text(elem, regex):
     text = _get_text(elem) or ''
     return bool(re.search(regex, text))
 
 
-def get_elements(tag=None, css_class=None, id=None, text=None, 
+def get_elements(tag=None, css_class=None, id=None, text=None,
                  text_regex=None, **kwargs):
     """
     This function will find and return all matching elements by any of several
@@ -794,13 +793,13 @@ def get_elements(tag=None, css_class=None, id=None, text=None,
     provide, the call will fail with an exception.
 
     You can specify as many or as few attributes as you like.
-    
+
     `text_regex` finds elements by doing a regular expression search against
     the text of elements. It cannot be used in conjunction with the `text`
     argument and cannot be the *only* argument to find elements."""
     if text and text_regex:
         raise TypeError("You can't use text and text_regex arguments")
-        
+
     selector_string = ''
     if tag:
         selector_string = tag
@@ -828,7 +827,7 @@ def get_elements(tag=None, css_class=None, id=None, text=None,
         # if text was specified, filter elements
         elems = [element for element in elems if _check_text(element, text)]
     elif text_regex:
-        elems = [elem for elem in elems if _match_text(elem, text_regex)]       
+        elems = [elem for elem in elems if _match_text(elem, text_regex)]
 
     if not elems:
         msg = 'Could not identify elements: 0 elements found'
@@ -837,7 +836,7 @@ def get_elements(tag=None, css_class=None, id=None, text=None,
     return elems
 
 
-def get_element(tag=None, css_class=None, id=None, text=None, 
+def get_element(tag=None, css_class=None, id=None, text=None,
                 text_regex=None, **kwargs):
     """
     This function will find and return an element by any of several
@@ -850,7 +849,7 @@ def get_element(tag=None, css_class=None, id=None, text=None,
 
     You can specify as many or as few attributes as you like, so long as they
     uniquely identify one element.
-    
+
     `text_regex` finds elements by doing a regular expression search against
     the text of elements. It cannot be used in conjunction with the `text`
     argument and cannot be the *only* argument to find elements."""
@@ -864,7 +863,7 @@ def get_element(tag=None, css_class=None, id=None, text=None,
     return elems[0]
 
 
-def exists_element(tag=None, css_class=None, id=None, text=None, 
+def exists_element(tag=None, css_class=None, id=None, text=None,
                    text_regex=None, **kwargs):
     """
     This function will find if an element exists by any of several
@@ -873,28 +872,28 @@ def exists_element(tag=None, css_class=None, id=None, text=None,
 
     You can specify as many or as few attributes as you like."""
     try:
-        get_elements(tag=tag, css_class=css_class, id=id, text=text, 
+        get_elements(tag=tag, css_class=css_class, id=id, text=text,
                      text_regex=text_regex, **kwargs)
         return True
     except AssertionError:
         return False
 
 
-def assert_element(tag=None, css_class=None, id=None, text=None, 
+def assert_element(tag=None, css_class=None, id=None, text=None,
                    text_regex=None, **kwargs):
     """
     Assert an element exists by any of several attributes.
-    
+
     You can specify as many or as few attributes as you like."""
     try:
-        elems = get_elements(tag=tag, css_class=css_class, id=id, text=text, 
+        elems = get_elements(tag=tag, css_class=css_class, id=id, text=text,
                              text_regex=text_regex, **kwargs)
         return elems
     except AssertionError:
         msg = 'Could not assert element exists'
         _raise(msg)
-        
-        
+
+
 def assert_button(id_or_elem):
     """
     Assert that the specified element is a button.
