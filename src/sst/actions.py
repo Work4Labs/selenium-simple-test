@@ -63,7 +63,7 @@ __all__ = [
     'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
     'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio',
     'assert_radio_value', 'assert_table_headers', 'assert_table_has_rows',
-    'assert_table_row_contains', 'assert_text', 'assert_text_contains',
+    'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
     'assert_url_contains', 'click_button', 'click_element', 'click_link',
     'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element',
@@ -1116,7 +1116,7 @@ def assert_table_has_rows(id_or_elem, num_rows):
         _raise(msg)
 
 
-def assert_table_row_contains(id_or_elem, row, contents):
+def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
     """
     Assert the specified row (starting from 0) in the specified table
     contains the specified contents.
@@ -1140,7 +1140,12 @@ def assert_table_row_contains(id_or_elem, row, contents):
         _raise(msg)
     columns = rows[row].find_elements_by_tag_name('td')
     cells = [_get_text(elem) for elem in columns]
-    if not cells == contents:
+    if not regex:
+        success = cells == contents
+    else:
+        success = all(re.search(expected, actual) for expected, actual in
+                      zip(contents, cells))
+    if not success:
         msg = ('Expected row contents: %r\nActual contents: %r' %
                (contents, cells))
         _raise(msg)
