@@ -12,7 +12,7 @@ def begin(request):
 
 def longscroll(request):
     return render_to_response('longscroll.html', {'title': 'Long Scroll Page'})
-    
+
 def nojs(request):
     return render_to_response('nojs.html', {'title': 'No JavaScript Test'})
 
@@ -33,6 +33,9 @@ def alerts(request):
 
 def yui(request):
     return render_to_response('yui.html')
+
+def tables(request):
+    return render_to_response('tables.html')
 
 def kill_django(request):
     os.kill(os.getpid(), signal.SIGKILL)

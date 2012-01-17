@@ -6,3 +6,4 @@ sst.wpu
 MANIFEST
 dist
 build
+src/sst.egg-info

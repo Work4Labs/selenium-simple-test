@@ -61,8 +61,10 @@ from sst import config
 __all__ = [
     'accept_alert', 'assert_button', 'assert_checkbox',
     'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
-    'assert_dropdown_value', 'assert_element', 'assert_link', 'assert_radio',
-    'assert_radio_value', 'assert_text', 'assert_text_contains',
+    'assert_dropdown_value', 'assert_element', 'assert_attribute',
+    'assert_link', 'assert_radio', 'assert_radio_value',
+    'assert_table_headers', 'assert_table_has_rows',
+    'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
     'assert_url_contains', 'click_button', 'click_element', 'click_link',
     'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element',
@@ -625,8 +627,8 @@ def fails(action, *args, **kwargs):
     `fails` succeeds. If the function does *not* raise an AssertionError then
     this action raises the appropriate failure exception. Alll other
     exceptions will be propagated normally."""
+    _print('Trying action: %s' % _get_name(action))
     try:
-        _print('trying Action failure:')
         action(*args, **kwargs)
     except AssertionError:
         return
@@ -1080,3 +1082,96 @@ def dismiss_alert(expected_text=None, text_to_write=None):
     _print('Dismissing Alert')
     _alert_action('dismiss', expected_text, text_to_write)
 
+def assert_table_headers(id_or_elem, headers):
+    """
+    Assert table `id_or_elem` has headers (<th> tags) where the text matches
+    the sequence `headers`.
+    """
+    _print('Checking headers for %r' % (id_or_elem,))
+    elem = _get_elem(id_or_elem)
+    if not elem.tag_name == 'table':
+        _raise('Element %r is not a table.' % (id_or_elem,))
+    header_elems = elem.find_elements_by_tag_name('th')
+    header_text = [_get_text(elem) for elem in header_elems]
+    if not header_text == headers:
+        msg = ('Expected headers:%r\nActual headers%r\n' %
+               (headers, header_text))
+        _raise(msg)
+
+
+def assert_table_has_rows(id_or_elem, num_rows):
+    """
+    Assert the specified table has the specified number of rows (<tr> tags
+    inside the <tbody>).
+    """
+    _print('Checking table %r has %s rows' % (id_or_elem, num_rows))
+    elem = _get_elem(id_or_elem)
+    if not elem.tag_name == 'table':
+        _raise('Element %r is not a table.' % (id_or_elem,))
+    body = elem.find_elements_by_tag_name('tbody')
+    if not body:
+        _raise('Table %r has no tbody.' % (id_or_elem,))
+    rows = body[0].find_elements_by_tag_name('tr')
+    if not len(rows) == num_rows:
+        msg = 'Expected %s rows. Found %s.' % (num_rows, len(rows))
+        _raise(msg)
+
+
+def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
+    """
+    Assert the specified row (starting from 0) in the specified table
+    contains the specified contents.
+
+    contents should be a sequence of strings, where each string is the same
+    as the text of the corresponding column.
+
+    If `regex` is True (the default is False) then each cell is checked
+    with a regular expression search.
+
+    The row will be looked for inside the <tbody>, to check headers use
+    `assert_table_headers`.
+    """
+    _print('Checking the contents of table %r, row %s.' % (id_or_elem, row))
+    elem = _get_elem(id_or_elem)
+    if not elem.tag_name == 'table':
+        _raise('Element %r is not a table.' % (id_or_elem,))
+    body = elem.find_elements_by_tag_name('tbody')
+    if not body:
+        _raise('Table %r has no tbody.' % (id_or_elem,))
+    rows = body[0].find_elements_by_tag_name('tr')
+    if len(rows) <= row:
+        msg = 'Asked to fetch row %s. Highest row is %s' % (row, len(rows) - 1)
+        _raise(msg)
+    columns = rows[row].find_elements_by_tag_name('td')
+    cells = [_get_text(elem) for elem in columns]
+    if not regex:
+        success = cells == contents
+    elif len(contents) != len(cells):
+        success = False
+    else:
+        success = all(re.search(expected, actual) for expected, actual in
+                      zip(contents, cells))
+    if not success:
+        msg = ('Expected row contents: %r\nActual contents: %r' %
+               (contents, cells))
+        _raise(msg)
+
+
+def assert_attribute(id_or_elem, attribute, value, regex=False):
+    """
+    assert that the specified `attribute` on the element is equal to the
+    `value`.
+
+    If `regex` is True (default is False) then the value will be compared to
+    the attribute using a regular expression search.
+    """
+    _print('Checking attribute %s of %s' % (attribute, id_or_elem))
+    elem = _get_elem(id_or_elem)
+    actual = elem.get_attribute(attribute)
+    if not regex:
+        success = value == actual
+    else:
+        success = actual is not None and re.search(value, actual)
+    if not success:
+        msg = 'Expected attribute: %r\nActual attribute: %r' % (value, actual)
+        _raise(msg)
