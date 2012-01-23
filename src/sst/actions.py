@@ -60,9 +60,9 @@ from sst import config
 
 __all__ = [
     'accept_alert', 'assert_button', 'assert_checkbox',
-    'assert_checkbox_value', 'assert_displayed', 'assert_dropdown',
-    'assert_dropdown_value', 'assert_element', 'assert_attribute',
-    'assert_link', 'assert_radio', 'assert_radio_value',
+    'assert_checkbox_value', 'assert_css_property', 'assert_displayed',
+    'assert_dropdown', 'assert_dropdown_value', 'assert_element',
+    'assert_attribute', 'assert_link', 'assert_radio', 'assert_radio_value',
     'assert_table_headers', 'assert_table_has_rows',
     'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
@@ -1082,6 +1082,7 @@ def dismiss_alert(expected_text=None, text_to_write=None):
     _print('Dismissing Alert')
     _alert_action('dismiss', expected_text, text_to_write)
 
+
 def assert_table_headers(id_or_elem, headers):
     """
     Assert table `id_or_elem` has headers (<th> tags) where the text matches
@@ -1094,7 +1095,7 @@ def assert_table_headers(id_or_elem, headers):
     header_elems = elem.find_elements_by_tag_name('th')
     header_text = [_get_text(elem) for elem in header_elems]
     if not header_text == headers:
-        msg = ('Expected headers:%r\nActual headers%r\n' %
+        msg = ('Expected headers:%r\n    Actual headers%r\n' %
                (headers, header_text))
         _raise(msg)
 
@@ -1152,7 +1153,7 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
         success = all(re.search(expected, actual) for expected, actual in
                       zip(contents, cells))
     if not success:
-        msg = ('Expected row contents: %r\nActual contents: %r' %
+        msg = ('Expected row contents: %r\n    Actual contents: %r' %
                (contents, cells))
         _raise(msg)
 
@@ -1173,5 +1174,25 @@ def assert_attribute(id_or_elem, attribute, value, regex=False):
     else:
         success = actual is not None and re.search(value, actual)
     if not success:
-        msg = 'Expected attribute: %r\nActual attribute: %r' % (value, actual)
+        msg = 'Expected attribute: %r\n    Actual attribute: %r' % (value, actual)
+        _raise(msg)
+
+
+def assert_css_property(id_or_elem, property, value, regex=False):
+    """
+    assert that the specified `css property` on the element is equal to the
+    `value`.
+
+    If `regex` is True (default is False) then the value will be compared to
+    the property using a regular expression search.
+    """
+    _print('Checking css property %s: %s of %r' % (property, value, id_or_elem))
+    elem = _get_elem(id_or_elem)
+    actual = elem.value_of_css_property(property)
+    if not regex:
+        success = value == actual
+    else:
+        success = actual is not None and re.search(value, actual)
+    if not success:
+        msg = 'Expected property: %r\n    Actual property: %r' % (value, actual)
         _raise(msg)
