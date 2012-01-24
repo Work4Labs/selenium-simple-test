@@ -71,10 +71,10 @@ __all__ = [
     'fails', 'get_argument', 'get_base_url', 'get_current_url', 'get_element',
     'get_element_by_css', 'get_element_by_xpath', 'get_elements',
     'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
-    'get_page_source', 'go_to', 'reset_base_url', 'run_test', 'set_base_url',
-    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
-    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot',
+    'get_page_source', 'go_back', 'go_to', 'reset_base_url', 'run_test',
+    'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
+    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 
+    'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'write_textfield',
 ]
 
@@ -280,7 +280,7 @@ def run_test(name, **kwargs):
 
 def go_to(url='', wait=True):
     """
-    Goto a specific URL. If the url provided is a relative url it will be added
+    Go to a specific URL. If the url provided is a relative url it will be added
     to the base url. You can change the base url for the test with
     `set_base_url`.
 
@@ -293,6 +293,20 @@ def go_to(url='', wait=True):
     url = _fix_url(url)
     _print('Going to... %s' % url)
     browser.get(url)
+
+    if wait:
+        _waitforbody()
+
+
+def go_back(wait=True):
+    """
+    Go one step backward in the browser history.
+
+    By default this action will wait until a page with a body element is
+    available after the click. You can switch off this behaviour by passing
+    `wait=False`."""
+    _print('Going back one step in browser history')
+    browser.back()
 
     if wait:
         _waitforbody()
