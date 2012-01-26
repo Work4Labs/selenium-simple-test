@@ -29,7 +29,7 @@ from unittest2 import TestSuite, TextTestRunner, TestCase, SkipTest
 
 from sst import actions, config
 from .actions import (
-    start, stop, reset_base_url, set_wait_timeout, take_screenshot, 
+    start, stop, reset_base_url, set_wait_timeout, take_screenshot,
     get_page_source, EndTest
 )
 from .context import populate_context
@@ -74,23 +74,24 @@ def runtests(test_names, test_dir='.', report_format='console',
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_directory and
-        not os.path.abspath(root).startswith(shared_directory+os.path.sep) and 
+        not os.path.abspath(root).startswith(shared_directory+os.path.sep) and
         not os.path.split(root)[1].startswith('_')
     )
 
     alltests = TestSuite(suites)
-    
+
     print ''
     print '  %s test cases loaded\n' % alltests.countTestCases()
-    print '----------------------------------------------------------------------' 
-        
+    print '----------------------------------------------------------------------'
+
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
         sys.exit(1)
 
     if report_format == 'console':
         runner = TextTestRunner(verbosity=2)
-        runner.run(alltests)
+        def run():
+            runner.run(alltests)
 
     if report_format == 'html':
         import HTMLTestRunner
@@ -99,7 +100,8 @@ def runtests(test_names, test_dir='.', report_format='console',
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2
         )
-        runner.run(alltests)
+        def run():
+            runner.run(alltests)
 
     if report_format == 'xml':
         try:
@@ -111,13 +113,22 @@ def runtests(test_names, test_dir='.', report_format='console',
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
         result = junitxml.JUnitXmlResult(fp)
         result.startTestRun()
-        alltests.run(result)
-        result.stopTestRun()
 
-    missing = test_names - found_tests
-    for name in missing:
-        msg = 'Warning: test %r not found' % name
-        print >> sys.stderr, msg
+        def run():
+            try:
+                alltests.run(result)
+            finally:
+                result.stopTestRun()
+
+    try:
+        run()
+    except KeyboardInterrupt:
+        print >> sys.stderr, "Test run interrupted"
+    finally:
+        missing = test_names - found_tests
+        for name in missing:
+            msg = 'Warning: test %r not found' % name
+            print >> sys.stderr, msg
 
 
 def _get_full_path(path):
@@ -242,9 +253,9 @@ def get_case(test_dir, entry, browser_type, browser_version,
             set_wait_timeout(10, 0.1)
         finally:
             actions.VERBOSE = original
-        
+
         assume_trusted_cert_issuer = 'ASSUME_TRUSTED_CERT_ISSUER' in self.code.co_names
-        
+
         start(browser_type, browser_version, browser_platform,
               session_name, js_disabled, assume_trusted_cert_issuer,
               webdriver_remote_url)
@@ -272,7 +283,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
                 filename = 'pagesource-%s-%s.html' % (now, tc_name)
                 path = os.path.join(config.results_directory, filename)
                 with codecs.open(path, 'w', encoding='utf-8') as f:
-                    f.write(get_page_source())  
+                    f.write(get_page_source())
             if debug:
                 pdb.post_mortem()
             raise
