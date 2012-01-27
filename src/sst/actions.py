@@ -1047,7 +1047,6 @@ def _alert_action(action, expected_text=None, text_to_write=None):
 
     Optionally, it takes the expected text of the Popup box to check it,
     and the text to write in the prompt."""
-    window_handle = browser.current_window_handle
     wait_for(browser.switch_to_alert)
     alert = browser.switch_to_alert()
     alert_text = alert.text
@@ -1067,7 +1066,6 @@ def _alert_action(action, expected_text=None, text_to_write=None):
         alert.dismiss()
     else:
         _raise('%r is an unknown action for an alert' % action)
-    browser.switch_to_window(window_handle)
 
 
 def accept_alert(expected_text=None, text_to_write=None):
