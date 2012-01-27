@@ -33,16 +33,16 @@ with open(os.path.join(this_dir, 'actions.rst'), 'w') as h:
         h.write('\n')
 
     head1 = """
-=======================
-    SST - API Reference
-=======================
+=========================
+ SST - Actions Reference
+=========================
 
 """
     h.write(head1)
     _write(actions.__doc__)
     head2 = """
 ----------------
-    Actions API:
+    Actions:
 ----------------
 
 """

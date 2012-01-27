@@ -1,10 +1,10 @@
 .. toctree::
    :hidden:
-   
+
    actions
    remote
-   
-   
+
+
 ============================
     SST - Web Test Framework
 ============================
@@ -20,7 +20,7 @@
     Automated Testing with Python
 ---------------------------------
 
-SST (selenium-simple-test) is a web test framework that uses Python 
+SST (selenium-simple-test) is a web test framework that uses Python
 to generate functional browser-based tests.
 
 Tests are made up of scripts, created by composing actions that drive
@@ -38,8 +38,8 @@ SST consists of:
  * selectable browsers
  * headless (xvfb) mode
  * screenshots on errors
-    
-Test output can be displayed to the console, saved as an HTML report, or 
+
+Test output can be displayed to the console, saved as an HTML report, or
 JUnit-compatible XML for compatibility with CI systems.
 
 
@@ -47,19 +47,20 @@ JUnit-compatible XML for compatibility with CI systems.
     Install
 -----------
 
-SST can be installed from `PyPI <http://pypi.python.org/pypi/sst>`_ using 
+SST can be installed from `PyPI <http://pypi.python.org/pypi/sst>`_ using
 `pip <http://www.pip-installer.org>`_::
-    
+
     pip install -U sst
 
-For example, on an Ubuntu/Debian system, you could Install SST (system-wide) like this::
+For example, on an Ubuntu/Debian system, you could Install SST (system-wide)
+like this::
 
     $ sudo apt-get install python-pip xvfb
     $ sudo pip install -U sst
-    
+
 * note: `xvfb` is only needed if you want to run SST in headless mode
- 
- 
+
+
 ---------------------------
     Example SST test script
 ---------------------------
@@ -85,17 +86,17 @@ Then call your test script from the command line, using `sst-run`::
 * note: you don't add the .py extension to your test invocation
 
 
--------------------------------
-    API reference (sst.actions)
--------------------------------
+-----------------------------------
+    Actions reference (sst.actions)
+-----------------------------------
 
 Test scripts perform actions in the browser as if they were a user.
 SST provides a set of "actions" (functions) for use in your tests.
 These actions are defined in the following API:
 
- * `API Reference <http://testutils.org/sst/actions.html>`_
- 
- 
+ * `Actions Reference <http://testutils.org/sst/actions.html>`_
+
+
 ------------------------------------
     Command line options for sst-run
 ------------------------------------
@@ -125,6 +126,8 @@ Options::
   -s                 save screenshots on failures
   --failfast         stop test execution after first failure
   --debug            drop into debugger on test fail or error
+  --with-flags          a comma separated list of flags to run the tests with
+  --disable-flag-skips  run all tests, disable skipping of tests due to flags
   --test             run selftests
   -x                 run tests in headless xserver
 
@@ -134,7 +137,7 @@ Options::
 -----------------
 
 After installing sst, you can experiment with it from the python interactive
-interpreter by calling `start()` to launch the browser (Firefox by default). 
+interpreter by calling `start()` to launch the browser (Firefox by default).
 After that, you can call any of the actions as you would use them in a test::
 
     >>> from sst.actions import *
@@ -144,7 +147,7 @@ After that, you can call any of the actions as you would use them in a test::
     >>> go_to('http://google.com')
         Going to... http://google.com
         Waiting for get_element
-    >>> 
+    >>>
 
 
 --------------------
@@ -183,10 +186,10 @@ and you would still call this from the command like::
 
     $ sst-run -d mytests
 
-SST will find all of the tests in subdirectories (including symlinks) and execute 
-them. SST won't look in directories starting with an underscore. This allows you 
-to put Python packages/modules directly in your test directories if you want. A 
-better option is to use the shared directory.
+SST will find all of the tests in subdirectories (including symlinks) and
+execute them. SST won't look in directories starting with an underscore. This
+allows you to put Python packages/modules directly in your test directories
+if you want. A better option is to use the shared directory.
 
 
 --------------------
@@ -212,8 +215,9 @@ specify where the shared directory is.
     sst.config module
 ---------------------
 
-Inside tests you can import the `sst.config` module to know various things about the current test
-environment. The `sst.config` module has the following information::
+Inside tests you can import the `sst.config` module to know various things
+about the current test environment. The `sst.config` module has the following
+information::
 
     from sst import config
 
@@ -229,6 +233,9 @@ environment. The `sst.config` module has the following information::
     # full path to the results directory
     config.results_directory
 
+    # flags for the current test run
+    config.flags
+
 
 ------------------------
     Disabling Javascript
@@ -238,17 +245,17 @@ If you need to disable Javascript for an individual test you can do it by
 putting the following at the start of the test::
 
     JAVASCRIPT_DISABLED = True
-    
-    
+
+
 --------------------------------
     Development on Ubuntu/Debian
 --------------------------------
 
-* SST is primarily being developed on Linux, specifically Ubuntu. It should work 
-  fine on other platforms, but any issues (or even better - patches) should be 
-  reported on the Launchpad project.
+* SST is primarily being developed on Linux, specifically Ubuntu. It should
+  work fine on other platforms, but any issues (or even better - patches)
+  should be reported on the Launchpad project.
 
-* Get a copy of SST Trunk, install requirements, and run self-tests/examples 
+* Get a copy of SST Trunk, install requirements, and run self-tests/examples
   from the branch::
 
     $ sudo apt-get install bzr python-pip xvfb
@@ -260,18 +267,18 @@ putting the following at the start of the test::
 
 * `Launchpad Project <https://launchpad.net/selenium-simple-test>`_
 
-* `Browse the Source (Trunk) 
+* `Browse the Source (Trunk)
   <http://bazaar.launchpad.net/~canonical-isd-qa/selenium-simple-test/trunk/files>`_
 
 * To manually setup dependencies, SST uses the following non-stdlib packages:
-    
+
     * selenium
     * unittest2
     * junitxml
     * pyvirtualdisplay
     * django (optional - needed for internal self-tests only)
-    
-    
+
+
 ------------------------
     Running the examples
 ------------------------
@@ -288,11 +295,11 @@ You can run them from your local sst directory like this::
     Running the self-tests
 --------------------------
 
-SST source code repository and package download contain a set of self-tests 
+SST source code repository and package download contain a set of self-tests
 based on an included test Django project.
 
-You can run the suite of self-tests (and the test Django server) from your local
-branch like this::
+You can run the suite of self-tests (and the test Django server) from your
+local branch like this::
 
     $ ./sst-run --test
 
@@ -302,7 +309,7 @@ branch like this::
 -----------------
 
 * `Selenium Project Home <http://selenium.googlecode.com>`_
-* `Selenium WebDriver (from 'Architecture of Open Source Applications') 
+* `Selenium WebDriver (from 'Architecture of Open Source Applications')
   <http://www.aosabook.org/en/selenium.html>`_
 * `Python Unittest <http://docs.python.org/library/unittest.html>`_
 * `unittest2 <http://pypi.python.org/pypi/unittest2/>`_

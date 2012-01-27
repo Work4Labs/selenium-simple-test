@@ -31,17 +31,13 @@ except ImportError:
     sys.path.append(os.path.join(this_dir, 'src'))
     import sst
 
-from sst.command import get_remote_options, clear_old_results
+from sst.command import clear_old_results, get_opts_remote
 
 
 def main():
-    (cmd_opts, args) = get_opts()
+    cmd_opts, args = get_opts_remote()
 
     clear_old_results()
-
-    if cmd_opts.quiet:
-        from sst import actions
-        actions.VERBOSE = False
 
     print '----------------------------------------------------------------------'
 
@@ -62,12 +58,6 @@ def main():
     )
 
     print '----------------------------------------------------------------------'
-
-
-def get_opts():
-    parser = get_remote_options()
-    (cmd_opts, args) = parser.parse_args()
-    return (cmd_opts, args)
 
 
 if __name__ == '__main__':

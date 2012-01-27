@@ -1,7 +1,6 @@
-import os
-from sst.actions import *
-
 """Test the assert_displayed action."""
+
+from sst.actions import *
 
 
 go_to('/')

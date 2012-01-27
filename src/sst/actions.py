@@ -18,7 +18,6 @@
 #   limitations under the License.
 #
 
-
 """
 Tests are comprised of Python scripts. Files whose names begin with an
 underscore will *not* be executed as test scripts.
@@ -73,13 +72,15 @@ __all__ = [
     'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
     'get_page_source', 'go_back', 'go_to', 'reset_base_url', 'run_test',
     'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
-    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 
+    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip',
+    'check_flags', 'sleep',
     'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'write_textfield',
 ]
 
 
 browser = None
+_check_flags = True
 
 BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
@@ -1210,3 +1211,19 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     if not success:
         msg = 'Expected property: %r\n    Actual property: %r' % (value, actual)
         _raise(msg)
+
+
+def check_flags(*args):
+    """
+    A test will only run if all the flags passed to this action were supplied
+    at the command line. If a required flag is missing the test is skipped.
+
+    Flags are case-insensitive.
+    """
+    if not _check_flags:
+        # Flag checking disabled
+        return
+    missing = set(arg.lower() for arg in args) - set(config.flags)
+    if missing:
+        _msg = 'Flags required but not used: %s' % ', '.join(missing)
+        skip(_msg)
