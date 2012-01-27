@@ -14,7 +14,9 @@ The `sst.config` module has the following information::
 
     # full path to the results directory
     config.results_directory
-    
+
+    # flags for the current test run
+    config.flags
 """
 
 browser_type = 'Firefox'
@@ -22,4 +24,5 @@ _current_context = None
 javascript_disabled = False
 shared_directory = None
 results_directory = None
+flags = []
 __args__ = {}

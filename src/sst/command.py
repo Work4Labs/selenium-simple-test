@@ -18,6 +18,8 @@
 #   limitations under the License.
 #
 
+import __main__
+import os
 import sys
 import shutil
 import optparse
@@ -29,6 +31,9 @@ except ImportError as e:
     print e
     print 'Error: can not import Selenium WebDriver.  Selenium 2.x python bindings are required.'
     sys.exit(1)
+
+import sst
+from sst import config, actions
 
 
 usage = """Usage: %prog [testname] [options]
@@ -79,6 +84,13 @@ def get_common_options():
     parser.add_option('--debug',
                       action='store_true', default=False,
                       help="drop into debugger on test fail or error")
+    parser.add_option('--with-flags', dest='with_flags',
+                      help="a comma separated list of flags to run "
+                      "the tests with")
+    parser.add_option('--disable-flag-skips', dest='disable_flags',
+                      action='store_true', default=False,
+                      help="run all tests, disable skipping of tests due "
+                      "to flags")
     return parser
 
 
@@ -92,7 +104,7 @@ def get_run_options():
                       default=False, action='store_true',
                       help='run tests in headless xserver')
     return parser
-    
+
 
 def get_remote_options():
     parser = get_common_options()
@@ -114,3 +126,38 @@ def get_remote_options():
                             '(eg: http://host:port/wd/hub), '
                             'when using a remote Selenium RC'))
     return parser
+
+
+def get_opts_run():
+    return get_opts(get_run_options)
+
+
+def get_opts_remote():
+    return get_opts(get_remote_options)
+
+
+def get_opts(get_options):
+    parser = get_options()
+    (cmd_opts, args) = parser.parse_args()
+
+    if cmd_opts.print_version:
+        print 'SST version: %s' % sst.__version__
+        sys.exit()
+
+    run_tests = getattr(cmd_opts, 'run_tests', False)
+    if cmd_opts.dir_name == '.' and not args and not run_tests:
+        print ('Error: you must supply a test case name or specifiy a '
+               'directory.')
+        prog = os.path.split(__main__.__file__)[-1]
+        print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
+        sys.exit(1)
+
+    if cmd_opts.quiet:
+        actions.VERBOSE = False
+    if cmd_opts.disable_flags:
+        actions._check_flags = False
+
+    with_flags = cmd_opts.with_flags
+    config.flags = [flag.lower() for flag in
+                    ([] if not with_flags else with_flags.split(','))]
+    return (cmd_opts, args)

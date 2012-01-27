@@ -35,28 +35,17 @@ except ImportError:
     sys.path.append(os.path.join(this_dir, 'src'))
     import sst
 
-from sst.command import (get_run_options, clear_old_results)
+
+from sst import actions, config
+from sst.command import get_opts_run, clear_old_results
+
 
 
 def main():
-    (cmd_opts, args) = get_opts()
-    
-    if cmd_opts.print_version:
-        print 'SST version: %s' % sst.__version__
-        sys.exit()
-    
-    if cmd_opts.dir_name == '.' and not args and not cmd_opts.run_tests:
-        print 'Error: you must supply a test case name or specifiy a directory.'
-        prog = os.path.split(__file__)[-1]
-        print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
-        sys.exit(1) 
-    
+    cmd_opts, args = get_opts_run()
+
     print '----------------------------------------------------------------------'
     print 'starting SST...'
-    
-    if cmd_opts.quiet:
-        from sst import actions
-        actions.VERBOSE = False
 
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
@@ -67,7 +56,7 @@ def main():
     if cmd_opts.run_tests:
         cmd_opts.dir_name = 'selftests'
         run_django()
-        
+
     if not cmd_opts.quiet:
         print ''
         print '  date time: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -80,8 +69,8 @@ def main():
         print '  failfast: %r' % cmd_opts.failfast
         print '  debug: %r' % cmd_opts.debug
         print '  headless xserver: %r' % cmd_opts.xserver_headless
-        print ''                                
-    
+        print ''
+
     clear_old_results()
 
     sst.runtests(
@@ -101,7 +90,7 @@ def main():
     if cmd_opts.run_tests:
         print '\nkilling django...'
         kill_django()
-        
+
     if cmd_opts.xserver_headless:
         print '\nstopping virtual display...\n'
         display.stop()
@@ -112,7 +101,7 @@ def run_django():
     """Start django server for running local self-tests."""
     manage_file = './src/testproject/manage.py'
     url = 'http://localhost:8000/'
-    
+
     if not os.path.isfile(manage_file):
         print 'Error: can not find the django testproject.'
         print '%r does not exist' % manage_file
@@ -137,10 +126,10 @@ def run_django():
             if resp.code == 200:
                 break
         except IOError as e:
-            time.sleep(0.2)        
+            time.sleep(0.2)
             if count >= attempts - 1:  # timeout
-                raise
                 print 'Error: can not get response from %r' % url
+                raise
     print 'django found. continuing...'
 
 
@@ -150,13 +139,6 @@ def kill_django():
         urllib.urlopen('http://localhost:8000/kill_django')
     except IOError:
         pass
-
-
-
-def get_opts():
-    parser = get_run_options()
-    (cmd_opts, args) = parser.parse_args()       
-    return (cmd_opts, args)
 
 
 
