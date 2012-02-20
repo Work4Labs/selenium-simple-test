@@ -7,6 +7,8 @@
  * :copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
+ *  Modified for SST docs
+ *
  */
  
 @import url("basic.css");
@@ -14,7 +16,7 @@
 /* -- page layout ----------------------------------------------------------- */
  
 body {
-    font-family: Ubuntu, Tahoma, sans-serif;
+    font-family: Ubuntu, "DejaVu Sans", "Trebuchet MS", sans-serif;
     font-size: 100%;
     background-color: #111;
     color: #555;
@@ -28,7 +30,7 @@ div.documentwrapper {
 }
 
 div.bodywrapper {
-    margin: 0 0 0 {{ theme_sidebarwidth|toint }}px;
+    margin: 0 0 0 250px;
 }
 
 hr {
@@ -81,7 +83,7 @@ div.sphinxsidebarwrapper {
  
 div.sphinxsidebar h3,
 div.sphinxsidebar h4 {
-    font-family: Ubuntu, Tahoma, sans-serif;
+    font-family: Ubuntu, "DejaVu Sans", "Trebuchet MS", sans-serif;
     color: #222;
     font-size: 1.2em;
     font-weight: normal;
@@ -120,7 +122,7 @@ div.sphinxsidebar a {
  
 div.sphinxsidebar input {
     border: 1px solid #ccc;
-    font-family: Ubuntu, Tahoma, sans-serif;
+    font-family: Ubuntu, "DejaVu Sans", "Trebuchet MS", sans-serif;
     font-size: 1em;
 }
 
@@ -146,7 +148,7 @@ div.body h3,
 div.body h4,
 div.body h5,
 div.body h6 {
-    font-family: Ubuntu, Tahoma, sans-serif;
+    font-family: Ubuntu, "DejaVu Sans", "Trebuchet MS", sans-serif;
     background-color: #BED4EB;
     font-weight: normal;
     color: #212224;
@@ -155,10 +157,10 @@ div.body h6 {
     text-shadow: 0px 1px 0 white
 }
  
-div.body h1 { border-top: 20px solid white; margin-top: 0; font-size: 275%; color: #EEEEEE; background-color: #5E2750;}
-div.body h2 { font-size: 150%; color: #EEEEEE; background-color: #5E2750; }
-div.body h3 { font-size: 130%; color: #EEEEEE; background-color: #772953; }
-div.body h4 { font-size: 110%; color: #EEEEEE; background-color: #772953; }
+div.body h1 { border-top: 20px solid white; margin-top: 0; font-size: 225%; color: #EEEEEE; background-color: #5E2750;}
+div.body h2 { font-size: 140%; color: #EEEEEE; background-color: #5E2750; }
+div.body h3 { font-size: 120%; color: #2C001E; background-color: #C0C0C0; }
+div.body h4 { font-size: 100%; color: #EEEEEE; background-color: #772953; }
 div.body h5 { font-size: 100%; color: #EEEEEE; background-color: #772953; }
 div.body h6 { font-size: 100%; color: #EEEEEE; background-color: #772953; }
  
@@ -214,26 +216,27 @@ p.admonition-title:after {
  
 pre {
     padding: 6px;
-    background-color: White;
+    background-color: #EFEFEF;
     color: #000000;
-    line-height: 1.2em;
+    line-height: 1.1em;
     border: 1px solid #C6C9CB;
-    font-size: 1.4em;
+    font-size: 1.2em;
+	font-family: "Ubuntu Mono", Monaco, Consolas, "DejaVu Sans Mono", "Lucida Console", monospace;
     margin: 1.5em 0 1.5em 0;
     -webkit-box-shadow: 1px 1px 1px #d8d8d8;
     -moz-box-shadow: 1px 1px 1px #d8d8d8;
 }
  
 tt {
-    background-color: #ecf0f3;
+    background-color: #EFEFEF;
     color: #222;
     /* padding: 1px 2px; */
     font-size: 1.1em;
-    font-family: monospace;
+    font-family: "Ubuntu Mono", Monaco, Consolas, "DejaVu Sans Mono", "Lucida Console", monospace;
 }
 
 .viewcode-back {
-    font-family: Ubuntu, Tahoma, sans-serif;
+    font-family: Ubuntu, "DejaVu Sans", "Trebuchet MS", sans-serif;
 }
 
 div.viewcode-block:target {

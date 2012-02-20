@@ -39,11 +39,11 @@ __all__ = ['runtests']
 
 
 def runtests(test_names, test_dir='.', report_format='console',
-             browser_type='Firefox', browser_version='',
-             browser_platform='ANY', session_name=None,
-             javascript_disabled=False, webdriver_remote_url=None,
-             shared_directory=None, screenshots_on=False, failfast=False,
-             debug=False):
+             browser_type='Firefox', javascript_disabled=False,
+             proxy_enabled=False, shared_directory=None, 
+             screenshots_on=False, failfast=False, debug=False,
+             webdriver_remote_url=None, browser_version='',
+             browser_platform='ANY', session_name=None):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -62,7 +62,9 @@ def runtests(test_names, test_dir='.', report_format='console',
     sys.path.append(shared_directory)
 
     config.results_directory = _get_full_path('results')
-
+    
+    config.proxy_enabled = proxy_enabled
+    
     found_tests = set()
     test_names = set(test_names)
 

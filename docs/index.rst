@@ -115,21 +115,22 @@ Usage: `sst-run <options> [testname]`
 
 Options::
 
-  -h, --help         show this help message and exit
-  -d DIR_NAME        directory of test case files
-  -r REPORT_FORMAT   results report format (html, xml, console)
-  -b BROWSER_TYPE    select webdriver (Firefox, Chrome, Ie, etc)
-  -j                 disable javascript in browser
-  -m SHARED_MODULES  directory for shared modules
-  -q                 output less debugging info during test run
-  -V                 print version info and exit
-  -s                 save screenshots on failures
-  --failfast         stop test execution after first failure
-  --debug            drop into debugger on test fail or error
-  --with-flags          a comma separated list of flags to run the tests with
-  --disable-flag-skips  run all tests, disable skipping of tests due to flags
-  --test             run selftests
-  -x                 run tests in headless xserver
+  -h, --help            show this help message and exit
+  -d DIR_NAME           directory of test case files
+  -r REPORT_FORMAT      results report format (html, xml, console)
+  -b BROWSER_TYPE       select webdriver (Firefox, Chrome, Ie, etc)
+  -j                    disable javascript in browser
+  -m SHARED_MODULES     directory for shared modules
+  -q                    output less debugging info during test run
+  -V                    print version info and exit
+  -s                    save screenshots on failures
+  --failfast            stop test execution after first failure
+  --debug               drop into debugger on test fail or error
+  --with-flags=WITH_FLAGS   comma separated list of flags to run tests with
+  --disable-flag-skips  run all tests, disable skipping tests due to flags
+  --proxy=PROXY         enable browsermob-proxy (launcher location)
+  --test                run selftests
+  -x                    run browser in headless xserver
 
 
 -----------------
@@ -232,6 +233,9 @@ information::
 
     # full path to the results directory
     config.results_directory
+    
+    # is browsermob proxy enabled?
+    config.proxy_enabled
 
     # flags for the current test run
     config.flags
@@ -302,6 +306,57 @@ You can run the suite of self-tests (and the test Django server) from your
 local branch like this::
 
     $ ./sst-run --test
+
+
+---------------------------------------------------
+    Performance tracing with Browsermob Proxy (HAR)
+---------------------------------------------------
+
+SST can generate `HAR (HTTP Archive format) 
+<http://www.softwareishard.com/blog/har-12-spec/>`_ output for performance 
+profiling and tracing.
+
+HAR format is based on JSON, and is used by tools that consume/produce data 
+collected by monitoring HTTP communication. These files contain a log of HTTP 
+client/server conversation and can be used for additional analysis of page 
+load performance.
+
+This is achieved by routing browser requests through `BrowserMob Proxy 
+<https://github.com/webmetrics/browsermob-proxy>`_, which records web page 
+loads while your tests run.  SST will launch the proxy and save output to 
+.har files if you enable the ``--proxy=`` command line option.  HAR files 
+are saved in the `results` directory for each page load.
+
+* Setup Browsermob Proxy
+
+ * install a Java runtime::
+
+    $ sudo apt-get install default-jre
+
+ * download latest `browsermob-proxy-*.zip`:
+    
+  * `GitHub browsermob-proxy/downloads <https://github.com/webmetrics/browsermob-proxy/downloads>`_
+
+ * unzip archive, and give execute permissions to the launcher script::
+
+    $ chmod +x bin/browsermob-proxy
+
+* Invoke SST using the ``--proxy=`` option, providing location of the launcher. 
+  
+ * Example::
+
+    $ sst-run mytest --proxy=/home/foo/browsermob-proxy/bin/browsermob-proxy
+
+* HAR Analysis Tools:
+  
+ * `harviewer <http://code.google.com/p/harviewer/>`_
+ * `HTTP Archive Viewer <http://www.softwareishard.com/har/viewer/>`_
+ * `PCAP Web Performance Analyzer <http://pcapperf.appspot.com/>`_
+
+* Browsermob integration notes:
+
+ * not yet working for SSL sites
+ * does not record local requests.  test against remote servers only.
 
 
 -----------------
