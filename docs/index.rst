@@ -324,7 +324,7 @@ load performance.
 This is achieved by routing browser requests through `BrowserMob Proxy 
 <https://github.com/webmetrics/browsermob-proxy>`_, which records web page 
 loads while your tests run.  SST will launch the proxy and save output to 
-.har files if you enable the ``--proxy=`` command line option.  HAR files 
+.har files if you enable the ``--browsermob`` command line option.  HAR files 
 are saved in the `results` directory for each page load.
 
 * Setup Browsermob Proxy
@@ -341,13 +341,13 @@ are saved in the `results` directory for each page load.
 
     $ chmod +x bin/browsermob-proxy
 
-* Invoke SST using the ``--proxy=`` option, providing location of the launcher. 
+* Invoke SST using the ``--browsermob`` option, providing location of the launcher. 
   
  * Example::
 
-    $ sst-run mytest --proxy=/home/foo/browsermob-proxy/bin/browsermob-proxy
+    $ sst-run mytest --browsermob=/home/foo/browsermob-proxy/bin/browsermob-proxy
 
-* HAR Analysis Tools:
+* HAR analysis tools:
   
  * `harviewer <http://code.google.com/p/harviewer/>`_
  * `HTTP Archive Viewer <http://www.softwareishard.com/har/viewer/>`_

@@ -40,7 +40,7 @@ __all__ = ['runtests']
 
 def runtests(test_names, test_dir='.', report_format='console',
              browser_type='Firefox', javascript_disabled=False,
-             proxy_enabled=False, shared_directory=None, 
+             browsermob_enabled=False, shared_directory=None, 
              screenshots_on=False, failfast=False, debug=False,
              webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None):
@@ -63,7 +63,7 @@ def runtests(test_names, test_dir='.', report_format='console',
 
     config.results_directory = _get_full_path('results')
     
-    config.proxy_enabled = proxy_enabled
+    config.browsermob_enabled = browsermob_enabled
     
     found_tests = set()
     test_names = set(test_names)

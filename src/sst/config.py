@@ -16,7 +16,7 @@ The `sst.config` module has the following information::
     config.results_directory
     
     # is browsermob proxy enabled?
-    config.proxy_enabled
+    config.browsermob_enabled
 
     # flags for the current test run
     config.flags
@@ -27,6 +27,6 @@ _current_context = None
 javascript_disabled = False
 shared_directory = None
 results_directory = None
-proxy_enabled = False
+browsermob_enabled = False
 flags = []
 __args__ = {}

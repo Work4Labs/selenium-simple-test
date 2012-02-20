@@ -48,11 +48,11 @@ def main():
     print '----------------------------------------------------------------------'
     print 'starting SST...'
 
-    if cmd_opts.proxy and cmd_opts.run_tests:
+    if cmd_opts.browsermob and cmd_opts.run_tests:
         print 'Warning: can not record local traffic from django testproject'
         
-    if cmd_opts.proxy:
-        browsermob_process = run_browsermob_server(cmd_opts.proxy)
+    if cmd_opts.browsermob:
+        browsermob_process = run_browsermob_server(cmd_opts.browsermob)
     
     if cmd_opts.run_tests:
         cmd_opts.dir_name = 'selftests'
@@ -71,7 +71,7 @@ def main():
         print '  report format: %r' % cmd_opts.report_format
         print '  browser type: %r' % cmd_opts.browser_type
         print '  javascript disabled: %r' % cmd_opts.javascript_disabled
-        print '  browswermob proxy launcher: %r' % cmd_opts.proxy
+        print '  browswermob proxy launcher: %r' % cmd_opts.browsermob
         print '  shared directory: %r' % cmd_opts.shared_modules
         print '  screenshots on error: %r' % cmd_opts.screenshots_on
         print '  failfast: %r' % cmd_opts.failfast
@@ -87,7 +87,7 @@ def main():
         report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type,
         javascript_disabled=cmd_opts.javascript_disabled,
-        proxy_enabled=bool(cmd_opts.proxy),
+        browsermob_enabled=bool(cmd_opts.browsermob),
         shared_directory=cmd_opts.shared_modules,
         screenshots_on=cmd_opts.screenshots_on,
         failfast=cmd_opts.failfast,
@@ -96,8 +96,8 @@ def main():
 
     print '----------------------------------------------------------------------'
     
-    if cmd_opts.proxy:
-        print '\nkilling proxy...'
+    if cmd_opts.browsermob:
+        print '\nkilling browsermob proxy...'
         browsermob_process.kill()
         browsermob_process.wait()
 
@@ -179,9 +179,9 @@ def run_browsermob_server(path_to_bmob_server):
         except socket.error:
             time.sleep(0.2)
             if count >= attempts - 1:  # timeout
-                print 'Error: proxy not started'
+                print 'Error: browsermob proxy not started'
                 sys.exit(1)
-    print 'proxy found. continuing...'
+    print 'browsermob proxy found. continuing...'
     return process
 
 

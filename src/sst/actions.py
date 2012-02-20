@@ -38,11 +38,9 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
-import json
 import os
 import re
 import time
-import urllib2
 
 from datetime import datetime
 from pdb import set_trace as debug
@@ -84,7 +82,7 @@ __all__ = [
 
 
 browser = None
-proxy = None
+browsermob_proxy = None
 _check_flags = True
 
 BASE_URL = 'http://localhost:8000/'
@@ -161,7 +159,7 @@ def start(browser_type=None, browser_version='',
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
-    global proxy
+    global browsermob_proxy
 
     if browser_type is None:
         browser_type = config.browser_type
@@ -176,13 +174,16 @@ def start(browser_type=None, browser_version='',
             # profile features are FF only
             profile = getattr(webdriver, '%sProfile' % browser_type)()
             profile.set_preference('intl.accept_languages', 'en')
-            if config.proxy_enabled:
+            if config.browsermob_enabled:
                 # proxy integration is currently FF only
-                proxy = bmobproxy.BrowserMobProxy('localhost', 8080)
-                selenium_proxy = webdriver.Proxy({'httpProxy': proxy.url})
+                browsermob_proxy = bmobproxy.BrowserMobProxy(
+                    'localhost', 8080)
+                selenium_proxy = webdriver.Proxy(
+                    {'httpProxy': browsermob_proxy.url})
                 profile.set_proxy(selenium_proxy)
             if assume_trusted_cert_issuer:
-                profile.set_preference('webdriver_assume_untrusted_issuer', False)
+                profile.set_preference(
+                    'webdriver_assume_untrusted_issuer', False)
             if javascript_disabled:
                 profile.set_preference('javascript.enabled', False)
             browser = getattr(webdriver, browser_type)(profile)
@@ -203,17 +204,17 @@ def stop():
     Stops Firefox and ends the browser session. Called automatically for you at
     the end of each test script."""
     global browser
-    global proxy
+    global browsermob_proxy
     
     _print('Stopping browser')
     # quit calls close() and does cleanup
     browser.quit()
     browser = None
     
-    if proxy is not None:
+    if browsermob_proxy is not None:
         _print('Closing http proxy')
-        proxy.close()
-        proxy = None
+        browsermob_proxy.close()
+        browsermob_proxy = None
 
 
 def take_screenshot(filename='screenshot.png'):
@@ -298,9 +299,13 @@ def run_test(name, **kwargs):
 
 
 def _make_useable_har_name(stem=''):
-    now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
-    slug_name = ''.join(x for x in stem if x.isalpha() or x.isdigit())
-    out_name = 'har-%s-%s.har' % (now, slug_name)
+    now = datetime.now()
+    timestamped_base = 'har-%s' % now.strftime('%Y-%m-%d_%H-%M-%S-%f')
+    if stem:
+        slug_name = ''.join(x for x in stem if x.isalnum())
+        out_name = '%s-%s.har' % (timestamped_base, slug_name)
+    else:
+        out_name = '%s.har' % timestamped_base
     file_name = os.path.join(config.results_directory, out_name)
     return file_name
 
@@ -319,9 +324,9 @@ def go_to(url='', wait=True):
 
     url = _fix_url(url)
     
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Capturing http traffic...')
-        proxy.new_har()
+        browsermob_proxy.new_har()
 
     _print('Going to... %s' % url)
     browser.get(url)
@@ -329,10 +334,10 @@ def go_to(url='', wait=True):
     if wait:
         _waitforbody()
 
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
-        proxy.save_har(_make_useable_har_name(url))
+        browsermob_proxy.save_har(_make_useable_har_name(url))
 
 
 def go_back(wait=True):
@@ -342,9 +347,9 @@ def go_back(wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Capturing http traffic...')
-        proxy.new_har()
+        browsermob_proxy.new_har()
 
     _print('Going back one step in browser history')
     browser.back()
@@ -352,10 +357,10 @@ def go_back(wait=True):
     if wait:
         _waitforbody()
     
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
-        proxy.save_har(_make_useable_har_name())
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def assert_checkbox(id_or_elem):
@@ -519,9 +524,9 @@ def click_link(id_or_elem, check=False, wait=True):
     link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
     
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Capturing http traffic...')
-        proxy.new_har()
+        browsermob_proxy.new_har()
     
     _print('Clicking link %r' % id_or_elem)
     link.click()
@@ -529,10 +534,10 @@ def click_link(id_or_elem, check=False, wait=True):
     if wait:
         _waitforbody()
     
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
-        proxy.save_har(_make_useable_har_name())
+        browsermob_proxy.save_har(_make_useable_har_name())
 
     # some links do redirects - so we
     # don't check by default
@@ -563,9 +568,9 @@ def click_element(id_or_elem, wait=True):
     `wait=False`."""
     elem = _get_elem(id_or_elem)
 
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Capturing http traffic...')
-        proxy.new_har()
+        browsermob_proxy.new_har()
 
     _print('Clicking element %r' % id_or_elem)
     elem.click()
@@ -573,10 +578,10 @@ def click_element(id_or_elem, wait=True):
     if wait:
         _waitforbody()
 
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
-        proxy.save_har(_make_useable_har_name())
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def assert_title(title):
@@ -1001,9 +1006,9 @@ def click_button(id_or_elem, wait=True):
     `wait=False`."""
     button = assert_button(id_or_elem)
 
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Capturing http traffic...')
-        proxy.new_har()
+        browsermob_proxy.new_har()
 
     _print('Clicking button %r' % id_or_elem)
     button.click()
@@ -1011,10 +1016,10 @@ def click_button(id_or_elem, wait=True):
     if wait:
         _waitforbody()
 
-    if proxy:
+    if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
-        proxy.save_har(_make_useable_har_name())
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def get_elements_by_css(selector):
