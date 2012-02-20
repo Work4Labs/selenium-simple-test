@@ -115,22 +115,22 @@ Usage: `sst-run <options> [testname]`
 
 Options::
 
-  -h, --help            show this help message and exit
-  -d DIR_NAME           directory of test case files
-  -r REPORT_FORMAT      results report format (html, xml, console)
-  -b BROWSER_TYPE       select webdriver (Firefox, Chrome, Ie, etc)
-  -j                    disable javascript in browser
-  -m SHARED_MODULES     directory for shared modules
-  -q                    output less debugging info during test run
-  -V                    print version info and exit
-  -s                    save screenshots on failures
-  --failfast            stop test execution after first failure
-  --debug               drop into debugger on test fail or error
+  -h, --help                show this help message and exit
+  -d DIR_NAME               directory of test case files
+  -r REPORT_FORMAT          results report format (html, xml, console)
+  -b BROWSER_TYPE           select webdriver (Firefox, Chrome, Ie, etc)
+  -j                        disable javascript in browser
+  -m SHARED_MODULES         directory for shared modules
+  -q                        output less debugging info during test run
+  -V                        print version info and exit
+  -s                        save screenshots on failures
+  --failfast                stop test execution after first failure
+  --debug                   drop into debugger on test fail or error
   --with-flags=WITH_FLAGS   comma separated list of flags to run tests with
-  --disable-flag-skips  run all tests, disable skipping tests due to flags
-  --proxy=PROXY         enable browsermob-proxy (launcher location)
-  --test                run selftests
-  -x                    run browser in headless xserver
+  --disable-flag-skips      run all tests, disable skipping tests due to flags
+  --browsermob=BROWSERMOB   enable browsermob-proxy (launcher location)
+  --test                    run selftests
+  -x                        run browser in headless xserver
 
 
 -----------------
