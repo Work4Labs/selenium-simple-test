@@ -3,6 +3,7 @@
 
    actions
    remote
+   changelog
 
 
 ============================
