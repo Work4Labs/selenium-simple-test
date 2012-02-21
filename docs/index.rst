@@ -235,7 +235,7 @@ information::
     config.results_directory
     
     # is browsermob proxy enabled?
-    config.proxy_enabled
+    config.browsermob_enabled
 
     # flags for the current test run
     config.flags
