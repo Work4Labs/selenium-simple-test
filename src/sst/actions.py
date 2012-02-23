@@ -42,6 +42,7 @@ import os
 import re
 import time
 
+from datetime import datetime
 from pdb import set_trace as debug
 
 from unittest2 import SkipTest
@@ -55,6 +56,7 @@ from selenium.common.exceptions import (
     NoSuchWindowException, NoSuchFrameException)
 
 from sst import config
+from sst import bmobproxy
 
 
 __all__ = [
@@ -80,6 +82,7 @@ __all__ = [
 
 
 browser = None
+browsermob_proxy = None
 _check_flags = True
 
 BASE_URL = 'http://localhost:8000/'
@@ -156,6 +159,7 @@ def start(browser_type=None, browser_version='',
     Starts Browser with a new session. Called for you at
     the start of each test script."""
     global browser
+    global browsermob_proxy
 
     if browser_type is None:
         browser_type = config.browser_type
@@ -170,8 +174,16 @@ def start(browser_type=None, browser_version='',
             # profile features are FF only
             profile = getattr(webdriver, '%sProfile' % browser_type)()
             profile.set_preference('intl.accept_languages', 'en')
+            if config.browsermob_enabled:
+                # proxy integration is currently FF only
+                browsermob_proxy = bmobproxy.BrowserMobProxy(
+                    'localhost', 8080)
+                selenium_proxy = webdriver.Proxy(
+                    {'httpProxy': browsermob_proxy.url})
+                profile.set_proxy(selenium_proxy)
             if assume_trusted_cert_issuer:
-                profile.set_preference('webdriver_assume_untrusted_issuer', False)
+                profile.set_preference(
+                    'webdriver_assume_untrusted_issuer', False)
             if javascript_disabled:
                 profile.set_preference('javascript.enabled', False)
             browser = getattr(webdriver, browser_type)(profile)
@@ -192,10 +204,17 @@ def stop():
     Stops Firefox and ends the browser session. Called automatically for you at
     the end of each test script."""
     global browser
+    global browsermob_proxy
+    
     _print('Stopping browser')
     # quit calls close() and does cleanup
     browser.quit()
     browser = None
+    
+    if browsermob_proxy is not None:
+        _print('Closing http proxy')
+        browsermob_proxy.close()
+        browsermob_proxy = None
 
 
 def take_screenshot(filename='screenshot.png'):
@@ -279,6 +298,18 @@ def run_test(name, **kwargs):
     return context.run_test(name, kwargs)
 
 
+def _make_useable_har_name(stem=''):
+    now = datetime.now()
+    timestamped_base = 'har-%s' % now.strftime('%Y-%m-%d_%H-%M-%S-%f')
+    if stem:
+        slug_name = ''.join(x for x in stem if x.isalnum())
+        out_name = '%s-%s.har' % (timestamped_base, slug_name)
+    else:
+        out_name = '%s.har' % timestamped_base
+    file_name = os.path.join(config.results_directory, out_name)
+    return file_name
+
+
 def go_to(url='', wait=True):
     """
     Go to a specific URL. If the url provided is a relative url it will be added
@@ -292,11 +323,21 @@ def go_to(url='', wait=True):
         start()
 
     url = _fix_url(url)
+    
+    if browsermob_proxy is not None:
+        _print('Capturing http traffic...')
+        browsermob_proxy.new_har()
+
     _print('Going to... %s' % url)
     browser.get(url)
-
+        
     if wait:
         _waitforbody()
+
+    if browsermob_proxy is not None:
+        _print('Saving HAR output')
+        _make_results_dir()
+        browsermob_proxy.save_har(_make_useable_har_name(url))
 
 
 def go_back(wait=True):
@@ -306,11 +347,20 @@ def go_back(wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
+    if browsermob_proxy is not None:
+        _print('Capturing http traffic...')
+        browsermob_proxy.new_har()
+
     _print('Going back one step in browser history')
     browser.back()
 
     if wait:
         _waitforbody()
+    
+    if browsermob_proxy is not None:
+        _print('Saving HAR output')
+        _make_results_dir()
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def assert_checkbox(id_or_elem):
@@ -471,13 +521,23 @@ def click_link(id_or_elem, check=False, wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
-    _print('Clicking link %r' % id_or_elem)
     link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
+    
+    if browsermob_proxy is not None:
+        _print('Capturing http traffic...')
+        browsermob_proxy.new_har()
+    
+    _print('Clicking link %r' % id_or_elem)
     link.click()
 
     if wait:
         _waitforbody()
+    
+    if browsermob_proxy is not None:
+        _print('Saving HAR output')
+        _make_results_dir()
+        browsermob_proxy.save_har(_make_useable_har_name())
 
     # some links do redirects - so we
     # don't check by default
@@ -507,11 +567,21 @@ def click_element(id_or_elem, wait=True):
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     elem = _get_elem(id_or_elem)
+
+    if browsermob_proxy is not None:
+        _print('Capturing http traffic...')
+        browsermob_proxy.new_har()
+
     _print('Clicking element %r' % id_or_elem)
     elem.click()
 
     if wait:
         _waitforbody()
+
+    if browsermob_proxy is not None:
+        _print('Saving HAR output')
+        _make_results_dir()
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def assert_title(title):
@@ -934,12 +1004,22 @@ def click_button(id_or_elem, wait=True):
     By default this action will wait until a page with a body element is
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
-    _print('Clicking button %r' % id_or_elem)
     button = assert_button(id_or_elem)
+
+    if browsermob_proxy is not None:
+        _print('Capturing http traffic...')
+        browsermob_proxy.new_har()
+
+    _print('Clicking button %r' % id_or_elem)
     button.click()
 
     if wait:
         _waitforbody()
+
+    if browsermob_proxy is not None:
+        _print('Saving HAR output')
+        _make_results_dir()
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def get_elements_by_css(selector):

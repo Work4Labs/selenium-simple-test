@@ -62,7 +62,7 @@ def get_common_options():
     parser.add_option('-b', dest='browser_type',
                       default='Firefox',
                       help=('select webdriver (Firefox, Chrome, '
-                            'InternetExplorer, etc)'))
+                            'Ie, etc)'))
     parser.add_option('-j', dest='javascript_disabled',
                       default=False, action='store_true',
                       help='disable javascript in browser')
@@ -80,29 +80,31 @@ def get_common_options():
                       help='save screenshots on failures')
     parser.add_option('--failfast',
                       action='store_true', default=False,
-                      help="stop test execution after first failure")
+                      help='stop test execution after first failure')
     parser.add_option('--debug',
                       action='store_true', default=False,
-                      help="drop into debugger on test fail or error")
+                      help='drop into debugger on test fail or error')
     parser.add_option('--with-flags', dest='with_flags',
-                      help="a comma separated list of flags to run "
-                      "the tests with")
+                      help='comma separated list of flags to run '
+                      'tests with')
     parser.add_option('--disable-flag-skips', dest='disable_flags',
                       action='store_true', default=False,
-                      help="run all tests, disable skipping of tests due "
-                      "to flags")
+                      help='run all tests, disable skipping tests due '
+                      'to flags')
     return parser
 
 
 def get_run_options():
     parser = get_common_options()
+    parser.add_option('--browsermob', dest='browsermob',
+                      help='enable browsermob proxy (launcher location)')
     parser.add_option('--test',
                       dest='run_tests', action='store_true',
                       default=False,
                       help='run selftests')
     parser.add_option('-x', dest='xserver_headless',
                       default=False, action='store_true',
-                      help='run tests in headless xserver')
+                      help='run browser in headless xserver')
     return parser
 
 
