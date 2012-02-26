@@ -10,8 +10,8 @@ Official Releases:
 ------------------
 
 
-version **0.2.0** (2012-??-??)
-******************************
+version **0.2.0** (2012 Feb 26)
+*******************************
 
 * ``wait_for`` displays tracebacks
 * screenshots not taken on skipped test
@@ -37,8 +37,8 @@ version **0.2.0** (2012-??-??)
  * ``--browsermob=``
 
 
-version **0.1.0** (2012-01-01)
-******************************
+version **0.1.0** (2012 Jan 01)
+*******************************
 
 * initial release: `SST on PyPI <http://pypi.python.org/pypi/sst>`_
 * dev project: `selenium-simple-test on Launchpad <https://launchpad.net/selenium-simple-test>`_
