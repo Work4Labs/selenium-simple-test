@@ -113,7 +113,7 @@ def set_base_url(url):
     global BASE_URL
     if not url.endswith('/'):
         url += '/'
-    if not url.startswith('http'):
+    if not url.startswith('http') and not url.startswith('file'):
         url = 'http://' + url
     _print('Setting base url to: %r' % url)
     BASE_URL = url
@@ -247,7 +247,7 @@ def sleep(secs):
 def _fix_url(url):
     if url.startswith('/'):
         url = url[1:]
-    if not url.startswith('http'):
+    if not url.startswith('http') and not url.startswith('file'):
         url = BASE_URL + url
     return url
 
