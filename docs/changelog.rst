@@ -10,6 +10,12 @@ Official Releases:
 ------------------
 
 
+version **0.2.1** (2012 ??? ??)
+*******************************
+
+* abilty to handle `file:` based urls (static, non-http)
+
+
 version **0.2.0** (2012 Feb 26)
 *******************************
 
