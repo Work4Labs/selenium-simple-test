@@ -75,7 +75,7 @@ __all__ = [
     'get_page_source', 'go_back', 'go_to', 'reset_base_url', 'run_test',
     'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
     'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip',
-    'check_flags', 'sleep',
+    'check_flags', 'sleep', 'assert_equal', 'assert_not_equal',
     'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'write_textfield',
 ]
@@ -84,6 +84,7 @@ __all__ = [
 browser = None
 browsermob_proxy = None
 _check_flags = True
+_test = None
 
 BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
@@ -205,12 +206,12 @@ def stop():
     the end of each test script."""
     global browser
     global browsermob_proxy
-    
+
     _print('Stopping browser')
     # quit calls close() and does cleanup
     browser.quit()
     browser = None
-    
+
     if browsermob_proxy is not None:
         _print('Closing http proxy')
         browsermob_proxy.close()
@@ -323,14 +324,14 @@ def go_to(url='', wait=True):
         start()
 
     url = _fix_url(url)
-    
+
     if browsermob_proxy is not None:
         _print('Capturing http traffic...')
         browsermob_proxy.new_har()
 
     _print('Going to... %s' % url)
     browser.get(url)
-        
+
     if wait:
         _waitforbody()
 
@@ -356,7 +357,7 @@ def go_back(wait=True):
 
     if wait:
         _waitforbody()
-    
+
     if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
@@ -523,17 +524,17 @@ def click_link(id_or_elem, check=False, wait=True):
     `wait=False`."""
     link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
-    
+
     if browsermob_proxy is not None:
         _print('Capturing http traffic...')
         browsermob_proxy.new_har()
-    
+
     _print('Clicking link %r' % id_or_elem)
     link.click()
 
     if wait:
         _waitforbody()
-    
+
     if browsermob_proxy is not None:
         _print('Saving HAR output')
         _make_results_dir()
@@ -1305,3 +1306,18 @@ def check_flags(*args):
     if missing:
         _msg = 'Flags required but not used: %s' % ', '.join(missing)
         skip(_msg)
+
+
+def assert_equal(first, second):
+    """Assert two objects are equal."""
+    if _test is None:
+        assert first == second
+    else:
+        _test.assertEqual(first, second)
+
+def assert_not_equal(first, second):
+    """Assert two objects are not equal."""
+    if _test is None:
+        assert first != second
+    else:
+        _test.assertNotEqual(first, second)
