@@ -3,7 +3,7 @@
     SST - Changelog
 ===================
 
-* downloads available at `Python Package Index <http://pypi.python.org/pypi/sst#downloads>`_ 
+* downloads available at `Python Package Index <http://pypi.python.org/pypi/sst#downloads>`_
 
 
 Official Releases:
@@ -14,7 +14,7 @@ version **0.2.1** (2012 ??? ??)
 *******************************
 
 * abilty to handle `file:` based urls (static, non-http)
-
+* added `assert_equal` and `assert_not_equal` actions
 
 version **0.2.0** (2012 Feb 26)
 *******************************
