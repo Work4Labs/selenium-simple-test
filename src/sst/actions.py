@@ -1311,7 +1311,6 @@ def check_flags(*args):
 def assert_equal(first, second):
     """Assert two objects are equal."""
     if _test is None:
-        print 'weeeee'
         assert first == second
     else:
         _test.assertEqual(first, second)
