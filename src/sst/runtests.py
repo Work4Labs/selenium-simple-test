@@ -40,7 +40,7 @@ __all__ = ['runtests']
 
 def runtests(test_names, test_dir='.', report_format='console',
              browser_type='Firefox', javascript_disabled=False,
-             browsermob_enabled=False, shared_directory=None, 
+             browsermob_enabled=False, shared_directory=None,
              screenshots_on=False, failfast=False, debug=False,
              webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None):
@@ -62,9 +62,9 @@ def runtests(test_names, test_dir='.', report_format='console',
     sys.path.append(shared_directory)
 
     config.results_directory = _get_full_path('results')
-    
+
     config.browsermob_enabled = browsermob_enabled
-    
+
     found_tests = set()
     test_names = set(test_names)
 
@@ -239,6 +239,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
     path = os.path.join(test_dir, entry)
 
     def setUp(self):
+        actions._test = self
+
         sys.path.append(test_dir)
         with open(path) as h:
             source = h.read() + '\n'
