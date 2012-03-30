@@ -60,23 +60,23 @@ from sst import bmobproxy
 
 
 __all__ = [
-    'accept_alert', 'assert_button', 'assert_checkbox',
+    'accept_alert', 'assert_attribute', 'assert_button', 'assert_checkbox',
     'assert_checkbox_value', 'assert_css_property', 'assert_displayed',
     'assert_dropdown', 'assert_dropdown_value', 'assert_element',
-    'assert_attribute', 'assert_link', 'assert_radio', 'assert_radio_value',
-    'assert_table_headers', 'assert_table_has_rows',
+    'assert_equal', 'assert_link', 'assert_not_equal', 'assert_radio',
+    'assert_radio_value', 'assert_table_has_rows', 'assert_table_headers',
     'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
-    'assert_url_contains', 'click_button', 'click_element', 'click_link',
-    'close_window', 'debug', 'dismiss_alert', 'end_test', 'exists_element',
-    'fails', 'get_argument', 'get_base_url', 'get_current_url', 'get_element',
-    'get_element_by_css', 'get_element_by_xpath', 'get_elements',
-    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
-    'get_page_source', 'go_back', 'go_to', 'reset_base_url', 'run_test',
-    'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
-    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip',
-    'check_flags', 'sleep', 'assert_equal', 'assert_not_equal',
-    'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
+    'assert_url_contains', 'check_flags', 'click_button', 'click_element',
+    'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
+    'exists_element', 'fails', 'get_argument', 'get_base_url',
+    'get_current_url', 'get_element', 'get_element_by_css',
+    'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
+    'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
+    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
+    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
+    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
+    'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'write_textfield',
 ]
 
@@ -216,6 +216,29 @@ def stop():
         _print('Closing http proxy')
         browsermob_proxy.close()
         browsermob_proxy = None
+
+
+def refresh(wait=True):
+    """
+    Refresh the current page.
+
+    By default this action will wait until a page with a body element is
+    available after the click. You can switch off this behaviour by passing
+    `wait=False`."""
+    if browsermob_proxy is not None:
+        _print('Capturing http traffic...')
+        browsermob_proxy.new_har()
+
+    _print('Refreshing current page')
+    browser.refresh()
+
+    if wait:
+        _waitforbody()
+
+    if browsermob_proxy is not None:
+        _print('Saving HAR output')
+        _make_results_dir()
+        browsermob_proxy.save_har(_make_useable_har_name())
 
 
 def take_screenshot(filename='screenshot.png'):
