@@ -16,6 +16,8 @@ version **0.2.1** (2012 ??? ??)
 * abilty to handle `file:` based urls (static, non-http)
 * added `assert_equal` and `assert_not_equal` actions
 * added `refresh` action
+* when running with debug on the current exception is printed before entering
+  pdb
 
 version **0.2.0** (2012 Feb 26)
 *******************************
