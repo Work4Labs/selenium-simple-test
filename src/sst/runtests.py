@@ -24,6 +24,7 @@ import datetime
 import os
 import pdb
 import sys
+import traceback
 
 from unittest2 import TestSuite, TextTestRunner, TestCase, SkipTest
 
@@ -289,6 +290,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
                 with codecs.open(path, 'w', encoding='utf-8') as f:
                     f.write(get_page_source())
             if debug:
+                traceback.print_exc()
                 pdb.post_mortem()
             raise
 
