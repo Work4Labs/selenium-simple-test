@@ -77,7 +77,7 @@ __all__ = [
     'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
     'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
     'switch_to_frame', 'switch_to_window', 'take_screenshot',
-    'toggle_checkbox', 'wait_for', 'write_textfield',
+    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
 ]
 
 
@@ -686,6 +686,35 @@ def _get_name(obj):
         return repr(obj)
 
 
+def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
+    global VERBOSE
+    _print('Waiting for %s' % _get_name(condition))
+    original = VERBOSE
+    VERBOSE = False
+    try:
+        max_time = time.time() + timeout
+        msg = _get_name(condition)
+        while True:
+            #refresh the page if requested
+            if refresh:
+                refresh()
+            e = None
+            try:
+                result = condition(*args, **kwargs)
+            except AssertionError as e:
+                pass
+            else:
+                if result != False:
+                    break
+            if time.time() > max_time:
+                error = 'Timed out waiting for: %s' % msg
+                if e:
+                    error += '\nError during wait: %s' % e
+                _raise(error)
+            time.sleep(poll)
+    finally:
+        VERBOSE = original
+
 def wait_for(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
@@ -701,30 +730,28 @@ def wait_for(condition, *args, **kwargs):
     `wait_for` fails.
 
     You can set the timeout for `wait_for` by calling `set_wait_timeout`."""
-    global VERBOSE
-    _print('Waiting for %s' % _get_name(condition))
-    original = VERBOSE
-    VERBOSE = False
-    try:
-        max_time = time.time() + _TIMEOUT
-        msg = _get_name(condition)
-        while True:
-            e = None
-            try:
-                result = condition(*args, **kwargs)
-            except AssertionError as e:
-                pass
-            else:
-                if result != False:
-                    break
-            if time.time() > max_time:
-                error = 'Timed out waiting for: %s' % msg
-                if e:
-                    error += '\nError during wait: %s' % e
-                _raise(error)
-            time.sleep(_POLL)
-    finally:
-        VERBOSE = original
+    _wait_for(condition, False, _TIMEOUT, _POLL, *args, **kwargs)
+
+
+def wait_for_and_refresh(condition, *args, **kwargs):
+    """
+    Wait for an action to pass. Useful for checking the results of actions
+    that may take some time to complete. The difference to wait_for() is, that 
+    wait_for_and_refresh() refresh the current page with refresh() after every
+    condition check.
+
+    This action takes a condition function and any arguments it should be
+    called with. The condition function can either be an action or a function
+    that returns True for success and False for failure. For example::
+
+        wait_for_and_refresh(assert_title, 'Some page title')
+
+    If the specified condition does not become true within 10 seconds then
+    `wait_for_and_refresh` fails.
+
+    You can set the timeout for `wait_for_and_refresh` by calling `set_wait_timeout`.
+    """
+    _wait_for(condition, True, _TIMEOUT, _POLL, *args, **kwargs)
 
 
 def fails(action, *args, **kwargs):
