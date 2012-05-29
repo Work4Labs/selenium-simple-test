@@ -13,7 +13,7 @@ Official Releases:
 version **0.2.2** (2012 ??? ??)
 *******************************
 
-* (next change)
+* add ``wait_for_and_refresh`` action
 
 
 version **0.2.1** (2012 Apr 22)
