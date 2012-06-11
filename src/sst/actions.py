@@ -802,15 +802,24 @@ def assert_dropdown(id_or_elem):
     return elem
 
 
-def set_dropdown_value(id_or_elem, text_in):
-    """Set the select drop-list to a text value specified."""
-    _print('Setting %r option list to %r' % (id_or_elem, text_in))
+def set_dropdown_value(id_or_elem, text=None, value=None):
+    """Set the select drop-list to a text or value specified."""
+    _print('Setting %r option list to %r' % (id_or_elem, text or value))
     elem = assert_dropdown(id_or_elem)
-    for element in elem.find_elements_by_tag_name('option'):
-        if element.text == text_in:
-            element.click()
-            return
-    msg = 'The following option could not be found in the list: %r' % text_in
+    if text and not value:
+        for element in elem.find_elements_by_tag_name('option'):
+            if element.text == text:
+                element.click()
+                return
+        msg = 'The following option could not be found in the list: %r' % text
+    elif value and not text:
+        for element in elem.find_elements_by_tag_name('option'):
+            if element.get_attribute("value") == value:
+                element.click()
+                return
+        msg = 'The following option could not be found in the list: %r' % value
+    else:
+        msg = 'Use set_dropdown_value() with either text or value!'
     _raise(msg)
 
 
