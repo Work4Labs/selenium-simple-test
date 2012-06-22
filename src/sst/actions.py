@@ -1380,3 +1380,8 @@ def assert_not_equal(first, second):
         assert first != second
     else:
         _test.assertNotEqual(first, second)
+
+
+def get_cookies():
+    """Gets the cookies of current session (set of dicts)."""
+    return browser.get_cookies()
