@@ -69,7 +69,7 @@ __all__ = [
     'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
     'assert_url_contains', 'check_flags', 'click_button', 'click_element',
     'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
-    'exists_element', 'fails', 'get_argument', 'get_base_url',
+    'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
     'get_current_url', 'get_element', 'get_element_by_css',
     'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
     'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
@@ -1380,3 +1380,8 @@ def assert_not_equal(first, second):
         assert first != second
     else:
         _test.assertNotEqual(first, second)
+
+
+def get_cookies():
+    """Gets the cookies of current session (set of dicts)."""
+    return browser.get_cookies()
