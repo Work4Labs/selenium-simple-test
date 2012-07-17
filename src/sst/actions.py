@@ -60,17 +60,17 @@ from sst import bmobproxy
 
 
 __all__ = [
-    'accept_alert', 'assert_attribute', 'assert_button', 'assert_checkbox',
-    'assert_checkbox_value', 'assert_css_property', 'assert_displayed',
-    'assert_dropdown', 'assert_dropdown_value', 'assert_element',
-    'assert_equal', 'assert_link', 'assert_not_equal', 'assert_radio',
-    'assert_radio_value', 'assert_table_has_rows', 'assert_table_headers',
-    'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
-    'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
-    'assert_url_contains', 'check_flags', 'click_button', 'click_element',
+    'accept_alert', 'add_cleanup', 'assert_attribute', 'assert_button',
+    'assert_checkbox', 'assert_checkbox_value', 'assert_css_property',
+    'assert_displayed', 'assert_dropdown', 'assert_dropdown_value',
+    'assert_element', 'assert_equal', 'assert_link', 'assert_not_equal',
+    'assert_radio', 'assert_radio_value', 'assert_table_has_rows',
+    'assert_table_headers', 'assert_table_row_contains_text', 'assert_text',
+    'assert_text_contains', 'assert_textfield', 'assert_title',
+    'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
     'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
-    'exists_element', 'fails', 'get_argument', 'get_base_url',
-    'get_current_url', 'get_element', 'get_element_by_css',
+    'click_button', 'click_element', 'exists_element', 'fails', 'get_argument',
+    'get_base_url', 'get_current_url', 'get_element', 'get_element_by_css',
     'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
     'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
     'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
@@ -1344,3 +1344,21 @@ def assert_not_equal(first, second):
         assert first != second
     else:
         _test.assertNotEqual(first, second)
+
+def add_cleanup(func):
+    """
+    Add a cleanup function to be called when the test ends. It can be called
+    multiple times inside a test.
+
+    All cleanup functions are called (in the order they are added) when the
+    test ends. They are called even if the test fails or ends due to an
+    exception.
+
+    They allow a test to clean up after itself on completion.
+
+    If a cleanup function itself raises an exception then any remaining cleanup
+    functions will be called, and the test will fail and show any tracebacks
+    from the cleanup functions."""
+    if not callable(func):
+        raise TypeError("Cleanup functions must be callable objects")
+    config._cleanups.append(func)
