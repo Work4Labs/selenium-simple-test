@@ -30,4 +30,3 @@ results_directory = None
 browsermob_enabled = False
 flags = []
 __args__ = {}
-_cleanups = []

@@ -1345,20 +1345,11 @@ def assert_not_equal(first, second):
     else:
         _test.assertNotEqual(first, second)
 
-def add_cleanup(func):
+def add_cleanup(func, *args, **kwargs):
     """
-    Add a cleanup function to be called when the test ends. It can be called
-    multiple times inside a test.
+    Add a function, with arguments, to be called when the test is
+    completed. Functions added are called on a LIFO basis and are
+    called on test failure or success.
 
-    All cleanup functions are called (in the order they are added) when the
-    test ends. They are called even if the test fails or ends due to an
-    exception.
-
-    They allow a test to clean up after itself on completion.
-
-    If a cleanup function itself raises an exception then any remaining cleanup
-    functions will be called, and the test will fail and show any tracebacks
-    from the cleanup functions."""
-    if not callable(func):
-        raise TypeError("Cleanup functions must be callable objects")
-    config._cleanups.append(func)
+    They allow a test to clean up after itself."""
+    _test.addCleanup(func, *args, **kwargs)
