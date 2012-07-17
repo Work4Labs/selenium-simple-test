@@ -60,23 +60,23 @@ from sst import bmobproxy
 
 
 __all__ = [
-    'accept_alert', 'assert_attribute', 'assert_button', 'assert_checkbox',
-    'assert_checkbox_value', 'assert_css_property', 'assert_displayed',
-    'assert_dropdown', 'assert_dropdown_value', 'assert_element',
-    'assert_equal', 'assert_link', 'assert_not_equal', 'assert_radio',
-    'assert_radio_value', 'assert_table_has_rows', 'assert_table_headers',
-    'assert_table_row_contains_text', 'assert_text', 'assert_text_contains',
-    'assert_textfield', 'assert_title', 'assert_title_contains', 'assert_url',
-    'assert_url_contains', 'check_flags', 'click_button', 'click_element',
+    'accept_alert', 'add_cleanup', 'assert_attribute', 'assert_button',
+    'assert_checkbox', 'assert_checkbox_value', 'assert_css_property',
+    'assert_displayed', 'assert_dropdown', 'assert_dropdown_value',
+    'assert_element', 'assert_equal', 'assert_link', 'assert_not_equal',
+    'assert_radio', 'assert_radio_value', 'assert_table_has_rows',
+    'assert_table_headers', 'assert_table_row_contains_text', 'assert_text',
+    'assert_text_contains', 'assert_textfield', 'assert_title',
+    'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
     'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
-    'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
-    'get_current_url', 'get_element', 'get_element_by_css',
-    'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
-    'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
-    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
-    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot',
+    'click_button', 'click_element', 'exists_element', 'fails', 'get_argument',
+    'get_base_url', 'get_cookies', 'get_current_url', 'get_element',
+    'get_element_by_css', 'get_element_by_xpath', 'get_elements',
+    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
+    'get_page_source', 'go_back', 'go_to', 'refresh', 'reset_base_url',
+    'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
+    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip', 'sleep',
+    'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
 ]
 
@@ -736,7 +736,7 @@ def wait_for(condition, *args, **kwargs):
 def wait_for_and_refresh(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
-    that may take some time to complete. The difference to wait_for() is, that 
+    that may take some time to complete. The difference to wait_for() is, that
     wait_for_and_refresh() refresh the current page with refresh() after every
     condition check.
 
@@ -1380,6 +1380,16 @@ def assert_not_equal(first, second):
         assert first != second
     else:
         _test.assertNotEqual(first, second)
+
+
+def add_cleanup(func, *args, **kwargs):
+    """
+    Add a function, with arguments, to be called when the test is
+    completed. Functions added are called on a LIFO basis and are
+    called on test failure or success.
+
+    They allow a test to clean up after itself."""
+    _test.addCleanup(func, *args, **kwargs)
 
 
 def get_cookies():

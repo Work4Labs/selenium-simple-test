@@ -14,7 +14,7 @@ The `sst.config` module has the following information::
 
     # full path to the results directory
     config.results_directory
-    
+
     # is browsermob proxy enabled?
     config.browsermob_enabled
 

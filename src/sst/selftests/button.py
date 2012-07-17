@@ -1,5 +1,6 @@
 from sst.actions import *
 
+
 go_to('/')
 
 assert_button('mainform')
