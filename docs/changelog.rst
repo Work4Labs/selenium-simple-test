@@ -10,14 +10,20 @@ Official Releases:
 ------------------
 
 
-version **0.2.1** (2012 ??? ??)
+version **0.2.2** (2012 ??? ??)
 *******************************
 
-* abilty to handle `file:` based urls (static, non-http)
-* added `assert_equal` and `assert_not_equal` actions
-* added `refresh` action
-* when running with debug on the current exception is printed before entering
-  pdb
+* add ``wait_for_and_refresh`` action
+* ``set_dropdown_value`` can set text or value now 
+
+version **0.2.1** (2012 Apr 22)
+*******************************
+
+* handle ``file:`` based urls (static, non-http)
+* added ``assert_equal`` and ``assert_not_equal`` actions
+* added ``refresh`` action
+* with `debug` on, current exception is printed before entering pdb
+
 
 version **0.2.0** (2012 Feb 26)
 *******************************

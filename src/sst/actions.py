@@ -69,15 +69,20 @@ __all__ = [
     'assert_text_contains', 'assert_textfield', 'assert_title',
     'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
     'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
+<<<<<<< TREE
     'click_button', 'click_element', 'exists_element', 'fails', 'get_argument',
     'get_base_url', 'get_current_url', 'get_element', 'get_element_by_css',
+=======
+    'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
+    'get_current_url', 'get_element', 'get_element_by_css',
+>>>>>>> MERGE-SOURCE
     'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
     'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
     'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
     'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
     'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
     'switch_to_frame', 'switch_to_window', 'take_screenshot',
-    'toggle_checkbox', 'wait_for', 'write_textfield',
+    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
 ]
 
 
@@ -686,6 +691,35 @@ def _get_name(obj):
         return repr(obj)
 
 
+def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
+    global VERBOSE
+    _print('Waiting for %s' % _get_name(condition))
+    original = VERBOSE
+    VERBOSE = False
+    try:
+        max_time = time.time() + timeout
+        msg = _get_name(condition)
+        while True:
+            #refresh the page if requested
+            if refresh:
+                refresh()
+            e = None
+            try:
+                result = condition(*args, **kwargs)
+            except AssertionError as e:
+                pass
+            else:
+                if result != False:
+                    break
+            if time.time() > max_time:
+                error = 'Timed out waiting for: %s' % msg
+                if e:
+                    error += '\nError during wait: %s' % e
+                _raise(error)
+            time.sleep(poll)
+    finally:
+        VERBOSE = original
+
 def wait_for(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
@@ -701,30 +735,28 @@ def wait_for(condition, *args, **kwargs):
     `wait_for` fails.
 
     You can set the timeout for `wait_for` by calling `set_wait_timeout`."""
-    global VERBOSE
-    _print('Waiting for %s' % _get_name(condition))
-    original = VERBOSE
-    VERBOSE = False
-    try:
-        max_time = time.time() + _TIMEOUT
-        msg = _get_name(condition)
-        while True:
-            e = None
-            try:
-                result = condition(*args, **kwargs)
-            except AssertionError as e:
-                pass
-            else:
-                if result != False:
-                    break
-            if time.time() > max_time:
-                error = 'Timed out waiting for: %s' % msg
-                if e:
-                    error += '\nError during wait: %s' % e
-                _raise(error)
-            time.sleep(_POLL)
-    finally:
-        VERBOSE = original
+    _wait_for(condition, False, _TIMEOUT, _POLL, *args, **kwargs)
+
+
+def wait_for_and_refresh(condition, *args, **kwargs):
+    """
+    Wait for an action to pass. Useful for checking the results of actions
+    that may take some time to complete. The difference to wait_for() is, that
+    wait_for_and_refresh() refresh the current page with refresh() after every
+    condition check.
+
+    This action takes a condition function and any arguments it should be
+    called with. The condition function can either be an action or a function
+    that returns True for success and False for failure. For example::
+
+        wait_for_and_refresh(assert_title, 'Some page title')
+
+    If the specified condition does not become true within 10 seconds then
+    `wait_for_and_refresh` fails.
+
+    You can set the timeout for `wait_for_and_refresh` by calling `set_wait_timeout`.
+    """
+    _wait_for(condition, True, _TIMEOUT, _POLL, *args, **kwargs)
 
 
 def fails(action, *args, **kwargs):
@@ -775,15 +807,24 @@ def assert_dropdown(id_or_elem):
     return elem
 
 
-def set_dropdown_value(id_or_elem, text_in):
-    """Set the select drop-list to a text value specified."""
-    _print('Setting %r option list to %r' % (id_or_elem, text_in))
+def set_dropdown_value(id_or_elem, text=None, value=None):
+    """Set the select drop-list to a text or value specified."""
+    _print('Setting %r option list to %r' % (id_or_elem, text or value))
     elem = assert_dropdown(id_or_elem)
-    for element in elem.find_elements_by_tag_name('option'):
-        if element.text == text_in:
-            element.click()
-            return
-    msg = 'The following option could not be found in the list: %r' % text_in
+    if text and not value:
+        for element in elem.find_elements_by_tag_name('option'):
+            if element.text == text:
+                element.click()
+                return
+        msg = 'The following option could not be found in the list: %r' % text
+    elif value and not text:
+        for element in elem.find_elements_by_tag_name('option'):
+            if element.get_attribute("value") == value:
+                element.click()
+                return
+        msg = 'The following option could not be found in the list: %r' % value
+    else:
+        msg = 'Use set_dropdown_value() with either text or value!'
     _raise(msg)
 
 
@@ -1345,6 +1386,7 @@ def assert_not_equal(first, second):
     else:
         _test.assertNotEqual(first, second)
 
+
 def add_cleanup(func, *args, **kwargs):
     """
     Add a function, with arguments, to be called when the test is
@@ -1353,3 +1395,8 @@ def add_cleanup(func, *args, **kwargs):
 
     They allow a test to clean up after itself."""
     _test.addCleanup(func, *args, **kwargs)
+
+
+def get_cookies():
+    """Gets the cookies of current session (set of dicts)."""
+    return browser.get_cookies()
