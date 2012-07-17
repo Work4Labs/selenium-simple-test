@@ -69,19 +69,14 @@ __all__ = [
     'assert_text_contains', 'assert_textfield', 'assert_title',
     'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
     'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
-<<<<<<< TREE
     'click_button', 'click_element', 'exists_element', 'fails', 'get_argument',
-    'get_base_url', 'get_current_url', 'get_element', 'get_element_by_css',
-=======
-    'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
-    'get_current_url', 'get_element', 'get_element_by_css',
->>>>>>> MERGE-SOURCE
-    'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
-    'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
-    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
-    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot',
+    'get_base_url', 'get_cookies', 'get_current_url', 'get_element',
+    'get_element_by_css', 'get_element_by_xpath', 'get_elements',
+    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
+    'get_page_source', 'go_back', 'go_to', 'refresh', 'reset_base_url',
+    'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
+    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip', 'sleep',
+    'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
 ]
 
