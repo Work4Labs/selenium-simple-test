@@ -50,14 +50,14 @@ def main():
 
     if cmd_opts.browsermob and cmd_opts.run_tests:
         print 'Warning: can not record local traffic from django testproject'
-        
+
     if cmd_opts.browsermob:
         browsermob_process = run_browsermob_server(cmd_opts.browsermob)
-    
+
     if cmd_opts.run_tests:
         cmd_opts.dir_name = 'selftests'
         run_django()
-    
+
     if cmd_opts.xserver_headless:
         from pyvirtualdisplay import Display
         print '\nstarting virtual display...'
@@ -95,7 +95,7 @@ def main():
     )
 
     print '----------------------------------------------------------------------'
-    
+
     if cmd_opts.browsermob:
         print '\nkilling browsermob proxy...'
         browsermob_process.kill()
