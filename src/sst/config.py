@@ -20,6 +20,9 @@ The `sst.config` module has the following information::
 
     # flags for the current test run
     config.flags
+
+    # A per test cache. A dictionary that is cleared at the start of each test.
+    config.cache
 """
 
 browser_type = 'Firefox'
@@ -30,3 +33,4 @@ results_directory = None
 browsermob_enabled = False
 flags = []
 __args__ = {}
+cache = {}

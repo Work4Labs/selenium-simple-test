@@ -27,6 +27,7 @@ def populate_context(
     config.browser_type = browser_type
     config.javascript_disabled = javascript_disabled
     config.__args__ = arguments or {}
+    config.cache.clear()
 
 
 def store_context():
