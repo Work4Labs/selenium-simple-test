@@ -265,7 +265,10 @@ def get_case(test_dir, entry, browser_type, browser_version,
               session_name, js_disabled, assume_trusted_cert_issuer,
               webdriver_remote_url)
 
-    def tearDown(self):
+    def clean_up():
+        # We do this as a clean up function rather than a tearDown, because
+        # other clean up functions will want to use the browser before it is
+        # stopped. As the first added clean up this one will be executed last.
         sys.path.remove(test_dir)
         stop()
 
@@ -310,10 +313,11 @@ def get_case(test_dir, entry, browser_type, browser_version,
     test_name = 'test_%s' % name
     FunctionalTest = type(
         'Test%s' % name.title(), (TestCase,),
-        {'setUp': setUp, 'tearDown': tearDown,
-         test_name: test, 'run': run}
+        {'setUp': setUp, test_name: test, 'run': run}
     )
-    return FunctionalTest(test_name)
+    this_test = FunctionalTest(test_name)
+    this_test.addCleanup(clean_up)
+    return this_test
 
 
 def get_data(csv_path):
