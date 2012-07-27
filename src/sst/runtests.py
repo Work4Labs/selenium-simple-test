@@ -25,6 +25,7 @@ import os
 import pdb
 import sys
 import traceback
+from textwrap import dedent
 
 from unittest2 import TestSuite, TextTestRunner, TestCase, SkipTest
 
@@ -44,7 +45,8 @@ def runtests(test_names, test_dir='.', report_format='console',
              browsermob_enabled=False, shared_directory=None,
              screenshots_on=False, failfast=False, debug=False,
              webdriver_remote_url=None, browser_version='',
-             browser_platform='ANY', session_name=None):
+             browser_platform='ANY', session_name=None,
+             extended=False):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -73,7 +75,8 @@ def runtests(test_names, test_dir='.', report_format='console',
         get_suite(
             test_names, root, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
-            webdriver_remote_url, screenshots_on, found_tests, failfast, debug
+            webdriver_remote_url, screenshots_on, found_tests, failfast, debug,
+            extended=extended,
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_directory and
@@ -190,7 +193,8 @@ def find_shared_directory(test_dir, shared_directory):
 
 def get_suite(test_names, test_dir, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
-              webdriver_remote_url, screenshots_on, found, failfast, debug):
+              webdriver_remote_url, screenshots_on, found, failfast, debug,
+              extended=False):
     suite = TestSuite()
     dir_list = os.listdir(test_dir)
 
@@ -215,7 +219,7 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
                         test_dir, entry, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
-                        failfast=failfast, debug=debug
+                        failfast=failfast, debug=debug, extended=extended
                     )
                 )
         else:
@@ -224,7 +228,7 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
                     test_dir, entry, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
-                    failfast=failfast, debug=debug
+                    failfast=failfast, debug=debug, extended=extended
                 )
             )
 
@@ -234,7 +238,7 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
-             context=None, failfast=False, debug=False):
+             context=None, failfast=False, debug=False, extended=False):
     context_provided = context is not None
     context = context or {}
     path = os.path.join(test_dir, entry)
@@ -282,6 +286,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
         except SkipTest:
             raise
         except:
+            exc, tb = sys.exc_info()[1:]
             if screenshots_on:
                 now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                 tc_name = entry[:-3]
@@ -295,7 +300,37 @@ def get_case(test_dir, entry, browser_type, browser_version,
             if debug:
                 traceback.print_exc()
                 pdb.post_mortem()
-            raise
+            if not extended:
+                raise
+            original_message = str(exc)
+            page_source = 'unavailable'
+            current_url = 'unavailable'
+            try:
+                current_url = actions.get_current_url()
+            except Exception:
+                pass
+            try:
+                page_source = actions.browser.page_source
+            except Exception:
+                pass
+
+            new_message = dedent("""
+            Original exception: %s: %s
+
+            Current url: %s
+
+            Page source:
+
+            %s
+
+            """[1:]) % (
+                   exc.__class__.__name__,
+                   original_message,
+                   current_url,
+                   page_source,
+            )
+            new_exc = Exception(new_message)
+            raise Exception, new_exc, tb
 
     def run(self, result=None):
         # moved bits from original implementation of TestCase.run to

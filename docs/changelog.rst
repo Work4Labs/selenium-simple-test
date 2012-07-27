@@ -19,6 +19,7 @@ version **0.2.2** (2012 ??? ??)
 * made tests compatible with Django 1.4
 * added ``config.cache``, a per test cache (dictionary) cleared at the start of
   every test
+* added '--extended-tracebacks' command line option
 
 
 version **0.2.1** (2012 Apr 22)

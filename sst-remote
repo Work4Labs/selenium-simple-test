@@ -55,6 +55,7 @@ def main():
         screenshots_on=cmd_opts.screenshots_on,
         failfast=cmd_opts.failfast,
         debug=cmd_opts.debug,
+        extended=cmd_opts.extended_tracebacks,
     )
 
     print '----------------------------------------------------------------------'
