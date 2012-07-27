@@ -1,7 +1,6 @@
 
 import codecs
 import json
-import os
 import urllib2
 
 
@@ -16,12 +15,12 @@ class BrowserMobProxy:
         self.listen_port = jcontent['port']
         self.url = 'http://%s:%s' % (self.host, self.listen_port)
 
-    @property    
+    @property
     def har(self):
         url = '%s/proxy/%s/har' % (self.command_url, self.listen_port)
         content = self.__request(url)
         return json.loads(content)
-        
+
     def __request(self, url, method='GET'):
         req = urllib2.Request(url)
         if method == 'POST':
@@ -30,7 +29,7 @@ class BrowserMobProxy:
         try:
             resp = urllib2.urlopen(req)
             content = resp.read()
-        except urllib2.URLError as e:
+        except urllib2.URLError:
             raise ProxyError('Error: can not connect to proxy')
         return content
 
@@ -41,11 +40,11 @@ class BrowserMobProxy:
     def new_har(self):
         url = '%s/proxy/%s/har' % (self.command_url, self.listen_port)
         self.__request(url, method='PUT')
-  
+
     def save_har(self, file_name='out.har'):
         with codecs.open(file_name, 'w', encoding='utf-8') as f:
             f.write(json.dumps(self.har))
-    
+
 
 class ProxyError(Exception):
     pass
