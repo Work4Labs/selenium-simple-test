@@ -93,7 +93,8 @@ def get_common_options():
                       'to flags')
     parser.add_option('--extended-tracebacks', dest='extended_tracebacks',
                       action='store_true', default=False,
-                      help='Add extra information to failures reports')
+                      help='Add extra information (page source) to failure '
+                      'reports')
     return parser
 
 
