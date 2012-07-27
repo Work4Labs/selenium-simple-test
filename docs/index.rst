@@ -129,8 +129,8 @@ Options::
   --debug                   drop into debugger on test fail or error
   --with-flags=WITH_FLAGS   comma separated list of flags to run tests with
   --disable-flag-skips      run all tests, disable skipping tests due to flags
-  --extended-tracebacks     Add extra information to failure (page source) to
-                            failure reports
+  --extended-tracebacks     Add extra information to (page source) to failure
+                            reports
   --browsermob=BROWSERMOB   enable browsermob-proxy (launcher location)
   --test                    run selftests
   -x                        run browser in headless xserver
