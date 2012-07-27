@@ -303,6 +303,17 @@ def get_case(test_dir, entry, browser_type, browser_version,
             if not extended:
                 raise
             original_message = str(exc)
+            page_source = 'unavailable'
+            current_url = 'unavailable'
+            try:
+                current_url = actions.get_current_url()
+            except Exception:
+                pass
+            try:
+                page_source = actions.browser.page_source
+            except Exception:
+                pass
+
             new_message = dedent("""
             Original exception: %s: %s
 
@@ -315,8 +326,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
             """[1:]) % (
                    exc.__class__.__name__,
                    original_message,
-                   actions.get_current_url(),
-                   actions.browser.page_source,
+                   current_url,
+                   page_source,
             )
             new_exc = Exception(new_message)
             raise Exception, new_exc, tb
