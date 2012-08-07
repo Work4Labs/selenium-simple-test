@@ -329,6 +329,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
                    current_url,
                    page_source,
             )
+            if isinstance(new_message, unicode):
+                new_message = new_message.encode('ascii', 'backslashreplace')
             new_exc = Exception(new_message)
             raise Exception, new_exc, tb
 
