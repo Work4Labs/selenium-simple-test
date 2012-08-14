@@ -185,6 +185,12 @@ def start(browser_type=None, browser_version='',
             if assume_trusted_cert_issuer:
                 profile.set_preference(
                     'webdriver_assume_untrusted_issuer', False)
+                profile.setPreference(
+                    'capability.policy.default.Window.QueryInterface',
+                    'allAccess')
+                profile.setPreference(
+                    'capability.policy.default.Window.frameElement.get',
+                    'allAccess')
             if javascript_disabled:
                 profile.set_preference('javascript.enabled', False)
             browser = getattr(webdriver, browser_type)(profile)
