@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 
 
@@ -25,3 +26,5 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'', 'simple.views.index'),
 )
+
+urlpatterns += staticfiles_urlpatterns()

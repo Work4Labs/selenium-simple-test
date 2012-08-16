@@ -41,6 +41,8 @@ USE_I18N = True
 # serve static files
 STATIC_DOC_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static-files/')
 
+STATIC_URL = '/media/'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = ''
@@ -85,5 +87,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'django.contrib.staticfiles',
     'simple',
 )
