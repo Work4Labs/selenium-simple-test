@@ -34,3 +34,6 @@ reset_base_url()
 assert get_base_url() == 'http://localhost:8000/'
 go_to('/')
 assert_url('http://localhost:8000/')
+
+# assert_url works also without the trailing slash
+assert_url('http://localhost:8000')
