@@ -1,5 +1,7 @@
 from sst.actions import *
 
+import helpers
+
 
 # skip this test when running from CI
 helpers.skip_as_jenkins()
