@@ -68,10 +68,10 @@ __all__ = [
     'assert_table_headers', 'assert_table_row_contains_text', 'assert_text',
     'assert_text_contains', 'assert_textfield', 'assert_title',
     'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
-    'click_link', 'close_window', 'debug', 'dismiss_alert', 'end_test',
-    'click_button', 'click_element', 'exists_element', 'fails', 'get_argument',
-    'get_base_url', 'get_cookies', 'get_current_url', 'get_element',
-    'get_element_by_css', 'get_element_by_xpath', 'get_elements',
+    'click_link', 'clear_cookies', 'close_window', 'debug', 'dismiss_alert',
+    'end_test', 'click_button', 'click_element', 'exists_element', 'fails',
+    'get_argument', 'get_base_url', 'get_cookies', 'get_current_url',
+    'get_element', 'get_element_by_css', 'get_element_by_xpath', 'get_elements',
     'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
     'get_page_source', 'go_back', 'go_to', 'refresh', 'reset_base_url',
     'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
@@ -1386,6 +1386,7 @@ def assert_equal(first, second):
     else:
         _test.assertEqual(first, second)
 
+
 def assert_not_equal(first, second):
     """Assert two objects are not equal."""
     if _test is None:
@@ -1407,3 +1408,9 @@ def add_cleanup(func, *args, **kwargs):
 def get_cookies():
     """Gets the cookies of current session (set of dicts)."""
     return browser.get_cookies()
+
+
+def clear_cookies():
+    """Clear the cookies of current session."""
+    _print('Clearing browser session cookies')
+    browser.delete_all_cookies()
