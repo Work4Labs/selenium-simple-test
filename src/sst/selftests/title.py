@@ -16,18 +16,17 @@ assert_title_contains('.*Pag[E|e]', regex=True)
 fails(assert_title_contains, 'foobar')
 
 set_base_url('localhost:8000')
-assert get_base_url() == 'http://localhost:8000/'
+assert get_base_url() == 'http://localhost:8000'
 
-set_base_url('http://localhost:8000/begin/')
-assert get_base_url() == 'http://localhost:8000/begin/'
+set_base_url('http://localhost:8000/')
+assert get_base_url() == 'http://localhost:8000/'
 go_to('/')
 
 # assert_url adds the base url for relative urls
 # so test both ways
-assert_url('http://localhost:8000/begin/')
+assert_url('http://localhost:8000/')
 assert_url('/')
 
-fails(assert_url, 'http://localhost:8000/')
 fails(assert_url, '/begin/')
 
 reset_base_url()
