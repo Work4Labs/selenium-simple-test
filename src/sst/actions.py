@@ -38,7 +38,6 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
-import urlparse
 import os
 import re
 import time
