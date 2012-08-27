@@ -38,6 +38,7 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
+import urlparse
 import os
 import re
 import time
@@ -114,7 +115,6 @@ def set_base_url(url):
     global BASE_URL
     if not url.startswith('http') and not url.startswith('file'):
         url = 'http://' + url
-    url = _add_trailing_slash(url)
     _print('Setting base url to: %r' % url)
     BASE_URL = url
 
@@ -278,7 +278,6 @@ def _fix_url(url):
         url = url[1:]
     if not url.startswith('http') and not url.startswith('file'):
         url = BASE_URL + url
-    url = _add_trailing_slash(url)
     return url
 
 
@@ -286,6 +285,7 @@ def _add_trailing_slash(url):
     if not url.endswith('/'):
         url += '/'
     return url
+
 
 def get_argument(name, default=_sentinel):
     """
@@ -648,8 +648,7 @@ def assert_url(url):
     relative to the base url."""
     url = _fix_url(url)
     real_url = browser.current_url
-    real_url = _add_trailing_slash(real_url)
-    msg = 'Url is: %r.  Should be: %r' % (real_url, url)
+    msg = 'Url is: %r. Should be: %r' % (real_url, url)
     if url != real_url:
         _raise(msg)
 
@@ -660,7 +659,7 @@ def assert_url_contains(text, regex=False):
 
     set `regex=True` to use a regex pattern."""
     real_url = browser.current_url
-    msg = 'Url is %r.  Does not contain %r' % (real_url, text)
+    msg = 'Url is %r. Does not contain %r' % (real_url, text)
     if regex:
         if not re.search(text, real_url):
             _raise(msg)
