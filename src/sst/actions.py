@@ -646,7 +646,7 @@ def assert_url(url):
     Assert the current url is as specified. Can be an absolute url or
     relative to the base url."""
     url = _fix_url(url)
-    url = _add_trailing_slash(url)
+    #url = _add_trailing_slash(url)
     real_url = browser.current_url
     msg = 'Url is: %r. Should be: %r' % (real_url, url)
     if url != real_url:
