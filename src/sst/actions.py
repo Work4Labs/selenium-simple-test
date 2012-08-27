@@ -1402,7 +1402,8 @@ def add_cleanup(func, *args, **kwargs):
     completed. Functions added are called on a LIFO basis and are
     called on test failure or success.
 
-    They allow a test to clean up after itself."""
+    They allow a test to clean up after itself.
+    """
     _test.addCleanup(func, *args, **kwargs)
 
 
@@ -1424,7 +1425,11 @@ def execute_script(script, *args):
 
     Within the script, use `document` to refer to the current document.
 
-    *args will be made available to the script if given.
+    For example::
+
+        execute_script('document.title = "New Title"')
+        
+    args will be made available to the script if given.
     """
     _print('Executing script')
     browser.execute_script(script, *args)
