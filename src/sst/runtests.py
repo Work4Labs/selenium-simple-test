@@ -278,7 +278,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
 
     def test(self):
         if context_provided:
-            print 'Loading data row %r' % context['_row_num']
+            if actions.VERBOSE:
+                print '    Loading data row %r' % context['_row_num']
         try:
             exec self.code in context
         except EndTest:
