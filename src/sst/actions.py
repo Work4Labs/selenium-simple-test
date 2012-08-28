@@ -44,6 +44,7 @@ import time
 
 from datetime import datetime
 from pdb import set_trace as debug
+from urlparse import urljoin, urlparse
 
 from unittest2 import SkipTest
 
@@ -273,10 +274,9 @@ def sleep(secs):
 
 
 def _fix_url(url):
-    if url.startswith('/'):
-        url = url[1:]
-    if not url.startswith('http') and not url.startswith('file'):
-        url = BASE_URL + url
+    parsed = urlparse(url)
+    if not parsed.scheme:
+        url = urljoin(BASE_URL, url)
     return url
 
 
