@@ -780,7 +780,7 @@ def fails(action, *args, **kwargs):
     `fails` succeeds. If the function does *not* raise an AssertionError then
     this action raises the appropriate failure exception. Alll other
     exceptions will be propagated normally."""
-    _print('Trying action: %s' % _get_name(action))
+    _print('Trying action failure: %s' % _get_name(action))
     try:
         action(*args, **kwargs)
     except AssertionError:
