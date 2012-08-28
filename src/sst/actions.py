@@ -654,7 +654,7 @@ def assert_url(url):
     url = _add_trailing_slash(url)
     real_url = browser.current_url
     real_url = _add_trailing_slash(real_url)
-    msg = 'Url is: %r.  Should be: %r' % (real_url, url)
+    msg = 'Url is: %r. Should be: %r' % (real_url, url)
     if url != real_url:
         _raise(msg)
 
@@ -665,7 +665,7 @@ def assert_url_contains(text, regex=False):
 
     set `regex=True` to use a regex pattern."""
     real_url = browser.current_url
-    msg = 'Url is %r.  Does not contain %r' % (real_url, text)
+    msg = 'Url is %r. Does not contain %r' % (real_url, text)
     if regex:
         if not re.search(text, real_url):
             _raise(msg)
