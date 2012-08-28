@@ -785,7 +785,7 @@ def fails(action, *args, **kwargs):
         action(*args, **kwargs)
     except AssertionError:
         return
-    msg = 'Action %r did not fail' % action.__name__
+    msg = 'Action %r did not fail' % _get_name(action)
     _raise(msg)
 
 
