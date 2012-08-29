@@ -518,7 +518,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     _print('Check text wrote correctly')
     current_text = textfield.get_attribute('value')
     if current_text != new_text:
-        msg = 'Textfield: %r - did not write.  Text was: %r' \
+        msg = 'Textfield: %r - did not write. Text was: %r' \
             % (_get_text(textfield), current_text)
         _raise(msg)
 
@@ -626,7 +626,7 @@ def click_element(id_or_elem, wait=True):
 def assert_title(title):
     """Assert the page title is as specified."""
     real_title = browser.title
-    msg = 'Title is: %r.  Should be: %r' % (real_title, title)
+    msg = 'Title is: %r. Should be: %r' % (real_title, title)
     if real_title != title:
         _raise(msg)
 
@@ -637,7 +637,7 @@ def assert_title_contains(text, regex=False):
 
     set `regex=True` to use a regex pattern."""
     real_title = browser.title
-    msg = 'Title is: %r.  Does not contain %r' % (real_title, text)
+    msg = 'Title is: %r. Does not contain %r' % (real_title, text)
     if regex:
         if not re.search(text, real_title):
             _raise(msg)
@@ -1212,7 +1212,7 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     if isinstance(alert_text, dict):
         alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
-        error_message = 'Element text should be %r.  It is %r.' \
+        error_message = 'Element text should be %r. It is %r.' \
             % (expected_text, alert_text)
         _raise(error_message)
     if text_to_write:
@@ -1265,7 +1265,7 @@ def assert_table_headers(id_or_elem, headers):
     header_elems = elem.find_elements_by_tag_name('th')
     header_text = [_get_text(elem) for elem in header_elems]
     if not header_text == headers:
-        msg = ('Expected headers:%r.  Actual headers%r\n' %
+        msg = ('Expected headers:%r. Actual headers%r\n' %
                (headers, header_text))
         _raise(msg)
 
