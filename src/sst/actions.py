@@ -44,6 +44,7 @@ import time
 
 from datetime import datetime
 from pdb import set_trace as debug
+from textwrap import TextWrapper
 from urlparse import urljoin, urlparse
 
 from unittest2 import SkipTest
@@ -148,7 +149,12 @@ def skip(reason=''):
 
 def _print(text):
     if VERBOSE:
-        print '    %s' % text
+        text_wrapper = TextWrapper(
+            width=80,
+            initial_indent=(' ' * 4),
+            subsequent_indent=(' ' * 8),
+        )
+        print text_wrapper.fill(text)
 
 
 def start(browser_type=None, browser_version='',
@@ -164,10 +170,8 @@ def start(browser_type=None, browser_version='',
     if browser_type is None:
         browser_type = config.browser_type
 
-    if VERBOSE:
-        _print('')
-
-    _print('Starting %s' % browser_type)
+    _print('')
+    _print('Starting browser: %s' % browser_type)
 
     if webdriver_remote is None:
         if browser_type == 'Firefox':
@@ -416,7 +420,7 @@ def assert_checkbox_value(id_or_elem, value):
     or isn't a checkbox."""
     checkbox = assert_checkbox(id_or_elem)
     real = checkbox.is_selected()
-    msg = 'Checkbox: %r - Has Value: %r' % (id_or_elem, real)
+    msg = 'Checkbox: %r - Has Value: %r' % (_get_text(checkbox), real)
     if real != value:
         _raise(msg)
 
@@ -425,13 +429,13 @@ def toggle_checkbox(id_or_elem):
     """
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    _print('Toggling checkbox: %r' % id_or_elem)
     checkbox = assert_checkbox(id_or_elem)
+    _print('Toggling checkbox: %r' % _get_text(checkbox))
     before = checkbox.is_selected()
     checkbox.click()
     after = checkbox.is_selected()
     msg = 'Checkbox: %r - was not toggled, value remains: %r' \
-        % (id_or_elem, before)
+        % (_get_text(checkbox), before)
     if before == after:
         _raise(msg)
 
@@ -440,8 +444,8 @@ def set_checkbox_value(id_or_elem, new_value):
     """
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
-    _print('Setting checkbox %r to %r' % (id_or_elem, new_value))
     checkbox = assert_checkbox(id_or_elem)
+    _print('Setting checkbox %r to %r' % (_get_text(checkbox), new_value))
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
     if new_value != current_value:
@@ -468,7 +472,7 @@ def simulate_keys(id_or_elem, key_to_press):
     """
     key_element = _get_elem(id_or_elem)
     _print('Simulating keypress on %r with %r key' \
-        % (id_or_elem, key_to_press))
+        % (_get_text(key_element), key_to_press))
     key_code = _make_keycode(key_to_press)
     key_element.send_keys(key_code)
 
@@ -497,8 +501,8 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     function will fail. You can switch off the checking by passing
     `check=False`.  The field is cleared before written to. You can switch this
     off by passing `clear=False`."""
-    _print('Writing to textfield %r with text %r' % (id_or_elem, new_text))
     textfield = assert_textfield(id_or_elem)
+    _print('Writing to textfield %r with text %r' % (_get_text(textfield), new_text))
 
     # clear field like this, don't use clear()
     if clear:
@@ -515,7 +519,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     current_text = textfield.get_attribute('value')
     if current_text != new_text:
         msg = 'Textfield: %r - did not write. Text was: %r' \
-            % (id_or_elem, current_text)
+            % (_get_text(textfield), current_text)
         _raise(msg)
 
 
@@ -528,7 +532,8 @@ def assert_link(id_or_elem):
     link = _get_elem(id_or_elem)
     href = link.get_attribute('href')
     if href is None:
-        msg = 'The text %r is not part of a Link or a Link ID' % id_or_elem
+        msg = 'The text %r is not part of a Link or a Link ID' \
+            % _get_text(link)
         _raise(msg)
     return link
 
@@ -562,7 +567,7 @@ def click_link(id_or_elem, check=False, wait=True):
         _print('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Clicking link %r' % id_or_elem)
+    _print('Clicking link %r' % _get_text(link))
     link.click()
 
     if wait:
@@ -606,7 +611,7 @@ def click_element(id_or_elem, wait=True):
         _print('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Clicking element %r' % id_or_elem)
+    _print('Clicking element %r' % _get_text(elem))
     elem.click()
 
     if wait:
@@ -700,7 +705,7 @@ def _get_name(obj):
 
 def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
     global VERBOSE
-    _print('Waiting for %s' % _get_name(condition))
+    _print('Waiting for %r' % _get_name(condition))
     original = VERBOSE
     VERBOSE = False
     try:
@@ -775,12 +780,12 @@ def fails(action, *args, **kwargs):
     `fails` succeeds. If the function does *not* raise an AssertionError then
     this action raises the appropriate failure exception. Alll other
     exceptions will be propagated normally."""
-    _print('Trying action: %s' % _get_name(action))
+    _print('Trying action failure: %s' % _get_name(action))
     try:
         action(*args, **kwargs)
     except AssertionError:
         return
-    msg = 'Action %r did not fail' % action.__name__
+    msg = 'Action %r did not fail' % _get_name(action)
     _raise(msg)
 
 
@@ -816,8 +821,8 @@ def assert_dropdown(id_or_elem):
 
 def set_dropdown_value(id_or_elem, text=None, value=None):
     """Set the select drop-list to a text or value specified."""
-    _print('Setting %r option list to %r' % (id_or_elem, text or value))
     elem = assert_dropdown(id_or_elem)
+    _print('Setting %r option list to %r' % (_get_text(elem), text or value))
     if text and not value:
         for element in elem.find_elements_by_tag_name('option'):
             if element.text == text:
@@ -871,15 +876,15 @@ def assert_radio_value(id_or_elem, value):
     a radio button"""
     elem = assert_radio(id_or_elem)
     selected = elem.is_selected()
-    msg = 'Radio %r should be set to: %s.' % (id_or_elem, value)
+    msg = 'Radio %r should be set to: %s.' % (_get_text(elem), value)
     if value != selected:
         _raise(msg)
 
 
 def set_radio_value(id_or_elem):
     """Select the specified radio button."""
-    _print('Selecting radio button item %r' % id_or_elem)
     elem = assert_radio(id_or_elem)
+    _print('Selecting radio button item %r' % _get_text(elem))    
     elem.click()
 
 
@@ -909,10 +914,10 @@ def assert_text(id_or_elem, text):
     elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
-        msg = 'Element %r has no text attribute' % id_or_elem
+        msg = 'Element %r has no text attribute' % _get_text(elem)
         _raise(msg)
     if real != text:
-        msg = 'Element text should be %r.  It is %r.' % (text, real)
+        msg = 'Element text should be %r. It is %r.' % (text, real)
         _raise(msg)
 
 
@@ -924,7 +929,7 @@ def assert_text_contains(id_or_elem, text, regex=False):
     elem = _get_elem(id_or_elem)
     real = _get_text(elem)
     if real is None:
-        msg = 'Element %r has no text attribute' % id_or_elem
+        msg = 'Element %r has no text attribute' % _get_text(elem)
         _raise(msg)
     msg = 'Element text is %r. Does not contain %r' % (real, text)
     if regex:
@@ -1082,7 +1087,7 @@ def click_button(id_or_elem, wait=True):
         _print('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Clicking button %r' % id_or_elem)
+    _print('Clicking button %r' % _get_text(button))
     button.click()
 
     if wait:
@@ -1207,7 +1212,7 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     if isinstance(alert_text, dict):
         alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
-        error_message = 'Element text should be %r.  It is %r.' \
+        error_message = 'Element text should be %r. It is %r.' \
             % (expected_text, alert_text)
         _raise(error_message)
     if text_to_write:
@@ -1260,7 +1265,7 @@ def assert_table_headers(id_or_elem, headers):
     header_elems = elem.find_elements_by_tag_name('th')
     header_text = [_get_text(elem) for elem in header_elems]
     if not header_text == headers:
-        msg = ('Expected headers:%r\n    Actual headers%r\n' %
+        msg = ('Expected headers:%r. Actual headers%r\n' %
                (headers, header_text))
         _raise(msg)
 
@@ -1318,7 +1323,7 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
         success = all(re.search(expected, actual) for expected, actual in
                       zip(contents, cells))
     if not success:
-        msg = ('Expected row contents: %r\n    Actual contents: %r' %
+        msg = ('Expected row contents: %r. Actual contents: %r' %
                (contents, cells))
         _raise(msg)
 
@@ -1331,15 +1336,15 @@ def assert_attribute(id_or_elem, attribute, value, regex=False):
     If `regex` is True (default is False) then the value will be compared to
     the attribute using a regular expression search.
     """
-    _print('Checking attribute %s of %s' % (attribute, id_or_elem))
     elem = _get_elem(id_or_elem)
+    _print('Checking attribute %r of %r' % (attribute, _get_text(elem)))
     actual = elem.get_attribute(attribute)
     if not regex:
         success = value == actual
     else:
         success = actual is not None and re.search(value, actual)
     if not success:
-        msg = 'Expected attribute: %r\n    Actual attribute: %r' % (value, actual)
+        msg = 'Expected attribute: %r. Actual attribute: %r' % (value, actual)
         _raise(msg)
 
 
@@ -1351,15 +1356,16 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     If `regex` is True (default is False) then the value will be compared to
     the property using a regular expression search.
     """
-    _print('Checking css property %s: %s of %r' % (property, value, id_or_elem))
     elem = _get_elem(id_or_elem)
+    _print('Checking css property %r: %s of %r' %
+        (property, value, _get_text(elem)))
     actual = elem.value_of_css_property(property)
     if not regex:
         success = value == actual
     else:
         success = actual is not None and re.search(value, actual)
     if not success:
-        msg = 'Expected property: %r\n    Actual property: %r' % (value, actual)
+        msg = 'Expected property: %r. Actual property: %r' % (value, actual)
         _raise(msg)
 
 
@@ -1385,6 +1391,7 @@ def assert_equal(first, second):
         assert first == second
     else:
         _test.assertEqual(first, second)
+
 
 def assert_not_equal(first, second):
     """Assert two objects are not equal."""
