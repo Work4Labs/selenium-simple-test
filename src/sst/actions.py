@@ -71,15 +71,16 @@ __all__ = [
     'assert_text_contains', 'assert_textfield', 'assert_title',
     'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
     'click_link', 'clear_cookies', 'close_window', 'debug', 'dismiss_alert',
-    'end_test', 'click_button', 'click_element', 'exists_element', 'fails',
-    'get_argument', 'get_base_url', 'get_cookies', 'get_current_url',
-    'get_element', 'get_element_by_css', 'get_element_by_xpath', 'get_elements',
-    'get_elements_by_css', 'get_elements_by_xpath', 'get_link_url',
-    'get_page_source', 'go_back', 'go_to', 'refresh', 'reset_base_url',
-    'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
-    'set_radio_value', 'set_wait_timeout', 'simulate_keys', 'skip', 'sleep',
-    'start', 'stop', 'switch_to_frame', 'switch_to_window', 'take_screenshot',
-    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
+    'end_test', 'click_button', 'click_element', 'execute_script',
+    'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
+    'get_current_url', 'get_element', 'get_element_source', 'get_element_by_css',
+    'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
+    'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
+    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
+    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
+    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
+    'switch_to_frame', 'switch_to_window', 'take_screenshot', 'toggle_checkbox',
+    'wait_for', 'wait_for_and_refresh', 'write_textfield',
 ]
 
 
@@ -1407,7 +1408,8 @@ def add_cleanup(func, *args, **kwargs):
     completed. Functions added are called on a LIFO basis and are
     called on test failure or success.
 
-    They allow a test to clean up after itself."""
+    They allow a test to clean up after itself.
+    """
     _test.addCleanup(func, *args, **kwargs)
 
 
@@ -1420,3 +1422,27 @@ def clear_cookies():
     """Clear the cookies of current session."""
     _print('Clearing browser session cookies')
     browser.delete_all_cookies()
+
+
+def execute_script(script, *args):
+    """
+    Executes JavaScript in the context of the currently selected
+    frame or window.
+
+    Within the script, use `document` to refer to the current document.
+
+    For example::
+
+        execute_script('document.title = "New Title"')
+        
+    args will be made available to the script if given.
+    """
+    _print('Executing script')
+    browser.execute_script(script, *args)
+
+
+def get_element_source(id_or_elem):
+    """Gets the innerHTML source of an element."""
+    elem = _get_elem(id_or_elem)
+    return elem.get_attribute('innerHTML') 
+
