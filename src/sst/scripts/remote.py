@@ -19,18 +19,7 @@
 #
 
 
-import os
-import sys
-
-try:
-    # installed
-    import sst
-except ImportError:
-    # from the development directory
-    this_dir = os.path.abspath(os.path.dirname(__file__))
-    sys.path.append(os.path.join(this_dir, 'src'))
-    import sst
-
+import sst
 from sst.command import clear_old_results, get_opts_remote
 
 
