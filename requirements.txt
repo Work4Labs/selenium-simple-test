@@ -1,4 +1,3 @@
 selenium
 junitxml
-pyvirtualdisplay
 unittest2
