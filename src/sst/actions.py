@@ -69,18 +69,19 @@ __all__ = [
     'assert_radio', 'assert_radio_value', 'assert_table_has_rows',
     'assert_table_headers', 'assert_table_row_contains_text', 'assert_text',
     'assert_text_contains', 'assert_textfield', 'assert_title',
-    'assert_title_contains', 'assert_url', 'assert_url_contains', 'check_flags',
-    'click_link', 'clear_cookies', 'close_window', 'debug', 'dismiss_alert',
-    'end_test', 'click_button', 'click_element', 'execute_script',
-    'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
-    'get_current_url', 'get_element', 'get_element_source', 'get_element_by_css',
-    'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
-    'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
+    'assert_title_contains', 'assert_url', 'assert_url_contains',
+    'check_flags', 'click_link', 'clear_cookies', 'close_window', 'debug',
+    'dismiss_alert', 'end_test', 'click_button', 'click_element',
+    'execute_script', 'exists_element', 'fails', 'get_argument',
+    'get_base_url', 'get_cookies', 'get_current_url', 'get_element',
+    'get_element_source', 'get_element_by_css', 'get_element_by_xpath',
+    'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
+    'get_link_url', 'get_page_source', 'get_wait_timeout', 'go_back', 'go_to',
+    'refresh', 'reset_base_url', 'run_test', 'set_base_url',
     'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
     'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot', 'toggle_checkbox',
-    'wait_for', 'wait_for_and_refresh', 'write_textfield',
+    'switch_to_frame', 'switch_to_window', 'take_screenshot',
+    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
 ]
 
 
@@ -695,6 +696,11 @@ def set_wait_timeout(timeout, poll=None):
         msg += ('. Setting poll time to %rs' % poll)
         _POLL = poll
     _print(msg)
+
+
+def get_wait_timeout():
+    """Get the timeout, in seconds, used by `wait_for`."""
+    return _TIMEOUT
 
 
 def _get_name(obj):
