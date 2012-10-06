@@ -29,8 +29,7 @@ from sst import __version__
 
 
 NAME = 'sst'
-PACKAGES = ['sst',]
-SCRIPTS = ['sst-run', 'sst-remote']
+PACKAGES = ['sst', 'sst.scripts']
 DESCRIPTION = 'SST - Web Test Framework'
 URL = 'http://testutils.org/sst'
 LICENSE = 'Apache'
@@ -66,7 +65,6 @@ params = dict(
     name=NAME,
     version=__version__,
     packages=PACKAGES,
-    scripts=SCRIPTS,
     package_dir={'': 'src',},
     install_requires = REQUIREMENTS,
     
@@ -78,6 +76,17 @@ params = dict(
     keywords=KEYWORDS,
     url=URL,
     classifiers=CLASSIFIERS,
+
+    extras_require = {
+        "headless": ["pyvirtualdisplay"],
+        },
+
+    entry_points = {
+        "console_scripts": [
+            "sst-run = sst.scripts.run:main",
+            "sst-remote = sst.scripts.remote:main",
+            ],
+        },
 )
 
 from setuptools import setup
