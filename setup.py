@@ -20,7 +20,9 @@
 
 
 import os
+from setuptools import setup
 import sys
+
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(this_dir, 'src'))
@@ -41,7 +43,7 @@ requirements = os.path.join(this_dir, 'requirements.txt')
 REQUIREMENTS = filter(None, open(requirements).read().splitlines())
 
 CLASSIFIERS = [
-    'Development Status :: 3 - Alpha',
+    'Development Status :: 4 - Beta',
     'Environment :: Console',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
@@ -57,7 +59,7 @@ CLASSIFIERS = [
     'Topic :: Internet :: WWW/HTTP :: Browsers',
 ]
 
-AUTHOR = 'Canonical ISD Team'
+AUTHOR = 'Canonical Online Services Team'
 AUTHOR_EMAIL = 'corey@goldb.org'
 KEYWORDS = ('selenium webdriver test testing web automation').split(' ')
 
@@ -77,17 +79,12 @@ params = dict(
     url=URL,
     classifiers=CLASSIFIERS,
 
-    extras_require = {
-        "headless": ["pyvirtualdisplay"],
-        },
-
     entry_points = {
-        "console_scripts": [
-            "sst-run = sst.scripts.run:main",
-            "sst-remote = sst.scripts.remote:main",
+        'console_scripts': [
+            'sst-run = sst.scripts.run:main',
+            'sst-remote = sst.scripts.remote:main',
             ],
         },
 )
 
-from setuptools import setup
 setup(**params)
