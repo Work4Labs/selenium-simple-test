@@ -23,6 +23,7 @@ version **0.2.2** (2012 ??? ??)
 * added ``get_cookies`` and ``clear_cookies`` actions
 * added ``execute_script`` action
 * added ``get_element_source`` action
+* removed PyVirtualDisplay depenency; replaced with lightweight Xvfb wrapper
 
 
 version **0.2.1** (2012 Apr 22)
