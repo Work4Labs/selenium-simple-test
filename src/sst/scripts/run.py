@@ -49,9 +49,9 @@ def main():
         run_django()
 
     if cmd_opts.xserver_headless:
-        from pyvirtualdisplay import Display
+        from sst.xvfbdisplay import Xvfb
         print '\nstarting virtual display...'
-        display = Display(visible=0, size=(1280, 1024))
+        display = Xvfb(width=1024, height=768)
         display.start()
 
     if not cmd_opts.quiet:
