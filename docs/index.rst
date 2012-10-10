@@ -284,7 +284,6 @@ putting the following at the start of the test::
     * selenium
     * unittest2
     * junitxml
-    * pyvirtualdisplay
     * django (optional - needed for internal self-tests only)
 
 
