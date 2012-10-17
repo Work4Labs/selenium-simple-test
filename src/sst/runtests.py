@@ -287,22 +287,30 @@ def get_case(test_dir, entry, browser_type, browser_version,
         except SkipTest:
             raise
         except:
-            exc, tb = sys.exc_info()[1:]
+            exc_class, exc, tb = sys.exc_info()
             if screenshots_on:
                 now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                 tc_name = entry[:-3]
-                filename = 'screenshot-%s-%s.png' % (now, tc_name)
-                take_screenshot(filename)
-                # also dump page source
-                filename = 'pagesource-%s-%s.html' % (now, tc_name)
-                path = os.path.join(config.results_directory, filename)
-                with codecs.open(path, 'w', encoding='utf-8') as f:
-                    f.write(get_page_source())
+                try:
+                    filename = 'screenshot-%s-%s.png' % (now, tc_name)
+                    take_screenshot(filename)
+                except Exception:
+                    # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
+                    pass
+                try:
+                    # also dump page source
+                    filename = 'pagesource-%s-%s.html' % (now, tc_name)
+                    path = os.path.join(config.results_directory, filename)
+                    with codecs.open(path, 'w', encoding='utf-8') as f:
+                        f.write(get_page_source())
+                except Exception:
+                    # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
+                    pass
             if debug:
                 traceback.print_exc()
                 pdb.post_mortem()
             if not extended:
-                raise
+                raise exc_class, exc, tb
             original_message = str(exc)
             page_source = 'unavailable'
             current_url = 'unavailable'
@@ -311,7 +319,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
             except Exception:
                 pass
             try:
-                page_source = actions.browser.page_source
+                page_source = get_page_source()
             except Exception:
                 pass
 
