@@ -251,14 +251,14 @@ def get_case(test_dir, entry, browser_type, browser_version,
 
         sys.path.append(test_dir)
         self.addCleanup(sys.path.remove, test_dir)
-        path = os.path.join(test_dir, entry)
-        with open(path) as h:
+        script_path = os.path.join(test_dir, entry)
+        with open(script_path) as h:
             source = h.read() + '\n'
-            self.code = compile(source, path, 'exec')
+            self.code = compile(source, script_path, 'exec')
 
         js_disabled = javascript_disabled or \
             'JAVASCRIPT_DISABLED' in self.code.co_names
-        populate_context(context, path, browser_type, js_disabled)
+        populate_context(context, script_path, browser_type, js_disabled)
 
         original = actions.VERBOSE
         actions.VERBOSE = False
