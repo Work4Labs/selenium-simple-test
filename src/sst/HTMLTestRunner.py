@@ -595,7 +595,8 @@ class _TestResult(TestResult):
 class HTMLTestRunner(Template_mixin):
     """
     """
-    def __init__(self, stream=sys.stdout, verbosity=1, title=None, description=None):
+    def __init__(self, stream=sys.stdout, verbosity=1, title=None,
+                 description=None, failfast=False):
         self.stream = stream
         self.verbosity = verbosity
         if title is None:
@@ -606,6 +607,7 @@ class HTMLTestRunner(Template_mixin):
             self.description = self.DEFAULT_DESCRIPTION
         else:
             self.description = description
+        self.failfast = failfast
 
         self.startTime = datetime.datetime.now()
 
@@ -613,6 +615,7 @@ class HTMLTestRunner(Template_mixin):
     def run(self, test):
         "Run the given test case or test suite."
         result = _TestResult(self.verbosity)
+        result.failfast = self.failfast
         test(result)
         self.stopTime = datetime.datetime.now()
         self.generateReport(test, result)

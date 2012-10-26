@@ -95,7 +95,7 @@ def runtests(test_names, test_dir='.', report_format='console',
         sys.exit(1)
 
     if report_format == 'console':
-        runner = TextTestRunner(verbosity=2)
+        runner = TextTestRunner(verbosity=2, failfast=failfast)
         def run():
             runner.run(alltests)
 
@@ -104,7 +104,7 @@ def runtests(test_names, test_dir='.', report_format='console',
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
-            stream=fp, title='SST Test Report', verbosity=2
+            stream=fp, title='SST Test Report', verbosity=2, failfast=failfast
         )
         def run():
             runner.run(alltests)
@@ -118,6 +118,7 @@ def runtests(test_names, test_dir='.', report_format='console',
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
         result = junitxml.JUnitXmlResult(fp)
+        result.failfast = failfast
         result.startTestRun()
 
         def run():
@@ -239,15 +240,18 @@ def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              context=None, failfast=False, debug=False, extended=False):
-    context_provided = context is not None
-    context = context or {}
-    path = os.path.join(test_dir, entry)
+    context_provided = True
+    if context is None:
+        context_provided = False
+        context = {}
+
 
     def setUp(self):
         actions._test = self
 
         sys.path.append(test_dir)
         self.addCleanup(sys.path.remove, test_dir)
+        path = os.path.join(test_dir, entry)
         with open(path) as h:
             source = h.read() + '\n'
             self.code = compile(source, path, 'exec')
@@ -338,23 +342,11 @@ def get_case(test_dir, entry, browser_type, browser_version,
             new_exc = Exception(new_message)
             raise Exception, new_exc, tb
 
-    def run(self, result=None):
-        # moved bits from original implementation of TestCase.run to
-        # keep the way it works
-        if result is None:
-            result = self.defaultTestResult()
-            startTestRun = getattr(result, 'startTestRun', None)
-            if startTestRun is not None:
-                startTestRun()
-        TestCase.run(self, result)
-        if not result.wasSuccessful() and failfast:
-            result.shouldStop = True
-
     name = entry[:-3]
     test_name = 'test_%s' % name
     FunctionalTest = type(
         'Test%s' % name.title(), (TestCase,),
-        {'setUp': setUp, test_name: test, 'run': run}
+        {'setUp': setUp, test_name: test}
     )
     this_test = FunctionalTest(test_name)
     return this_test
