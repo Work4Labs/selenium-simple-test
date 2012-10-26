@@ -247,6 +247,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
         actions._test = self
 
         sys.path.append(test_dir)
+        self.addCleanup(sys.path.remove, test_dir)
         with open(path) as h:
             source = h.read() + '\n'
             self.code = compile(source, path, 'exec')
@@ -268,13 +269,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
         start(browser_type, browser_version, browser_platform,
               session_name, js_disabled, assume_trusted_cert_issuer,
               webdriver_remote_url)
-
-    def clean_up():
-        # We do this as a clean up function rather than a tearDown, because
-        # other clean up functions will want to use the browser before it is
-        # stopped. As the first added clean up this one will be executed last.
-        sys.path.remove(test_dir)
-        stop()
+        self.addCleanup(stop)
 
     def test(self):
         if context_provided:
@@ -362,7 +357,6 @@ def get_case(test_dir, entry, browser_type, browser_version,
         {'setUp': setUp, test_name: test, 'run': run}
     )
     this_test = FunctionalTest(test_name)
-    this_test.addCleanup(clean_up)
     return this_test
 
 
