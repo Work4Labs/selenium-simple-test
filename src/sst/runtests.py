@@ -254,7 +254,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
         script_path = os.path.join(test_dir, entry)
         with open(script_path) as h:
             source = h.read() + '\n'
-            self.code = compile(source, script_path, 'exec')
+        self.code = compile(source, script_path, 'exec')
 
         js_disabled = javascript_disabled or \
             'JAVASCRIPT_DISABLED' in self.code.co_names
@@ -306,7 +306,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
                     # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
                     pass
             if debug:
-                traceback.print_exc()
+                traceback.print_exception(exc_class, exc, tb)
                 pdb.post_mortem()
             if not extended:
                 raise exc_class, exc, tb
