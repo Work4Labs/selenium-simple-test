@@ -312,6 +312,12 @@ class SSTScriptTestCase(SSTTestCase):
         self.id = lambda: testMethod
         self.context = context_row
 
+    def __str__(self):
+        # Since we use runTest to encapsulate the call to the compiled code, we
+        # need to override __str__ to get a proper name reported
+        return "%s (%s.%s)" % (self.id(), self.__class__.__module__,
+                               self.__class__.__name__)
+
     def setUp(self):
         self.script_path = os.path.join(self.script_dir, self.script_name)
         sys.path.append(self.script_dir)
