@@ -29,9 +29,13 @@ from textwrap import dedent
 
 from unittest2 import TestSuite, TextTestRunner, TestCase, SkipTest
 
-from sst import actions, config
+from sst import (
+    actions,
+    config,
+    context,
+)
 from .actions import (
-    start, stop, reset_base_url, set_wait_timeout, take_screenshot,
+    start, stop, reset_base_url, _set_wait_timeout, take_screenshot,
     get_page_source, EndTest
 )
 from .context import populate_context
@@ -236,6 +240,165 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
     return suite
 
 
+class SSTTestCase(TestCase):
+    """A test case that can use the sst framework."""
+
+    browser_type = 'Firefox'
+    browser_version = ''
+    browser_platform = 'ANY'
+    session_name = None
+    javascript_disabled = False
+    assume_trusted_cert_issuer = False
+    webdriver_remote_url = None
+
+    wait_timeout = 10
+    wait_poll = 0.1
+    base_url = None
+
+    screenshots_on = False
+    debug_post_mortem = False
+    extended_report = False
+
+    def setUp(self):
+        super(SSTTestCase, self).setUp()
+        if self.base_url is not None:
+            actions.set_base_url(self.base_url)
+        actions._set_wait_timeout(self.wait_timeout, self.wait_poll)
+        # Ensures sst.actions will find me
+        actions._test = self
+        self.start_browser()
+        self.addCleanup(self.stop_browser)
+
+    def start_browser(self):
+        self.browser, self.browsermob_proxy = start(
+            self.browser_type, self.browser_version, self.browser_platform,
+            self.session_name, self.javascript_disabled,
+            self.assume_trusted_cert_issuer, self.webdriver_remote_url)
+
+    def stop_browser(self):
+        stop()
+
+    def run(self, result=None):
+        """Run the test catching exceptions sstnam style."""
+        # FIXME: Not good enough as this wrap run() and as such can't catch
+        # EndTest which fails one test. -- vila 2012-10-29
+        try:
+            super(SSTTestCase, self).run(result)
+        except EndTest:
+            pass
+        except SkipTest:
+            raise
+        except:
+            exc_class, exc, tb = sys.exc_info()
+            self.handle_exception(exc_class, exc, tb)
+
+    def handle_exception(self, exc_class, exc, tb):
+        if self.screenshots_on:
+            self.take_screenshot()
+        if self.debug_post_mortem:
+            traceback.print_exception(exc_class, exc, tb)
+            pdb.post_mortem()
+        if not self.extended_report:
+            raise exc_class, exc, tb
+        else:
+            self.report_extensively(exc_class, exc, tb)
+
+    def take_screenshot(self):
+        now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        tc_name = self.script_name[:-3]
+        try:
+            filename = 'screenshot-%s-%s.png' % (now, tc_name)
+            actions.take_screenshot(filename)
+        except Exception:
+            # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
+            pass
+        try:
+            # also dump page source
+            filename = 'pagesource-%s-%s.html' % (now, tc_name)
+            # FIXME: Urgh, config.results_directory is a global set in
+            # runtests() -- vila 2012-10-29
+            path = os.path.join(config.results_directory, filename)
+            with codecs.open(path, 'w', encoding='utf-8') as f:
+                f.write(actions.get_page_source())
+        except Exception:
+            # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
+            pass
+
+    def report_extensively(self, exc_class, exc, tb):
+        original_message = str(exc)
+        page_source = 'unavailable'
+        current_url = 'unavailable'
+        try:
+            current_url = actions.get_current_url()
+        except Exception:
+            pass
+        try:
+            page_source = actions.get_page_source()
+        except Exception:
+            pass
+
+        new_message = dedent("""
+        Original exception: %s: %s
+
+        Current url: %s
+
+        Page source:
+
+        %s
+
+        """[1:]) % (
+               exc.__class__.__name__,
+               original_message,
+               current_url,
+               page_source,
+        )
+        if isinstance(new_message, unicode):
+            new_message = new_message.encode('ascii', 'backslashreplace')
+        new_exc = Exception(new_message)
+        raise Exception, new_exc, tb
+
+
+class SSTScriptTestCase(SSTTestCase):
+    """Test case used internally by sst-run and sst-remote."""
+
+    script_dir = '.'
+    script_name = None
+
+
+    def __init__(self, testMethod, context_row=None):
+        super(SSTScriptTestCase, self).__init__('runTest')
+        self.id = lambda: testMethod
+        self.context = context_row
+
+    def setUp(self):
+        self.script_path = os.path.join(self.script_dir, self.script_name)
+        sys.path.append(self.script_dir)
+        self.addCleanup(sys.path.remove, self.script_dir)
+        self._compile_script()
+        # The script may override some settings
+        if 'JAVASCRIPT_DISABLED' in self.code.co_names:
+            # Really ? We don't even check the value ?
+            self.javascript_disabled = True
+        if 'ASSUME_TRUSTED_CERT_ISSUER' in self.code.co_names:
+            # Really ? We don't even check the value ?
+            self.assume_trusted_cert_issuer = True
+        super(SSTScriptTestCase, self).setUp()
+        # Start with default values
+        actions.reset_base_url()
+        actions._set_wait_timeout(10, 0.1)
+        # Possibly inject parametrization from associated .csv file
+        context.populate_context(self.context, self.script_path,
+                                 self.browser_type, self.javascript_disabled)
+
+    def _compile_script(self):
+        with open(self.script_path) as f:
+            source = f.read() + '\n'
+        self.code = compile(source, self.script_path, 'exec')
+
+    def runTest(self):
+        exec self.code in self.context
+
+
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
@@ -245,110 +408,23 @@ def get_case(test_dir, entry, browser_type, browser_version,
         context_provided = False
         context = {}
 
-
-    def setUp(self):
-        actions._test = self
-
-        sys.path.append(test_dir)
-        self.addCleanup(sys.path.remove, test_dir)
-        script_path = os.path.join(test_dir, entry)
-        with open(script_path) as h:
-            source = h.read() + '\n'
-        self.code = compile(source, script_path, 'exec')
-
-        js_disabled = javascript_disabled or \
-            'JAVASCRIPT_DISABLED' in self.code.co_names
-        populate_context(context, script_path, browser_type, js_disabled)
-
-        original = actions.VERBOSE
-        actions.VERBOSE = False
-        try:
-            reset_base_url()
-            set_wait_timeout(10, 0.1)
-        finally:
-            actions.VERBOSE = original
-
-        assume_trusted_cert_issuer = 'ASSUME_TRUSTED_CERT_ISSUER' in self.code.co_names
-
-        start(browser_type, browser_version, browser_platform,
-              session_name, js_disabled, assume_trusted_cert_issuer,
-              webdriver_remote_url)
-        self.addCleanup(stop)
-
-    def test(self):
-        if context_provided:
-            if actions.VERBOSE:
-                print '    Loading data row %r' % context['_row_num']
-        try:
-            exec self.code in context
-        except EndTest:
-            pass
-        except SkipTest:
-            raise
-        except:
-            exc_class, exc, tb = sys.exc_info()
-            if screenshots_on:
-                now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-                tc_name = entry[:-3]
-                try:
-                    filename = 'screenshot-%s-%s.png' % (now, tc_name)
-                    take_screenshot(filename)
-                except Exception:
-                    # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
-                    pass
-                try:
-                    # also dump page source
-                    filename = 'pagesource-%s-%s.html' % (now, tc_name)
-                    path = os.path.join(config.results_directory, filename)
-                    with codecs.open(path, 'w', encoding='utf-8') as f:
-                        f.write(get_page_source())
-                except Exception:
-                    # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
-                    pass
-            if debug:
-                traceback.print_exception(exc_class, exc, tb)
-                pdb.post_mortem()
-            if not extended:
-                raise exc_class, exc, tb
-            original_message = str(exc)
-            page_source = 'unavailable'
-            current_url = 'unavailable'
-            try:
-                current_url = actions.get_current_url()
-            except Exception:
-                pass
-            try:
-                page_source = get_page_source()
-            except Exception:
-                pass
-
-            new_message = dedent("""
-            Original exception: %s: %s
-
-            Current url: %s
-
-            Page source:
-
-            %s
-
-            """[1:]) % (
-                   exc.__class__.__name__,
-                   original_message,
-                   current_url,
-                   page_source,
-            )
-            if isinstance(new_message, unicode):
-                new_message = new_message.encode('ascii', 'backslashreplace')
-            new_exc = Exception(new_message)
-            raise Exception, new_exc, tb
-
     name = entry[:-3]
     test_name = 'test_%s' % name
-    FunctionalTest = type(
-        'Test%s' % name.title(), (TestCase,),
-        {'setUp': setUp, test_name: test}
-    )
-    this_test = FunctionalTest(test_name)
+    this_test = SSTScriptTestCase(test_name, context)
+    this_test.script_dir = test_dir
+    this_test.script_name = entry
+    this_test.browser_type = browser_type
+    this_test.browser_version = browser_version
+    this_test.browser_platform = browser_platform
+    this_test.webdriver_remote_url = webdriver_remote_url
+
+    this_test.session_name = session_name
+    this_test.javascript_disabled = javascript_disabled
+
+    this_test.screenshots_on = screenshots_on
+    this_test.debug_post_mortem = debug
+    this_test.extended_report = extended
+
     return this_test
 
 
