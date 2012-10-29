@@ -278,31 +278,6 @@ class SSTTestCase(TestCase):
     def stop_browser(self):
         stop()
 
-    def run(self, result=None):
-        """Run the test catching exceptions sstnam style."""
-        # FIXME: Not good enough as this wrap run() and as such can't catch
-        # EndTest which fails one test. -- vila 2012-10-29
-        try:
-            super(SSTTestCase, self).run(result)
-        except EndTest:
-            pass
-        except SkipTest:
-            raise
-        except:
-            exc_class, exc, tb = sys.exc_info()
-            self.handle_exception(exc_class, exc, tb)
-
-    def handle_exception(self, exc_class, exc, tb):
-        if self.screenshots_on:
-            self.take_screenshot()
-        if self.debug_post_mortem:
-            traceback.print_exception(exc_class, exc, tb)
-            pdb.post_mortem()
-        if not self.extended_report:
-            raise exc_class, exc, tb
-        else:
-            self.report_extensively(exc_class, exc, tb)
-
     def take_screenshot(self):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         tc_name = self.script_name[:-3]
@@ -323,39 +298,6 @@ class SSTTestCase(TestCase):
         except Exception:
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
             pass
-
-    def report_extensively(self, exc_class, exc, tb):
-        original_message = str(exc)
-        page_source = 'unavailable'
-        current_url = 'unavailable'
-        try:
-            current_url = actions.get_current_url()
-        except Exception:
-            pass
-        try:
-            page_source = actions.get_page_source()
-        except Exception:
-            pass
-
-        new_message = dedent("""
-        Original exception: %s: %s
-
-        Current url: %s
-
-        Page source:
-
-        %s
-
-        """[1:]) % (
-               exc.__class__.__name__,
-               original_message,
-               current_url,
-               page_source,
-        )
-        if isinstance(new_message, unicode):
-            new_message = new_message.encode('ascii', 'backslashreplace')
-        new_exc = Exception(new_message)
-        raise Exception, new_exc, tb
 
 
 class SSTScriptTestCase(SSTTestCase):
@@ -395,8 +337,61 @@ class SSTScriptTestCase(SSTTestCase):
             source = f.read() + '\n'
         self.code = compile(source, self.script_path, 'exec')
 
-    def runTest(self):
-        exec self.code in self.context
+    def runTest(self, result=None):
+        """Run the test catching exceptions sstnam style."""
+        try:
+            exec self.code in self.context
+        except EndTest:
+            pass
+        except SkipTest:
+            raise
+        except:
+            exc_class, exc, tb = sys.exc_info()
+            self.handle_exception(exc_class, exc, tb)
+
+    def handle_exception(self, exc_class, exc, tb):
+        if self.screenshots_on:
+            self.take_screenshot()
+        if self.debug_post_mortem:
+            traceback.print_exception(exc_class, exc, tb)
+            pdb.post_mortem()
+        if not self.extended_report:
+            raise exc_class, exc, tb
+        else:
+            self.report_extensively(exc_class, exc, tb)
+
+    def report_extensively(self, exc_class, exc, tb):
+        original_message = str(exc)
+        page_source = 'unavailable'
+        current_url = 'unavailable'
+        try:
+            current_url = actions.get_current_url()
+        except Exception:
+            pass
+        try:
+            page_source = actions.get_page_source()
+        except Exception:
+            pass
+
+        new_message = dedent("""
+        Original exception: %s: %s
+
+        Current url: %s
+
+        Page source:
+
+        %s
+
+        """[1:]) % (
+               exc.__class__.__name__,
+               original_message,
+               current_url,
+               page_source,
+        )
+        if isinstance(new_message, unicode):
+            new_message = new_message.encode('ascii', 'backslashreplace')
+        new_exc = Exception(new_message)
+        raise Exception, new_exc, tb
 
 
 def get_case(test_dir, entry, browser_type, browser_version,
