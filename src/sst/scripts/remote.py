@@ -20,6 +20,7 @@
 
 
 import sst
+from sst.runtests import runtests
 from sst.command import clear_old_results, get_opts_remote
 
 
@@ -30,7 +31,7 @@ def main():
 
     print '----------------------------------------------------------------------'
 
-    sst.runtests(
+    runtests.runtests(
         args,
         test_dir=cmd_opts.dir_name,
         report_format=cmd_opts.report_format,

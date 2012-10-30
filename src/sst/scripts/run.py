@@ -28,6 +28,7 @@ import time
 import urllib
 
 import sst
+from sst import runtests
 from sst.command import get_opts_run, clear_old_results
 
 
@@ -70,7 +71,7 @@ def main():
         print ''
 
     clear_old_results()
-    sst.runtests(
+    runtests.runtests(
         args,
         test_dir=cmd_opts.dir_name,
         report_format=cmd_opts.report_format,
