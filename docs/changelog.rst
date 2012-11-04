@@ -10,13 +10,13 @@ Official Releases:
 ------------------
 
 
-version **0.2.2** (2012 ??? ??)
+version **0.2.2** (2012 Nov 4)
 *******************************
 
 * add ``wait_for_and_refresh`` action
 * ``set_dropdown_value`` can set text or value now
 * add ``add_cleanup`` action
-* made tests compatible with Django 1.4
+* made internal tests compatible with Django 1.4
 * added ``config.cache``, a per test cache (dictionary) cleared at the start of
   every test
 * added ``--extended-tracebacks`` command line option
