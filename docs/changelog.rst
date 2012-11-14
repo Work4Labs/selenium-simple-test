@@ -9,22 +9,26 @@
 Official Releases:
 ------------------
 
+version **0.2.3** (?? ?? ??)
+*******************************
 
-version **0.2.2** (2012 ??? ??)
+* expose the SSTTestCase class which is used internally to create test cases
+
+
+version **0.2.2** (2012 Nov 4)
 *******************************
 
 * add ``wait_for_and_refresh`` action
 * ``set_dropdown_value`` can set text or value now
 * add ``add_cleanup`` action
-* made tests compatible with Django 1.4
+* made internal tests compatible with Django 1.4
 * added ``config.cache``, a per test cache (dictionary) cleared at the start of
   every test
 * added ``--extended-tracebacks`` command line option
 * added ``get_cookies`` and ``clear_cookies`` actions
 * added ``execute_script`` action
 * added ``get_element_source`` action
-* removed PyVirtualDisplay depenency; replaced with lightweight Xvfb wrapper
-* expose SSTTestCase which is used internally to create test cases
+* removed PyVirtualDisplay dependency; replaced with lightweight Xvfb wrapper
 
 
 version **0.2.1** (2012 Apr 22)

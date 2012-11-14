@@ -125,15 +125,14 @@ Options::
   -q                        output less debugging info during test run
   -V                        print version info and exit
   -s                        save screenshots on failures
+  -x                        run browser in headless xserver
   --failfast                stop test execution after first failure
   --debug                   drop into debugger on test fail or error
-  --with-flags=WITH_FLAGS   comma separated list of flags to run tests with
+  --with-flags=FLAGS        comma separated list of flags to run tests with
   --disable-flag-skips      run all tests, disable skipping tests due to flags
-  --extended-tracebacks     Add extra information to (page source) to failure
-                            reports
-  --browsermob=BROWSERMOB   enable browsermob-proxy (launcher location)
+  --extended-tracebacks     Add extra information (page source) to failure reports
+  --browsermob=BROWSERMOB   enable browsermob proxy (launcher location)
   --test                    run selftests
-  -x                        run browser in headless xserver
 
 
 -----------------
