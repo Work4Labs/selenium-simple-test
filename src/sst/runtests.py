@@ -323,12 +323,13 @@ class SSTScriptTestCase(SSTTestCase):
         sys.path.append(self.script_dir)
         self.addCleanup(sys.path.remove, self.script_dir)
         self._compile_script()
-        # The script may override some settings
+        # The script may override some settings. The default value for
+        # JAVASCRIPT_DISABLED and ASSUME_TRUSTED_CERT_ISSUER are False, so if
+        # the user mentions them in his script, it's to turn them on. Also,
+        # getting our hands on the values used in the script is too hackish ;)
         if 'JAVASCRIPT_DISABLED' in self.code.co_names:
-            # Really ? We don't even check the value ?
             self.javascript_disabled = True
         if 'ASSUME_TRUSTED_CERT_ISSUER' in self.code.co_names:
-            # Really ? We don't even check the value ?
             self.assume_trusted_cert_issuer = True
         super(SSTScriptTestCase, self).setUp()
         # Start with default values
