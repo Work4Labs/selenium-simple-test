@@ -345,7 +345,7 @@ class SSTScriptTestCase(SSTTestCase):
         self.code = compile(source, self.script_path, 'exec')
 
     def runTest(self, result=None):
-        """Run the test catching exceptions sstnam style."""
+        # Run the test catching exceptions sstnam style
         try:
             exec self.code in self.context
         except EndTest:
