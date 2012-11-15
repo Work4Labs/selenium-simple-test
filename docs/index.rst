@@ -71,7 +71,7 @@ a sample test case in SST::
     from sst.actions import *
 
     go_to('http://www.ubuntu.com/')
-    assert_title_contains('Ubuntu homepage')
+    assert_title_contains('Ubuntu')
 
 
 ------------------------------------
@@ -315,7 +315,7 @@ Using sst in unittest test suites
 ---------------------------------
 
 sst uses unittest test cases internally to wrap the execution of the script
-and taking care about starting and stopping the browser. If you prefer to
+and taking care of starting and stopping the browser. If you prefer to
 integrate some sst tests into an existing unittest test suite you can use
 SSTTestCase from runtests.py::
 
@@ -326,7 +326,7 @@ SSTTestCase from runtests.py::
 
       def test_ubuntu_home_page(self):
           go_to('http://www.ubuntu.com/')
-          assert_title_contains('Ubuntu homepage')
+          assert_title_contains('Ubuntu')
 
 ---------------------------------------------------
     Performance tracing with Browsermob Proxy (HAR)

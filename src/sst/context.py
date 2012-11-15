@@ -57,8 +57,7 @@ def restore_context(context_config):
 def run_test(name, args):
     context_config = store_context()
     actions.reset_base_url()
-    # FIXME: timeout set to 5 ? Not the usual 10 ? -- vila 2012-10-29
-    actions.set_wait_timeout(5, 0.1)
+    actions.set_wait_timeout(10, 0.1)
 
     try:
         return _execute_test(name, args)
