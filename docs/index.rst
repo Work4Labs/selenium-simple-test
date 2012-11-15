@@ -328,6 +328,12 @@ SSTTestCase from runtests.py::
           go_to('http://www.ubuntu.com/')
           assert_title_contains('Ubuntu')
 
+So, with the above in a file name test_ubuntu.py you can run the test with
+(for example)::
+
+  python -m unittest test_ubuntu.py
+
+
 ---------------------------------------------------
     Performance tracing with Browsermob Proxy (HAR)
 ---------------------------------------------------
