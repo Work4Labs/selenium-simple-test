@@ -71,7 +71,7 @@ a sample test case in SST::
     from sst.actions import *
 
     go_to('http://www.ubuntu.com/')
-    assert_title_contains('Ubuntu homepage')
+    assert_title_contains('Ubuntu')
 
 
 ------------------------------------
@@ -309,6 +309,29 @@ You can run the suite of self-tests (and the test Django server) from your
 local branch like this::
 
     $ ./sst-run --test
+
+---------------------------------
+Using sst in unittest test suites
+---------------------------------
+
+sst uses unittest test cases internally to wrap the execution of the script
+and taking care of starting and stopping the browser. If you prefer to
+integrate some sst tests into an existing unittest test suite you can use
+SSTTestCase from runtests.py::
+
+  from sst.actions import *
+  from sst import runtests
+
+  class TestUbuntu(runtests.SSTTestCase):
+
+      def test_ubuntu_home_page(self):
+          go_to('http://www.ubuntu.com/')
+          assert_title_contains('Ubuntu')
+
+So, with the above in a file name test_ubuntu.py you can run the test with
+(for example)::
+
+  python -m unittest test_ubuntu.py
 
 
 ---------------------------------------------------

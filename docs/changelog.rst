@@ -9,6 +9,11 @@
 Official Releases:
 ------------------
 
+version **0.2.3** (?? ?? ??)
+*******************************
+
+* expose the SSTTestCase class which is used internally to create test cases
+
 
 version **0.2.2** (2012 Nov 4)
 *******************************
@@ -23,7 +28,7 @@ version **0.2.2** (2012 Nov 4)
 * added ``get_cookies`` and ``clear_cookies`` actions
 * added ``execute_script`` action
 * added ``get_element_source`` action
-* removed PyVirtualDisplay depenency; replaced with lightweight Xvfb wrapper
+* removed PyVirtualDisplay dependency; replaced with lightweight Xvfb wrapper
 
 
 version **0.2.1** (2012 Apr 22)

@@ -208,6 +208,7 @@ def start(browser_type=None, browser_version='',
                                 "name": session_name}
         browser = webdriver.Remote(desired_capabilities=desired_capabilities,
                                    command_executor=webdriver_remote)
+    return browser, browsermob_proxy
 
 
 def stop():
@@ -687,14 +688,19 @@ def set_wait_timeout(timeout, poll=None):
     The optional second argument, is how long (in seconds) `wait_for` should
     wait in between checking its condition (the poll frequency). The default
     at the start of a test is always 0.1 seconds."""
-    global _TIMEOUT
-    global _POLL
-    _TIMEOUT = timeout
     msg = 'Setting wait timeout to %rs' % timeout
     if poll is not None:
         msg += ('. Setting poll time to %rs' % poll)
-        _POLL = poll
     _print(msg)
+    _set_wait_timeout(timeout, poll)
+
+
+def _set_wait_timeout(timeout, poll=None):
+    global _TIMEOUT
+    global _POLL
+    _TIMEOUT = timeout
+    if poll is not None:
+        _POLL = poll
 
 
 def _get_name(obj):
