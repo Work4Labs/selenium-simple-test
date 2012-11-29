@@ -1,8 +1,8 @@
-import unittest2
+import testtools
 
 from sst import tests
 
-class TestSmoke(unittest2.TestCase):
+class TestSmoke(testtools.TestCase):
 
     def test_it(self):
         pass
