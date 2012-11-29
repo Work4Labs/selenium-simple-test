@@ -1,23 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
+import os
 import sys
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-import testtools
-from testtools import run as tt_run
+from sst.tests import main
 
+# We discover tests under src/sst/tests, the python 'load_test' protocol
+# can be used in test modules for more fancy stuff.
+discover_args = ['discover',
+                 '--start-directory', './src/sst/tests',
+                 '--top-level-directory', './src',
+                 ]
+main.TestProgram(__name__, argv=[sys.argv[0]] + discover_args + sys.argv[1:])
 
-# Missing tests/features
-# - start-with
-
-class TestProgram(tt_run.TestProgram):
-
-    def __init__(self, module, argv):
-        super(TestProgram, self).__init__(module, argv=argv)
-
-
-if __name__ == '__main__':
-    # We discover tests under src/sst/tests, the python 'load_test' protocol
-    # can be used in test modules for more fancy stuff.
-    discover_args = ['discover', '-s', './src/sst/tests', '-t', './src']
-    TestProgram(__name__, argv=[sys.argv[0]] + discover_args + sys.argv[1:])
