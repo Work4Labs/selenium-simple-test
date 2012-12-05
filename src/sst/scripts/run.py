@@ -25,6 +25,7 @@ import socket
 import subprocess
 import sys
 import time
+import traceback
 import urllib
 
 import sst
@@ -39,21 +40,29 @@ def main():
     print '----------------------------------------------------------------------'
     print 'starting SST...'
 
+    cleanups = []
+
     if cmd_opts.browsermob and cmd_opts.run_tests:
         print 'Warning: can not record local traffic from django testproject'
 
     if cmd_opts.browsermob:
         browsermob_process = run_browsermob_server(cmd_opts.browsermob)
+        def browsermob_cleanup():
+            browsermob_process.kill()
+            browsermob_process.wait()
+        cleanups.append(('\nkilling browsermob proxy...', browsermob_cleanup))
 
     if cmd_opts.run_tests:
         cmd_opts.dir_name = 'selftests'
         run_django()
+        cleanups.append(('\nkilling django...', kill_django))
 
     if cmd_opts.xserver_headless:
         from sst.xvfbdisplay import Xvfb
         print '\nstarting virtual display...'
         display = Xvfb(width=1024, height=768)
         display.start()
+        cleanups.append(('\nstopping virtual display...', display.stop))
 
     if not cmd_opts.quiet:
         print ''
@@ -70,35 +79,31 @@ def main():
         print '  headless xserver: %r' % cmd_opts.xserver_headless
         print ''
 
-    clear_old_results()
-    runtests.runtests(
-        args,
-        test_dir=cmd_opts.dir_name,
-        report_format=cmd_opts.report_format,
-        browser_type=cmd_opts.browser_type,
-        javascript_disabled=cmd_opts.javascript_disabled,
-        browsermob_enabled=bool(cmd_opts.browsermob),
-        shared_directory=cmd_opts.shared_modules,
-        screenshots_on=cmd_opts.screenshots_on,
-        failfast=cmd_opts.failfast,
-        debug=cmd_opts.debug,
-        extended=cmd_opts.extended_tracebacks,
-    )
+    try:
+        clear_old_results()
+        runtests.runtests(
+            args,
+            test_dir=cmd_opts.dir_name,
+            report_format=cmd_opts.report_format,
+            browser_type=cmd_opts.browser_type,
+            javascript_disabled=cmd_opts.javascript_disabled,
+            browsermob_enabled=bool(cmd_opts.browsermob),
+            shared_directory=cmd_opts.shared_modules,
+            screenshots_on=cmd_opts.screenshots_on,
+            failfast=cmd_opts.failfast,
+            debug=cmd_opts.debug,
+            extended=cmd_opts.extended_tracebacks,
+            )
+    finally:
 
-    print '----------------------------------------------------------------------'
-
-    if cmd_opts.browsermob:
-        print '\nkilling browsermob proxy...'
-        browsermob_process.kill()
-        browsermob_process.wait()
-
-    if cmd_opts.xserver_headless:
-        print '\nstopping virtual display...'
-        display.stop()
-
-    if cmd_opts.run_tests:
-        print '\nkilling django...'
-        kill_django()
+        print '----------------------------------------------------------------------'
+        for desc, cmd in cleanups:
+            # Run cleanups, displaying but not propagating exceptions
+            try:
+                print desc
+                cmd()
+            except Exception, exc:
+                print traceback.format_exc()
 
 
 
