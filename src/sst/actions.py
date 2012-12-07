@@ -53,9 +53,14 @@ from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
-    NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException,
-    NoSuchWindowException, NoSuchFrameException)
+    InvalidElementStateException,
+    NoSuchAttributeException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+    StaleElementReferenceException,
+    WebDriverException,
+)
 
 from sst import config
 from sst import bmobproxy
@@ -110,6 +115,20 @@ _sentinel = _Sentinel()
 def _raise(msg):
     _print(msg)
     raise AssertionError(msg)
+
+
+def retry_on_stale_element(func):
+    """Decorate ``func`` so StaleElementReferenceException triggers a retry.
+
+    ``func`` is retried only once.
+    """
+    def wrapped(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except StaleElementReferenceException, e:
+            _print('Retrying after catching: %r' % e)
+            return func(*args, **kwargs)
+    return wrapped
 
 
 def set_base_url(url):
@@ -824,7 +843,6 @@ def assert_dropdown(id_or_elem):
     elem = _get_elem(id_or_elem)
     _elem_is_type(elem, id_or_elem, 'select-one')
     return elem
-
 
 def set_dropdown_value(id_or_elem, text=None, value=None):
     """Set the select drop-list to a text or value specified."""
