@@ -758,6 +758,8 @@ def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
     finally:
         VERBOSE = original
 
+
+@retry_on_stale_element
 def wait_for(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
