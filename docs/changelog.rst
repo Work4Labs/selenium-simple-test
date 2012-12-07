@@ -15,6 +15,8 @@ version **0.2.3** (?? ?? ??)
 * expose the SSTTestCase class which is used internally to create test cases
 * start implementing an internal test suite (#1084007)
 * ensure Xvfb is properly killed if sst-run is interrupted (#1084006)
+* protect 'wait_for' from transient failures caused by
+  StaleElementReferenceException (#1084008)
 
 version **0.2.2** (2012 Nov 4)
 *******************************

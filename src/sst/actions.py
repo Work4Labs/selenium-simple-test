@@ -78,10 +78,12 @@ __all__ = [
     'click_link', 'clear_cookies', 'close_window', 'debug', 'dismiss_alert',
     'end_test', 'click_button', 'click_element', 'execute_script',
     'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
-    'get_current_url', 'get_element', 'get_element_source', 'get_element_by_css',
+    'get_current_url', 'get_element', 'get_element_source',
+    'get_element_by_css',
     'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
     'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
+    'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
+    'run_test', 'set_base_url',
     'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
     'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
     'switch_to_frame', 'switch_to_window', 'take_screenshot', 'toggle_checkbox',
@@ -121,6 +123,12 @@ def retry_on_stale_element(func):
     """Decorate ``func`` so StaleElementReferenceException triggers a retry.
 
     ``func`` is retried only once.
+
+    selenium sometimes raises StaleElementReferenceException which leads to
+    spurious failures. In those cases, using this decorator will retry the
+    function once and avoid the spurious failure. This is a work-around until
+    selenium is properly fixed and should not be abused (or there is a
+    significant risk to hide bugs in the user scripts).
     """
     def wrapped(*args, **kwargs):
         try:
