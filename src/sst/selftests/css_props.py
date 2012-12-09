@@ -14,4 +14,4 @@ for elem in elems:
 
 elems = get_elements(tag='h2')
 for elem in elems:
-    fails(assert_css_property, elem, 'padding-left', '999px')
+    fails(assert_css_property, elem, 'padding-left', 'notfound')
