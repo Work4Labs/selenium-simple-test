@@ -47,17 +47,12 @@ class Xvfb(object):
 
     def start(self):
         self.vdisplay_num = self.search_for_free_display()
-        self.xvfb_cmd = 'Xvfb :{0} -screen 0 {1}x{2}x{3} 2>&1 >{4}'.format(
-            self.vdisplay_num,
-            self.width,
-            self.height,
-            self.colordepth,
-            os.devnull
-        )
+        self.xvfb_cmd = [
+            'Xvfb', ':%d' % (self.vdisplay_num,), '-screen', '0',
+            '%dx%dx%d' % (self.width, self.height, self.colordepth)]
         self.xvfb_proc = subprocess.Popen(self.xvfb_cmd,
             stdout=open(os.devnull),
             stderr=open(os.devnull),
-            shell=True
         )
         time.sleep(0.1)  # give Xvfb time to start
         self._redirect_display(self.vdisplay_num)
