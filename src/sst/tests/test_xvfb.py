@@ -63,7 +63,7 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
 
             def test_headless(self):
                 # A headless server has been started for us
-                self.assertNotEqual(None, self.xvfb.proc)
+                self.assertNotEqual(None, self.xvfb.xvfb.proc)
 
         self.assertRunSuccessfully(HeadlessNewXvfb("test_headless"))
 
@@ -74,10 +74,10 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
 
         class HeadlessReusedXvfb(Headless):
 
-            xvfb = external_xvfb
+            xvfb = runtests.XvfbFixture(external_xvfb)
 
             def test_headless(self):
                 # We reuse the existing xvfb
-                self.assertIs(external_xvfb, self.xvfb)
+                self.assertIs(external_xvfb, self.xvfb.xvfb)
 
         self.assertRunSuccessfully(HeadlessReusedXvfb("test_headless"))
