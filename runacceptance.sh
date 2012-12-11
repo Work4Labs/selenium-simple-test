@@ -29,6 +29,6 @@ python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
 firefox -v
 
-./sst-run --test -x -s -r xml click
+./sst-run --test -x -s -r xml
 
 echo "Done."
