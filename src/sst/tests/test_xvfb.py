@@ -43,6 +43,7 @@ class Headless(runtests.SSTTestCase):
     def stop_browser(self):
         pass
 
+
 class TestSSTTestCaseWithXfvb(testtools.TestCase):
 
     def setUp(self):
@@ -51,6 +52,12 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
         self.out = StringIO()
         self.patch(sys, 'stdout', self.out)
 
+    def assertRunSuccessfully(self, test):
+        result = testtools.TestResult()
+        test.run(result)
+        self.assertEqual([], result.errors)
+        self.assertEqual([], result.failures)
+
     def test_headless_new_xvfb(self):
         class HeadlessNewXvfb(Headless):
 
@@ -58,11 +65,7 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
                 # A headless server has been started for us
                 self.assertNotEqual(None, self.xvfb.proc)
 
-        test = HeadlessNewXvfb("test_headless")
-        result = testtools.TestResult()
-        test.run(result)
-        self.assertEqual([], result.errors)
-        self.assertEqual([], result.failures)
+        self.assertRunSuccessfully(HeadlessNewXvfb("test_headless"))
 
     def test_headless_reused_xvfb(self):
         external_xvfb = xvfbdisplay.Xvfb()
@@ -77,8 +80,4 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
                 # We reuse the existing xvfb
                 self.assertIs(external_xvfb, self.xvfb)
 
-        test = HeadlessReusedXvfb("test_headless")
-        result = testtools.TestResult()
-        test.run(result)
-        self.assertEqual([], result.errors)
-        self.assertEqual([], result.failures)
+        self.assertRunSuccessfully(HeadlessReusedXvfb("test_headless"))
