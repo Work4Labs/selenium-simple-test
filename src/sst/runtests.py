@@ -33,6 +33,7 @@ from sst import (
     actions,
     config,
     context,
+    xvfbdisplay,
 )
 from .actions import (
     start, stop, reset_base_url, _set_wait_timeout, take_screenshot,
@@ -243,6 +244,9 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
 class SSTTestCase(TestCase):
     """A test case that can use the sst framework."""
 
+    xvfb = None
+    xserver_headless = False
+
     browser_type = 'Firefox'
     browser_version = ''
     browser_platform = 'ANY'
@@ -266,6 +270,13 @@ class SSTTestCase(TestCase):
         actions._set_wait_timeout(self.wait_timeout, self.wait_poll)
         # Ensures sst.actions will find me
         actions._test = self
+        if self.xserver_headless and self.xvfb is None:
+            # If we need to run headless and no xvfb is already running, start
+            # a new one for the current test, scheduling the shutdown for the
+            # end of the test.
+            self.xvfb = xvfbdisplay.Xvfb()
+            self.xvfb.start()
+            self.addCleanup(self.xvfb.stop)
         self.start_browser()
         self.addCleanup(self.stop_browser)
 

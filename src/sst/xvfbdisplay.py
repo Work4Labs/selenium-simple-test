@@ -39,7 +39,7 @@ class Xvfb(object):
         self.height = height
         self.colordepth = colordepth
 
-        self.xvfb_proc = None
+        self.proc = None
         if 'DISPLAY' in os.environ:
             self.old_display_num = os.environ['DISPLAY'].split(':')[1]
         else:
@@ -50,7 +50,7 @@ class Xvfb(object):
         self.xvfb_cmd = [
             'Xvfb', ':%d' % (self.vdisplay_num,), '-screen', '0',
             '%dx%dx%d' % (self.width, self.height, self.colordepth)]
-        self.xvfb_proc = subprocess.Popen(self.xvfb_cmd,
+        self.proc = subprocess.Popen(self.xvfb_cmd,
             stdout=open(os.devnull),
             stderr=open(os.devnull),
         )
@@ -59,10 +59,10 @@ class Xvfb(object):
 
     def stop(self):
         self._redirect_display(self.old_display_num)
-        if self.xvfb_proc is not None:
-            self.xvfb_proc.kill()
-            self.xvfb_proc.wait()
-            self.xvfb_proc = None
+        if self.proc is not None:
+            self.proc.kill()
+            self.proc.wait()
+            self.proc = None
 
     def search_for_free_display(self):
         ls = map(lambda x:int(x.split('X')[1].split('-')[0]), self._lock_files())
