@@ -18,6 +18,8 @@ else
   bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
 fi
 
+PATH=sst-deps:$PATH  # so bindings find chromedriver
+
 pip install sst-deps/*.tar.gz
 
 echo "----------------"
@@ -27,8 +29,19 @@ python -V
 python -c "import django; print 'Django %s' % django.get_version()"
 python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
-firefox -v
 
-./sst-run --test -x -s -r xml
+case "$1" in
+    Firefox)
+        firefox -v
+        ./sst-run --test -x -s -r xml -b Firefox
+        ;;
+    Chrome)
+        ./sst-run --test -x -s -r xml -b Chrome
+        ;;
+    *)
+          echo "Browser format not recognized. (try: $0 Firefox, or:  $0 Chrome)"
+          exit
+          ;;
+esac
 
 echo "Done."
