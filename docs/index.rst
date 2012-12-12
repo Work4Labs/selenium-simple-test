@@ -333,6 +333,16 @@ So, with the above in a file name test_ubuntu.py you can run the test with
 
   python -m unittest test_ubuntu.py
 
+`sst-run` provides an headless xserver via the `-x` option. `SSTTestCase`
+provides the same feature (sharing the same implementation) via two class
+attributes.
+
+`xserver_headless` when set to `True` will start an headless server for each
+test (and stop it after the test). If you want to share the same server
+across several tests, set `xvfb`. You're then responsible for starting and
+stopping this server (see `src/sst/xvfbdisplay.py` for details or
+`src/sst/tests/test_xvfb.py` for examples.
+
 
 ---------------------------------------------------
     Performance tracing with Browsermob Proxy (HAR)
