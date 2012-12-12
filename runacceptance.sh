@@ -1,21 +1,27 @@
 #!/bin/bash
 
-# bootstrap and run acceptance selftests with firefox.
+# bootstrap and run acceptance selftests with browser.
 #
-# run this from main directory after getting a branch of SST:
+# Invoke script with a browser name as an argument.  
+# Available browsers are: Firefox and Chrome (Chromium).
+#
+# run this script from main directory after getting a branch of SST:
 #   $ bzr branch lp:selenium-simple-test
+#
 
 rm -rf results ENV
+
+pep8 --repeat . > pep8.log
 
 virtualenv ENV
 source ENV/bin/activate
 
 if [ -d sst-deps ]; then
-  cd sst-deps
-  bzr pull
-  cd ..
+    cd sst-deps
+    bzr pull
+    cd ..
 else
-  bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
+    bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
 fi
 
 PATH=sst-deps:$PATH  # so bindings find chromedriver
