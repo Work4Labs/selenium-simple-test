@@ -1,9 +1,13 @@
 #!/bin/bash
 
-# bootstrap and run acceptance selftests with firefox.
+# bootstrap and run acceptance selftests with browser.
 #
-# run this from main directory after getting a branch of SST:
+# Invoke script with a browser name as an argument.  
+# Available browsers are: Firefox and Chrome (Chromium).
+#
+# run this script from main directory after getting a branch of SST:
 #   $ bzr branch lp:selenium-simple-test
+#
 
 rm -rf results ENV
 
