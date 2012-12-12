@@ -7,15 +7,17 @@
 
 rm -rf results ENV
 
+pep8 --repeat . > pep8.log
+
 virtualenv ENV
 source ENV/bin/activate
 
 if [ -d sst-deps ]; then
-  cd sst-deps
-  bzr pull
-  cd ..
+    cd sst-deps
+    bzr pull
+    cd ..
 else
-  bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
+    bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
 fi
 
 PATH=sst-deps:$PATH  # so bindings find chromedriver
