@@ -27,9 +27,13 @@ import sys
 import traceback
 from textwrap import dedent
 
-import fixtures
-from unittest2 import TestSuite, TextTestRunner, SkipTest
-from testtools import TestCase
+
+from unittest2 import (
+    SkipTest,
+    TestCase,
+    TestSuite,
+    TextTestRunner,
+)
 
 from sst import (
     actions,
@@ -243,17 +247,19 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
     return suite
 
 
-class XvfbFixture(fixtures.Fixture):
-    """A test fixture that starts an xvfb server."""
+def use_xvfb_server(test, xvfb=None):
+    """Setup an xvfb server for a given test.
 
-    def __init__(self, xvfb):
-        super(XvfbFixture, self).__init__()
-        self.xvfb = xvfb
+    :param xvfb: An Xvfb object to use. If none is supplied, default values are
+        used to build it.
 
-    def setUp(self):
-        super(XvfbFixture, self).setUp()
-        self.xvfb.start()
-        self.addCleanup(self.xvfb.stop)
+    :returns: The xvfb server used so tests can use the built one.
+    """
+    if xvfb is None:
+        xvfb = xvfbdisplay.Xvfb()
+    xvfb.start()
+    test.addCleanup(xvfb.stop)
+    return xvfb
 
 
 class SSTTestCase(TestCase):
@@ -289,7 +295,7 @@ class SSTTestCase(TestCase):
             # If we need to run headless and no xvfb is already running, start
             # a new one for the current test, scheduling the shutdown for the
             # end of the test.
-            self.xvfb = self.useFixture(XvfbFixture(xvfbdisplay.Xvfb()))
+            self.xvfb = use_xvfb_server(self)
         self.start_browser()
         self.addCleanup(self.stop_browser)
 

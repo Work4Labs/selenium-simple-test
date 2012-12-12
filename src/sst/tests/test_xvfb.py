@@ -33,8 +33,6 @@ class TestXvfb(testtools.TestCase):
 class Headless(runtests.SSTTestCase):
     """A specialized test class for tests around xvfb."""
 
-    xserver_headless = True
-
     # We don't use a browser here so disable its use to speed the tests
     # (i.e. the browser won't be started)
     def start_browser(self):
@@ -61,9 +59,11 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
     def test_headless_new_xvfb(self):
         class HeadlessNewXvfb(Headless):
 
+            xserver_headless = True
+
             def test_headless(self):
                 # A headless server has been started for us
-                self.assertNotEqual(None, self.xvfb.xvfb.proc)
+                self.assertNotEqual(None, self.xvfb.proc)
 
         self.assertRunSuccessfully(HeadlessNewXvfb("test_headless"))
 
@@ -74,10 +74,11 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
 
         class HeadlessReusedXvfb(Headless):
 
-            xvfb = runtests.XvfbFixture(external_xvfb)
+            xserver_headless = True
+            xvfb = external_xvfb
 
             def test_headless(self):
                 # We reuse the existing xvfb
-                self.assertIs(external_xvfb, self.xvfb.xvfb)
+                self.assertIs(external_xvfb, self.xvfb)
 
         self.assertRunSuccessfully(HeadlessReusedXvfb("test_headless"))
