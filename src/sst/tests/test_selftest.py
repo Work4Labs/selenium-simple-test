@@ -9,7 +9,6 @@ import testtools
 # TestLoader.loadTestsFromName...) -- vila 2012-11-29
 import sst
 import sst.tests
-
 from sst.tests import main
 
 
@@ -29,4 +28,4 @@ class TestTestProgram(testtools.TestCase):
     def test_list_single(self):
         out = StringIO()
         self.run_test_program(['-l', self.id()], out)
-        self.assertEquals(self.id() + '\n', out.getvalue())
+        self.assertEqual(self.id() + '\n', out.getvalue())

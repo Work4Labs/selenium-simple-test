@@ -919,7 +919,7 @@ def assert_radio_value(id_or_elem, value):
 def set_radio_value(id_or_elem):
     """Select the specified radio button."""
     elem = assert_radio(id_or_elem)
-    _print('Selecting radio button item %r' % _get_text(elem))    
+    _print('Selecting radio button item %r' % _get_text(elem))
     elem.click()
 
 
@@ -1392,9 +1392,11 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     the property using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    _print('Checking css property %r: %s of %r' %
+    _print('Checking css property %r: %r of %r' %
         (property, value, _get_text(elem)))
     actual = elem.value_of_css_property(property)
+    # some browsers return string with space padded commas, some don't.
+    actual = actual.replace(', ', ',')
     if not regex:
         success = value == actual
     else:
@@ -1468,7 +1470,7 @@ def execute_script(script, *args):
     For example::
 
         execute_script('document.title = "New Title"')
-        
+
     args will be made available to the script if given.
     """
     _print('Executing script')
@@ -1478,5 +1480,5 @@ def execute_script(script, *args):
 def get_element_source(id_or_elem):
     """Gets the innerHTML source of an element."""
     elem = _get_elem(id_or_elem)
-    return elem.get_attribute('innerHTML') 
+    return elem.get_attribute('innerHTML')
 

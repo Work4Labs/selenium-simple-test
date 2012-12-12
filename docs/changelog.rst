@@ -17,6 +17,8 @@ version **0.2.3** (?? ?? ??)
 * ensure Xvfb is properly killed if sst-run is interrupted (#1084006)
 * protect 'wait_for' from transient failures caused by
   StaleElementReferenceException (#1084008)
+* include test class full name in test ids for SSTScriptTestCase (#1087606)
+
 
 version **0.2.2** (2012 Nov 4)
 *******************************
