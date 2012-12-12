@@ -339,7 +339,8 @@ class SSTScriptTestCase(SSTTestCase):
 
     def __init__(self, testMethod, context_row=None):
         super(SSTScriptTestCase, self).__init__('runTest')
-        self.id = lambda: testMethod
+        self.id = lambda: '%s.%s.%s' % (self.__class__.__module__,
+                                        self.__class__.__name__, testMethod)
         self.context = context_row
 
     def __str__(self):

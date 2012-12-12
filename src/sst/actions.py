@@ -53,9 +53,14 @@ from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
-    NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException,
-    NoSuchWindowException, NoSuchFrameException)
+    InvalidElementStateException,
+    NoSuchAttributeException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+    StaleElementReferenceException,
+    WebDriverException,
+)
 
 from sst import config
 from sst import bmobproxy
@@ -73,10 +78,12 @@ __all__ = [
     'click_link', 'clear_cookies', 'close_window', 'debug', 'dismiss_alert',
     'end_test', 'click_button', 'click_element', 'execute_script',
     'exists_element', 'fails', 'get_argument', 'get_base_url', 'get_cookies',
-    'get_current_url', 'get_element', 'get_element_source', 'get_element_by_css',
+    'get_current_url', 'get_element', 'get_element_source',
+    'get_element_by_css',
     'get_element_by_xpath', 'get_elements', 'get_elements_by_css',
     'get_elements_by_xpath', 'get_link_url', 'get_page_source', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'run_test', 'set_base_url',
+    'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
+    'run_test', 'set_base_url',
     'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
     'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
     'switch_to_frame', 'switch_to_window', 'take_screenshot', 'toggle_checkbox',
@@ -110,6 +117,26 @@ _sentinel = _Sentinel()
 def _raise(msg):
     _print(msg)
     raise AssertionError(msg)
+
+
+def retry_on_stale_element(func):
+    """Decorate ``func`` so StaleElementReferenceException triggers a retry.
+
+    ``func`` is retried only once.
+
+    selenium sometimes raises StaleElementReferenceException which leads to
+    spurious failures. In those cases, using this decorator will retry the
+    function once and avoid the spurious failure. This is a work-around until
+    selenium is properly fixed and should not be abused (or there is a
+    significant risk to hide bugs in the user scripts).
+    """
+    def wrapped(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except StaleElementReferenceException, e:
+            _print('Retrying after catching: %r' % e)
+            return func(*args, **kwargs)
+    return wrapped
 
 
 def set_base_url(url):
@@ -739,6 +766,8 @@ def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
     finally:
         VERBOSE = original
 
+
+@retry_on_stale_element
 def wait_for(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
@@ -825,7 +854,6 @@ def assert_dropdown(id_or_elem):
     _elem_is_type(elem, id_or_elem, 'select-one')
     return elem
 
-
 def set_dropdown_value(id_or_elem, text=None, value=None):
     """Set the select drop-list to a text or value specified."""
     elem = assert_dropdown(id_or_elem)
@@ -891,7 +919,7 @@ def assert_radio_value(id_or_elem, value):
 def set_radio_value(id_or_elem):
     """Select the specified radio button."""
     elem = assert_radio(id_or_elem)
-    _print('Selecting radio button item %r' % _get_text(elem))    
+    _print('Selecting radio button item %r' % _get_text(elem))
     elem.click()
 
 
@@ -1364,9 +1392,11 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     the property using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    _print('Checking css property %r: %s of %r' %
+    _print('Checking css property %r: %r of %r' %
         (property, value, _get_text(elem)))
     actual = elem.value_of_css_property(property)
+    # some browsers return string with space padded commas, some don't.
+    actual = actual.replace(', ', ',')
     if not regex:
         success = value == actual
     else:
@@ -1440,7 +1470,7 @@ def execute_script(script, *args):
     For example::
 
         execute_script('document.title = "New Title"')
-        
+
     args will be made available to the script if given.
     """
     _print('Executing script')
@@ -1450,5 +1480,5 @@ def execute_script(script, *args):
 def get_element_source(id_or_elem):
     """Gets the innerHTML source of an element."""
     elem = _get_elem(id_or_elem)
-    return elem.get_attribute('innerHTML') 
+    return elem.get_attribute('innerHTML')
 
