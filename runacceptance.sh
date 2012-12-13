@@ -9,7 +9,19 @@
 #   $ bzr branch lp:selenium-simple-test
 #
 
-rm -rf results ENV
+
+if [ "$1" == "Firefox" ]; then
+    BROWSER="Firefox"
+elif [ "$1" == "Chrome" ]; then 
+    BROWSER="Chrome"
+elif [ -z "$1" ]; then
+    BROWSER="Firefox"
+else
+    echo "$1 not recognized. (try: $0 Firefox, or:  $0 Chrome)"
+    exit
+fi
+
+rm -rf results ENV pep8.log
 
 virtualenv ENV
 source ENV/bin/activate
@@ -39,18 +51,14 @@ python -c "import django; print 'Django %s' % django.get_version()"
 python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
 
-case "$1" in
-    Firefox)
+case "$BROWSER" in
+    "Firefox")
         firefox -v
         ./sst-run --test -x -s -r xml -b Firefox
         ;;
-    Chrome)
+    "Chrome")
         ./sst-run --test -x -s -r xml -b Chrome
         ;;
-    *)
-          echo "Browser format not recognized. (try: $0 Firefox, or:  $0 Chrome)"
-          exit
-          ;;
 esac
 
 echo "Done."
