@@ -39,8 +39,9 @@ PATH=sst-deps:$PATH  # so bindings find chromedriver
 pip install sst-deps/*.tar.gz
 
 echo "running pep8 checks..."
-pep8 --repeat . > pep8.log
-echo "pep8 done"
+# all python files in root dir plus entire src/ folder
+pep8 --repeat *.py src > pep8.log
+echo "pep8 done."
 
 echo "----------------"
 echo "environment info:"
