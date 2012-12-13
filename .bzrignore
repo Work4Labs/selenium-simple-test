@@ -5,8 +5,9 @@ ENV
 functest.wpu
 MANIFEST
 pep8.log
+results
 src/sst.egg-info
-sst_deps
+sst-deps
 sst_docs
 sst.wpr
 sst.wpu
