@@ -11,8 +11,6 @@
 
 rm -rf results ENV
 
-pep8 --repeat . > pep8.log
-
 virtualenv ENV
 source ENV/bin/activate
 
@@ -28,9 +26,14 @@ PATH=sst-deps:$PATH  # so bindings find chromedriver
 
 pip install sst-deps/*.tar.gz
 
+echo "running pep8 checks..."
+pep8 --repeat . > pep8.log
+echo "pep8 done"
+
 echo "----------------"
 echo "environment info:"
 echo "----------------"
+
 python -V
 python -c "import django; print 'Django %s' % django.get_version()"
 python -c "import selenium; print 'Selenium %s' % selenium.__version__"
