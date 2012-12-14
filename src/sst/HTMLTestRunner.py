@@ -21,12 +21,14 @@ HTMLTestRunner is a counterpart to unittest's TextTestRunner. E.g.
     runner = HTMLTestRunner.HTMLTestRunner(
                 stream=fp,
                 title='My unit test',
-                description='This demonstrates the report output by HTMLTestRunner.'
+                description=
+                    'This demonstrates the report output by HTMLTestRunner.'
                 )
 
     # Use an external stylesheet.
     # See the Template_mixin class for more customizable options
-    runner.STYLESHEET_TMPL = '<link rel="stylesheet" href="my_stylesheet.css" type="text/css">'
+    runner.STYLESHEET_TMPL =
+        '<link rel="stylesheet" href="my_stylesheet.css" type="text/css">'
 
     # run the test
     runner.run(my_test_suite)
@@ -35,6 +37,8 @@ HTMLTestRunner is a counterpart to unittest's TextTestRunner. E.g.
 ------------------------------------------------------------------------
 Copyright (c) 2004-2007, Wai Yip Tung
 All rights reserved.
+
+# updated by Corey Goldberg, Canonical, 2012
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -93,7 +97,6 @@ Version in 0.7.1
 import datetime
 import StringIO
 import sys
-import time
 import unittest
 from xml.sax import saxutils
 
@@ -126,10 +129,9 @@ class OutputRedirector(object):
 stdout_redirector = OutputRedirector(sys.stdout)
 stderr_redirector = OutputRedirector(sys.stderr)
 
-
-
 # ----------------------------------------------------------------------
 # Template
+
 
 class Template_mixin(object):
     """
@@ -172,9 +174,9 @@ class Template_mixin(object):
     """
 
     STATUS = {
-    0: 'pass',
-    1: 'fail',
-    2: 'error',
+        0: 'pass',
+        1: 'fail',
+        2: 'error',
     }
 
     DEFAULT_TITLE = 'Unit Test Report'
@@ -183,8 +185,10 @@ class Template_mixin(object):
     # ------------------------------------------------------------------------
     # HTML Template
 
-    HTML_TMPL = r"""<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    HTML_TMPL = r"""
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>%(title)s</title>
@@ -221,7 +225,6 @@ function showCase(level) {
     }
 }
 
-
 function showClassDetail(cid, count) {
     var id_list = Array(count);
     var toHide = 1;
@@ -250,7 +253,6 @@ function showClassDetail(cid, count) {
     }
 }
 
-
 function showTestDetail(div_id){
     var details_div = document.getElementById(div_id)
     var displayState = details_div.style.display
@@ -263,7 +265,6 @@ function showTestDetail(div_id){
         details_div.style.display = 'none'
     }
 }
-
 
 function html_escape(s) {
     s = s.replace(/&/g,'&amp;');
@@ -297,23 +298,24 @@ function showOutput(id, name) {
 """
     # variables: (title, generator, stylesheet, heading, report, ending)
 
-
     # ------------------------------------------------------------------------
     # Stylesheet
     #
     # alternatively use a <link> for external style sheet, e.g.
     #   <link rel="stylesheet" href="$url" type="text/css">
 
-    STYLESHEET_TMPL = """
+    STYLESHEET_TMPL = """\
 <style type="text/css" media="screen">
-body        { font-family: verdana, arial, helvetica, sans-serif; font-size: 80%; }
-table       { font-size: 100%; }
-pre         { }
+body { font-family: Ubuntu, "DejaVu Sans", "Trebuchet MS", sans-serif;
+    font-size: 80%;
+}
+table { font-size: 100%; }
+pre { }
 
-/* -- heading ---------------------------------------------------------------------- */
+/* -- heading ------------------------------------------------------ */
 h1 {
-	font-size: 16pt;
-	color: gray;
+    font-size: 16pt;
+    color: gray;
 }
 .heading {
     margin-top: 0ex;
@@ -330,7 +332,7 @@ h1 {
     margin-bottom: 6ex;
 }
 
-/* -- css div popup ------------------------------------------------------------------------ */
+/* -- css div popup -------------------------------------------------------- */
 a.popup_link {
 }
 
@@ -346,14 +348,14 @@ a.popup_link:hover {
     /*border: solid #627173 1px; */
     padding: 10px;
     background-color: #E6E6D6;
-    font-family: "Lucida Console", "Courier New", Courier, monospace;
+    font-family: "Ubuntu Mono", Consolas, "DejaVu Sans Mono", monospace;
     text-align: left;
     font-size: 8pt;
     width: 500px;
 }
 
 }
-/* -- report ------------------------------------------------------------------------ */
+/* -- report -------------------------------------------------------- */
 #show_detail_line {
     margin-top: 3ex;
     margin-bottom: 1ex;
@@ -382,38 +384,36 @@ a.popup_link:hover {
 .hiddenRow  { display: none; }
 .testcase   { margin-left: 2em; }
 
-
-/* -- ending ---------------------------------------------------------------------- */
+/* -- ending ------------------------------------------------------ */
 #ending {
 }
 
 </style>
 """
 
-
-
     # ------------------------------------------------------------------------
     # Heading
     #
 
-    HEADING_TMPL = """<div class='heading'>
+    HEADING_TMPL = """\
+<div class='heading'>
 <h1>%(title)s</h1>
 %(parameters)s
 <p class='description'>%(description)s</p>
 </div>
 
-""" # variables: (title, parameters, description)
+"""  # variables: (title, parameters, description)
 
-    HEADING_ATTRIBUTE_TMPL = """<p class='attribute'><strong>%(name)s:</strong> %(value)s</p>
-""" # variables: (name, value)
+    HEADING_ATTRIBUTE_TMPL = """\
+    <p class='attribute'><strong>%(name)s:</strong> %(value)s</p>
 
-
+"""  # variables: (name, value)
 
     # ------------------------------------------------------------------------
     # Report
     #
 
-    REPORT_TMPL = """
+    REPORT_TMPL = """\
 <p id='show_detail_line'>Show
 <a href='javascript:showCase(0)'>Summary</a>
 <a href='javascript:showCase(1)'>Failed</a>
@@ -438,15 +438,18 @@ a.popup_link:hover {
     <td>%(count)s</td>
 </tr>
 </table>
-""" # variables: (test_list, count, Pass, fail, error)
+"""  # variables: (test_list, count, Pass, fail, error)
 
     REPORT_CLASS_TMPL = r"""
 <tr class='%(style)s'>
-    <td>%(desc)s</td>
-    <td><a href="javascript:showClassDetail('%(cid)s',%(count)s)">Detail</a></td>
+    <td>
+        %(desc)s
+    </td>
+    <td>
+        <a href="javascript:showClassDetail('%(cid)s',%(count)s)">Detail</a>
+    </td>
 </tr>
-""" # variables: (style, desc, count, Pass, fail, error, cid)
-
+"""  # variables: (style, desc, count, Pass, fail, error, cid)
 
     REPORT_TEST_WITH_OUTPUT_TMPL = r"""
 <tr id='%(tid)s' class='%(Class)s'>
@@ -454,38 +457,34 @@ a.popup_link:hover {
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_%(tid)s')" >
-        %(status)s</a>
+    <a class="popup_link" onfocus='this.blur();'
+        href="javascript:showTestDetail('div_%(tid)s')">%(status)s
+    </a>
 
     <div id='div_%(tid)s' class="popup_window">
-        <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_%(tid)s').style.display = 'none' " >
-           [x]</a>
-        </div>
-        <pre>
-        %(script)s
-        </pre>
+    <div style='text-align: right; color:red;cursor:pointer'>
+    <a onfocus='this.blur();'
+    onclick="document.getElementById('div_%(tid)s').style.display = 'none'">
+    [x]</a>
+    </div>
+      <pre>%(script)s</pre>
     </div>
     <!--css div popup end-->
 
     </td>
 </tr>
-""" # variables: (tid, Class, style, desc, status)
-
+"""
 
     REPORT_TEST_NO_OUTPUT_TMPL = r"""
 <tr id='%(tid)s' class='%(Class)s'>
     <td class='%(style)s'><div class='testcase'>%(desc)s</div></td>
     <td colspan='5' align='center'>%(status)s</td>
 </tr>
-""" # variables: (tid, Class, style, desc, status)
-
+"""  # variables: (tid, Class, style, desc, status)
 
     REPORT_TEST_OUTPUT_TMPL = r"""
 %(id)s: %(output)s
-""" # variables: (id, output)
-
-
+"""  # variables: (id, output)
 
     # ------------------------------------------------------------------------
     # ENDING
@@ -495,12 +494,13 @@ a.popup_link:hover {
 
 # -------------------- The end of the Template class -------------------
 
-
 TestResult = unittest.TestResult
+
 
 class _TestResult(TestResult):
     # note: _TestResult is a pure representation of results.
-    # It lacks the output and reporting ability compares to unittest._TextTestResult.
+    # It lacks the output and reporting ability compared
+    # to unittest.TextTestResult.
 
     def __init__(self, verbosity=1):
         TestResult.__init__(self)
@@ -520,7 +520,6 @@ class _TestResult(TestResult):
         # )
         self.result = []
 
-
     def startTest(self, test):
         TestResult.startTest(self, test)
         # just one buffer for both stdout and stderr
@@ -531,7 +530,6 @@ class _TestResult(TestResult):
         self.stderr0 = sys.stderr
         sys.stdout = stdout_redirector
         sys.stderr = stderr_redirector
-
 
     def complete_output(self):
         """
@@ -545,13 +543,12 @@ class _TestResult(TestResult):
             self.stderr0 = None
         return self.outputBuffer.getvalue()
 
-
     def stopTest(self, test):
-        # Usually one of addSuccess, addError or addFailure would have been called.
-        # But there are some path in unittest that would bypass this.
-        # We must disconnect stdout in stopTest(), which is guaranteed to be called.
+        # Usually one of addSuccess, addError or addFailure would have been
+        # called. But there are some path in unittest that would bypass this.
+        # We must disconnect stdout in stopTest(), which is guaranteed to
+        # be called.
         self.complete_output()
-
 
     def addSuccess(self, test):
         self.success_count += 1
@@ -611,7 +608,6 @@ class HTMLTestRunner(Template_mixin):
 
         self.startTime = datetime.datetime.now()
 
-
     def run(self, test):
         "Run the given test case or test suite."
         result = _TestResult(self.verbosity)
@@ -619,24 +615,23 @@ class HTMLTestRunner(Template_mixin):
         test(result)
         self.stopTime = datetime.datetime.now()
         self.generateReport(test, result)
-        print >>sys.stderr, '\nTime Elapsed: %s' % (self.stopTime-self.startTime)
+        print >>sys.stderr,\
+            '\nTime Elapsed: %s' % (self.stopTime - self.startTime)
         return result
-
 
     def sortResult(self, result_list):
         # unittest does not seems to run in any particular order.
         # Here at least we want to group them together by class.
         rmap = {}
         classes = []
-        for n,t,o,e in result_list:
+        for n, t, o, e in result_list:
             cls = t.__class__
-            if not rmap.has_key(cls):
+            if cls not in rmap:
                 rmap[cls] = []
                 classes.append(cls)
-            rmap[cls].append((n,t,o,e))
+            rmap[cls].append((n, t, o, e))
         r = [(cls, rmap[cls]) for cls in classes]
         return r
-
 
     def getReportAttributes(self, result):
         """
@@ -646,9 +641,12 @@ class HTMLTestRunner(Template_mixin):
         startTime = str(self.startTime)[:19]
         duration = str(self.stopTime - self.startTime)
         status = []
-        if result.success_count: status.append('Pass %s'    % result.success_count)
-        if result.failure_count: status.append('Failure %s' % result.failure_count)
-        if result.error_count:   status.append('Error %s'   % result.error_count  )
+        if result.success_count:
+            status.append('Pass %s' % result.success_count)
+        if result.failure_count:
+            status.append('Failure %s' % result.failure_count)
+        if result.error_count:
+            status.append('Error %s' % result.error_count)
         if status:
             status = ' '.join(status)
         else:
@@ -659,7 +657,6 @@ class HTMLTestRunner(Template_mixin):
             ('Status', status),
         ]
 
-
     def generateReport(self, test, result):
         report_attrs = self.getReportAttributes(result)
         generator = 'HTMLTestRunner %s' % __version__
@@ -668,35 +665,32 @@ class HTMLTestRunner(Template_mixin):
         report = self._generate_report(result)
         ending = self._generate_ending()
         output = self.HTML_TMPL % dict(
-            title = saxutils.escape(self.title),
-            generator = generator,
-            stylesheet = stylesheet,
-            heading = heading,
-            report = report,
-            ending = ending,
+            title=saxutils.escape(self.title),
+            generator=generator,
+            stylesheet=stylesheet,
+            heading=heading,
+            report=report,
+            ending=ending,
         )
         self.stream.write(output.encode('utf8'))
 
-
     def _generate_stylesheet(self):
         return self.STYLESHEET_TMPL
-
 
     def _generate_heading(self, report_attrs):
         a_lines = []
         for name, value in report_attrs:
             line = self.HEADING_ATTRIBUTE_TMPL % dict(
-                    name = saxutils.escape(name),
-                    value = saxutils.escape(value),
-                )
+                name=saxutils.escape(name),
+                value=saxutils.escape(value),
+            )
             a_lines.append(line)
         heading = self.HEADING_TMPL % dict(
-            title = saxutils.escape(self.title),
-            parameters = ''.join(a_lines),
-            description = saxutils.escape(self.description),
+            title=saxutils.escape(self.title),
+            parameters=''.join(a_lines),
+            description=saxutils.escape(self.description),
         )
         return heading
-
 
     def _generate_report(self, result):
         rows = []
@@ -704,82 +698,92 @@ class HTMLTestRunner(Template_mixin):
         for cid, (cls, cls_results) in enumerate(sortedResult):
             # subtotal for a class
             np = nf = ne = 0
-            for n,t,o,e in cls_results:
-                if n == 0: np += 1
-                elif n == 1: nf += 1
-                else: ne += 1
+            for n, t, o, e in cls_results:
+                if n == 0:
+                    np += 1
+                elif n == 1:
+                    nf += 1
+                else:
+                    ne += 1
 
             # format class description
             if cls.__module__ == "__main__":
                 name = cls.__name__
             else:
                 name = "%s.%s" % (cls.__module__, cls.__name__)
-            doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
             # cmg hack - only print test name, not full class path
-            #desc = doc and '%s: %s' % (name, doc) or name
             desc = name.split('.')[-1]
-
+            #doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
+            #desc = doc and '%s: %s' % (name, doc) or name
             row = self.REPORT_CLASS_TMPL % dict(
-                style = ne > 0 and 'errorClass' or nf > 0 and 'failClass' or 'passClass',
-                desc = desc,
-                count = np+nf+ne,
-                Pass = np,
-                fail = nf,
-                error = ne,
-                cid = 'c%s' % (cid+1),
+                style=ne > 0 and 'errorClass' or nf > 0 and
+                'failClass' or 'passClass',
+                desc=desc,
+                count=np + nf + ne,
+                Pass=np,
+                fail=nf,
+                error=ne,
+                cid='c%s' % (cid + 1),
             )
             rows.append(row)
 
-            for tid, (n,t,o,e) in enumerate(cls_results):
+            for tid, (n, t, o, e) in enumerate(cls_results):
                 self._generate_report_test(rows, cid, tid, n, t, o, e)
 
         report = self.REPORT_TMPL % dict(
-            test_list = ''.join(rows),
-            count = str(result.success_count+result.failure_count+result.error_count),
-            Pass = str(result.success_count),
-            fail = str(result.failure_count),
-            error = str(result.error_count),
+            test_list=''.join(rows),
+            count=str(result.success_count +
+                      result.failure_count +
+                      result.error_count),
+            Pass=str(result.success_count),
+            fail=str(result.failure_count),
+            error=str(result.error_count),
         )
         return report
-
 
     def _generate_report_test(self, rows, cid, tid, n, t, o, e):
         # e.g. 'pt1.1', 'ft1.1', etc
         has_output = bool(o or e)
-        tid = (n == 0 and 'p' or 'f') + 't%s.%s' % (cid+1,tid+1)
+        tid = (n == 0 and 'p' or 'f') + 't%s.%s' % (cid + 1, tid + 1)
         name = t.id().split('.')[-1]
         doc = t.shortDescription() or ""
         desc = doc and ('%s: %s' % (name, doc)) or name
-        tmpl = has_output and self.REPORT_TEST_WITH_OUTPUT_TMPL or self.REPORT_TEST_NO_OUTPUT_TMPL
+        tmpl = has_output and \
+            self.REPORT_TEST_WITH_OUTPUT_TMPL or \
+            self.REPORT_TEST_NO_OUTPUT_TMPL
 
-        # o and e should be byte string because they are collected from stdout and stderr?
-        if isinstance(o,str):
-            # TODO: some problem with 'string_escape': it escape \n and mess up formating
+        # o and e should be byte string because they are
+        # collected from stdout and stderr?
+        if isinstance(o, str):
+            # TODO: some problem with 'string_escape':
+            # it escapes \n and messes up formatting
             # uo = unicode(o.encode('string_escape'))
             uo = o.decode('latin-1')
         else:
             uo = o
-        if isinstance(e,str):
-            # TODO: some problem with 'string_escape': it escape \n and mess up formating
+        if isinstance(e, str):
+            # TODO: some problem with 'string_escape':
+            # it escapes \n and messes up formatting
             # ue = unicode(e.encode('string_escape'))
             ue = e.decode('latin-1')
         else:
             ue = e
 
         script = self.REPORT_TEST_OUTPUT_TMPL % dict(
-            id = tid,
-            output = saxutils.escape(uo+ue),
+            id=tid,
+            output=saxutils.escape(uo + ue),
         )
 
         row = tmpl % dict(
-            tid = tid,
-            Class = (n == 0 and 'hiddenRow' or 'none'),
-            style = n == 2 and 'errorCase' or (n == 1 and 'failCase' or 'none'),
+            tid=tid,
+            Class=(n == 0 and 'hiddenRow' or 'none'),
+            style =
+            n == 2 and 'errorCase' or (n == 1 and 'failCase' or 'none'),
             desc = desc,
             script = script,
             status = self.STATUS[n],
         )
-        rows.append(row)        
+        rows.append(row)
         if not has_output:
             return
 
