@@ -21,7 +21,7 @@ else
     exit
 fi
 
-rm -rf ENV pep8.log results
+rm -rf ENV results pep8.log pylint.log
 
 virtualenv ENV
 source ENV/bin/activate
@@ -39,8 +39,7 @@ PATH=sst-deps:$PATH  # so bindings find chromedriver
 pip install sst-deps/*.tar.gz
 
 echo "running pep8 checks..."
-# all python files in root dir plus entire src/ folder
-pep8 --repeat *.py src > pep8.log
+pep8 --repeat --exclude=.bzr,ENV . > pep8.log
 echo "pep8 done."
 
 echo "----------------"
