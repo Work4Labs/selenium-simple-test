@@ -27,12 +27,19 @@ import sys
 import traceback
 from textwrap import dedent
 
-from unittest2 import TestSuite, TextTestRunner, TestCase, SkipTest
+
+from unittest2 import (
+    SkipTest,
+    TestCase,
+    TestSuite,
+    TextTestRunner,
+)
 
 from sst import (
     actions,
     config,
     context,
+    xvfbdisplay,
 )
 from .actions import (
     start, stop, reset_base_url, _set_wait_timeout, take_screenshot,
@@ -240,8 +247,26 @@ def get_suite(test_names, test_dir, browser_type, browser_version,
     return suite
 
 
+def use_xvfb_server(test, xvfb=None):
+    """Setup an xvfb server for a given test.
+
+    :param xvfb: An Xvfb object to use. If none is supplied, default values are
+        used to build it.
+
+    :returns: The xvfb server used so tests can use the built one.
+    """
+    if xvfb is None:
+        xvfb = xvfbdisplay.Xvfb()
+    xvfb.start()
+    test.addCleanup(xvfb.stop)
+    return xvfb
+
+
 class SSTTestCase(TestCase):
     """A test case that can use the sst framework."""
+
+    xvfb = None
+    xserver_headless = False
 
     browser_type = 'Firefox'
     browser_version = ''
@@ -266,6 +291,11 @@ class SSTTestCase(TestCase):
         actions._set_wait_timeout(self.wait_timeout, self.wait_poll)
         # Ensures sst.actions will find me
         actions._test = self
+        if self.xserver_headless and self.xvfb is None:
+            # If we need to run headless and no xvfb is already running, start
+            # a new one for the current test, scheduling the shutdown for the
+            # end of the test.
+            self.xvfb = use_xvfb_server(self)
         self.start_browser()
         self.addCleanup(self.stop_browser)
 
