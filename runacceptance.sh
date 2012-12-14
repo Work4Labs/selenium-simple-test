@@ -21,7 +21,7 @@ else
     exit
 fi
 
-rm -rf ENV results pep8.log pylint.log
+rm -rf ENV results pep8.log
 
 virtualenv ENV
 source ENV/bin/activate
