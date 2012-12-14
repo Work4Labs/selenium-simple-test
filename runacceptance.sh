@@ -21,7 +21,7 @@ else
     exit
 fi
 
-rm -rf ENV results pep8.log
+rm -rf ENV results *.log
 
 virtualenv ENV
 source ENV/bin/activate
@@ -38,9 +38,9 @@ PATH=sst-deps:$PATH  # so bindings find chromedriver
 
 pip install sst-deps/*.tar.gz
 
-echo "running pep8 checks..."
-pep8 --repeat --exclude=.bzr,ENV . > pep8.log
-echo "pep8 done."
+echo "running flake8 (pyflakes/pep8) checks..."
+flake8 src/ examples/ docs/ sst-remote sst-run *.py  > flake8.log
+echo "flake8 checks done."
 
 echo "----------------"
 echo "environment info:"
