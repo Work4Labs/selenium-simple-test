@@ -759,7 +759,7 @@ def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
             except AssertionError as e:
                 pass
             else:
-                if not result:
+                if result != False:
                     break
             if time.time() > max_time:
                 error = 'Timed out waiting for: %s' % msg

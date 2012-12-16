@@ -54,10 +54,10 @@ python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 case "$BROWSER" in
     "Firefox")
         firefox -v
-        ./sst-run --test -x -s -r xml -b Firefox
+        ./sst-run --test -x -s -r xml -b Firefox --extended-tracebacks
         ;;
     "Chrome")
-        ./sst-run --test -x -s -r xml -b Chrome
+        ./sst-run --test -x -s -r xml -b Chrome --extended-tracebacks
         ;;
 esac
 
