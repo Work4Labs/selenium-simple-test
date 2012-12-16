@@ -8,6 +8,6 @@ assert_url('/begin')
 
 go_to('/')
 
-# checks the wait option 
+# checks the wait option
 click_element(get_element(id='the_band_link'), wait=True)
 assert_url('/begin')

@@ -9,11 +9,10 @@ StoredContext = namedtuple(
 )
 
 
-
 def populate_context(
         context, path, browser_type,
         javascript_disabled, arguments=None
-    ):
+):
     """Create the execution context for a test"""
 
     name = os.path.splitext(

@@ -67,9 +67,9 @@ params = dict(
     name=NAME,
     version=__version__,
     packages=PACKAGES,
-    package_dir={'': 'src',},
-    install_requires = REQUIREMENTS,
-    
+    package_dir={'': 'src', },
+    install_requires=REQUIREMENTS,
+
     # metadata for upload to PyPI
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
@@ -79,12 +79,12 @@ params = dict(
     url=URL,
     classifiers=CLASSIFIERS,
 
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'sst-run = sst.scripts.run:main',
             'sst-remote = sst.scripts.remote:main',
-            ],
-        },
+        ],
+    },
 )
 
 setup(**params)

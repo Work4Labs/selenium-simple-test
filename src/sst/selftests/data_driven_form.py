@@ -11,8 +11,10 @@ assert isinstance(should_pass, bool)
 
 go_to('/')
 assert_title('The Page Title')
-write_textfield(get_element(name='textfield1'), textfield1) # textfield1 comes from the associated csv data file
+
+# fields come from the associated csv data file
+write_textfield(get_element(name='textfield1'), textfield1)
 write_textfield(get_element(name='password1'), password1)
+
 click_button(get_element(tag='input', value='Begin'))
 assert_title('The Next Page')
-

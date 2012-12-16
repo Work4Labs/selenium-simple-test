@@ -12,6 +12,7 @@ from sst import (
 )
 from sst.tests import main
 
+
 class TestXvfb(testtools.TestCase):
 
     def test_start(self):

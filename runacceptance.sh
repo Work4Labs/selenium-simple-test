@@ -39,7 +39,7 @@ PATH=sst-deps:$PATH  # so bindings find chromedriver
 pip install sst-deps/*.tar.gz
 
 echo "running flake8 (pyflakes/pep8) checks..."
-flake8 src/ examples/ docs/ sst-remote sst-run *.py  > flake8.log
+flake8 src/ docs/ sst-remote sst-run *.py  > flake8.log
 echo "flake8 checks done."
 
 echo "----------------"

@@ -31,7 +31,6 @@ import subprocess
 import time
 
 
-
 class Xvfb(object):
 
     def __init__(self, width=1024, height=768, colordepth=24):
@@ -51,9 +50,8 @@ class Xvfb(object):
             'Xvfb', ':%d' % (self.vdisplay_num,), '-screen', '0',
             '%dx%dx%d' % (self.width, self.height, self.colordepth)]
         self.proc = subprocess.Popen(self.xvfb_cmd,
-            stdout=open(os.devnull),
-            stderr=open(os.devnull),
-        )
+                                     stdout=open(os.devnull),
+                                     stderr=open(os.devnull),)
         time.sleep(0.1)  # give Xvfb time to start
         self._redirect_display(self.vdisplay_num)
 
@@ -65,7 +63,8 @@ class Xvfb(object):
             self.proc = None
 
     def search_for_free_display(self):
-        ls = map(lambda x:int(x.split('X')[1].split('-')[0]), self._lock_files())
+        ls = map(lambda x: int(x.split('X')[1].split('-')[0]),
+                 self._lock_files())
         min_display_num = 1000
         if len(ls):
             display_num = max(min_display_num, max(ls) + 1)

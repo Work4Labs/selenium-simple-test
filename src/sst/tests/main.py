@@ -9,5 +9,3 @@ class TestProgram(testtools.run.TestProgram):
             testRunner = unittest2.TextTestRunner
         super(TestProgram, self).__init__(module, argv=argv, stdout=stdout,
                                           testRunner=testRunner, exit=exit)
-
-

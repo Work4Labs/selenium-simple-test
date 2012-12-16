@@ -28,5 +28,5 @@ click_link('longscroll_link')
 assert_url('/longscroll')
 
 # link is initially scrolled out of view
-click_link('homepage_link_bottom') 
+click_link('homepage_link_bottom')
 assert_url('/')

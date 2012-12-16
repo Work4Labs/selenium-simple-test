@@ -2,7 +2,7 @@ from sst.actions import *
 
 # xpath locator tests
 #
-# see: http://seleniumhq.org/docs/appendix_locating_techniques.html 
+# see: http://seleniumhq.org/docs/appendix_locating_techniques.html
 
 go_to('/')
 

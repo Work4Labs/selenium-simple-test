@@ -46,4 +46,3 @@ fails(switch_to_window, 99)
 
 # verify we are still back on main window
 assert_title('The Page Title')
-

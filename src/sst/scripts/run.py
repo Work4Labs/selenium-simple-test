@@ -33,11 +33,10 @@ from sst import runtests
 from sst.command import get_opts_run, clear_old_results
 
 
-
 def main():
     cmd_opts, args = get_opts_run()
 
-    print '----------------------------------------------------------------------'
+    print '--------------------------------------------------------------'
     print 'starting SST...'
 
     cleanups = []
@@ -47,9 +46,11 @@ def main():
 
     if cmd_opts.browsermob:
         browsermob_process = run_browsermob_server(cmd_opts.browsermob)
+
         def browsermob_cleanup():
             browsermob_process.kill()
             browsermob_process.wait()
+
         cleanups.append(('\nkilling browsermob proxy...', browsermob_cleanup))
 
     if cmd_opts.run_tests:
@@ -66,7 +67,8 @@ def main():
 
     if not cmd_opts.quiet:
         print ''
-        print '  date time: %s' % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        print '  date time: %s' \
+            % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         print '  test directory: %r' % cmd_opts.dir_name
         print '  report format: %r' % cmd_opts.report_format
         print '  browser type: %r' % cmd_opts.browser_type
@@ -93,18 +95,17 @@ def main():
             failfast=cmd_opts.failfast,
             debug=cmd_opts.debug,
             extended=cmd_opts.extended_tracebacks,
-            )
+        )
     finally:
 
-        print '----------------------------------------------------------------------'
+        print '--------------------------------------------------------------'
         for desc, cmd in cleanups:
             # Run cleanups, displaying but not propagating exceptions
             try:
                 print desc
                 cmd()
-            except Exception, exc:
+            except Exception:
                 print traceback.format_exc()
-
 
 
 def run_django():
@@ -124,10 +125,10 @@ def run_django():
         print 'you must have django installed to run the test project.'
         sys.exit(1)
     subprocess.Popen([manage_file, 'runserver'],
-        stderr=open(os.devnull, 'w'),
-        stdout=open(os.devnull, 'w')
-        )
-    print '----------------------------------------------------------------------'
+                     stderr=open(os.devnull, 'w'),
+                     stdout=open(os.devnull, 'w')
+                     )
+    print '--------------------------------------------------------------'
     print 'waiting for django to come up...'
     attempts = 30
     for count in xrange(attempts):
@@ -135,13 +136,12 @@ def run_django():
             resp = urllib.urlopen(url)
             if resp.code == 200:
                 break
-        except IOError as e:
+        except IOError:
             time.sleep(0.2)
             if count >= attempts - 1:  # timeout
                 print 'Error: can not get response from %r' % url
                 raise
     print 'django found. continuing...'
-
 
 
 def kill_django():
@@ -151,18 +151,17 @@ def kill_django():
         pass
 
 
-
 def run_browsermob_server(path_to_bmob_server):
     try:
-        process = subprocess.Popen([path_to_bmob_server,],
-            stderr=open(os.devnull, 'w'),
-            stdout=open(os.devnull, 'w')
-            )
+        process = subprocess.Popen([path_to_bmob_server, ],
+                                   stderr=open(os.devnull, 'w'),
+                                   stdout=open(os.devnull, 'w')
+                                   )
     except Exception as e:
         print 'Error: proxy not started'
         print e
         sys.exit(1)
-    print '----------------------------------------------------------------------'
+    print '--------------------------------------------------------------'
     print 'waiting for browsermob proxy to come up...'
     attempts = 30
     for count in xrange(attempts):
@@ -179,7 +178,6 @@ def run_browsermob_server(path_to_bmob_server):
                 sys.exit(1)
     print 'browsermob proxy found. continuing...'
     return process
-
 
 
 if __name__ == '__main__':

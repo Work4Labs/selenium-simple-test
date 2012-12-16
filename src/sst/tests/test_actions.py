@@ -44,4 +44,3 @@ class TestRetryOnStale(testtools.TestCase):
     def test_wait_for_retries(self):
         self.assertRaisesOnlyOnce(None, actions.wait_for,
                                   self.raise_stale_element)
-

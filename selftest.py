@@ -14,4 +14,3 @@ discover_args = ['discover',
                  '--top-level-directory', './src',
                  ]
 main.TestProgram(__name__, argv=[sys.argv[0]] + discover_args + sys.argv[1:])
-

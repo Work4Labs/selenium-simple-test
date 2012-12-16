@@ -91,15 +91,15 @@ def runtests(test_names, test_dir='.', report_format='console',
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_directory and
-        not os.path.abspath(root).startswith(shared_directory+os.path.sep) and
-        not os.path.split(root)[1].startswith('_')
+        not os.path.abspath(root).startswith(shared_directory + os.path.sep)
+        and not os.path.split(root)[1].startswith('_')
     )
 
     alltests = TestSuite(suites)
 
     print ''
     print '  %s test cases loaded\n' % alltests.countTestCases()
-    print '----------------------------------------------------------------------'
+    print '--------------------------------------------------------------'
 
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
@@ -107,6 +107,7 @@ def runtests(test_names, test_dir='.', report_format='console',
 
     if report_format == 'console':
         runner = TextTestRunner(verbosity=2, failfast=failfast)
+
         def run():
             runner.run(alltests)
 
@@ -117,6 +118,7 @@ def runtests(test_names, test_dir='.', report_format='console',
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2, failfast=failfast
         )
+
         def run():
             runner.run(alltests)
 
@@ -291,7 +293,7 @@ class SSTTestCase(TestCase):
         actions._set_wait_timeout(self.wait_timeout, self.wait_poll)
         # Ensures sst.actions will find me
         actions._test = self
-        if self.xserver_headless and self.xvfb is None:
+        if self.xserver_headless and self.xvthatfb is None:
             # If we need to run headless and no xvfb is already running, start
             # a new one for the current test, scheduling the shutdown for the
             # end of the test.
@@ -335,7 +337,6 @@ class SSTScriptTestCase(SSTTestCase):
 
     script_dir = '.'
     script_name = None
-
 
     def __init__(self, testMethod, context_row=None):
         super(SSTScriptTestCase, self).__init__('runTest')
@@ -421,10 +422,10 @@ class SSTScriptTestCase(SSTTestCase):
         %s
 
         """[1:]) % (
-               exc.__class__.__name__,
-               original_message,
-               current_url,
-               page_source,
+            exc.__class__.__name__,
+            original_message,
+            current_url,
+            page_source,
         )
         if isinstance(new_message, unicode):
             new_message = new_message.encode('ascii', 'backslashreplace')
@@ -465,8 +466,8 @@ def get_data(csv_path):
     """
     Return a list of data dicts for parameterized testing.
 
-      the first row (headers) match data_map key names
-      rows beneath that are filled with data values
+      the first row (headers) match data_map key names.
+      rows beneath are filled with data values.
     """
     rows = []
     print '  Reading data from %r...' % os.path.split(csv_path)[-1],

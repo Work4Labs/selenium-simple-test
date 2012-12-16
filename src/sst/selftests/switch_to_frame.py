@@ -16,7 +16,7 @@ switch_to_frame(index_or_name=1)
 elem = get_element(id='frame_b_id')
 assert_text(elem, 'Frame B text here')
 
-# fails because we are in sibling frame 
+# fails because we are in sibling frame
 fails(get_element, id='frame_a_id')
 
 # switch back to default frame
@@ -37,6 +37,3 @@ assert_title('Popup Window')
 # switch back to default/main window/tab
 switch_to_window()
 assert_title('The Page Title')
-
-
-
