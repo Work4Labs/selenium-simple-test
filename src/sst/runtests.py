@@ -293,7 +293,7 @@ class SSTTestCase(TestCase):
         actions._set_wait_timeout(self.wait_timeout, self.wait_poll)
         # Ensures sst.actions will find me
         actions._test = self
-        if self.xserver_headless and self.xvthatfb is None:
+        if self.xserver_headless and self.xvfb is None:
             # If we need to run headless and no xvfb is already running, start
             # a new one for the current test, scheduling the shutdown for the
             # end of the test.
