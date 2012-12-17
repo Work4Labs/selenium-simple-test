@@ -4,6 +4,7 @@ docs/actions.rst
 ENV
 functest.wpu
 MANIFEST
+nosetests.xml
 pep8.log
 results
 src/sst.egg-info
