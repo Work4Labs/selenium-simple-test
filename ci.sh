@@ -1,15 +1,27 @@
 #!/bin/bash
 
-# bootstrap and run acceptance selftests with browser.
+# Continuous Integration script for SST
 #
-# Invoke script with a browser name as an argument.
-# Available browsers are: Firefox and Chrome (Chromium).
+#  Options:
+#    --bootstrap, --flake8, --unit, ---acceptance=BROWSER
 #
-# run this script from main directory after getting a branch of SST:
-#   $ bzr branch lp:selenium-simple-test
+#  Example:
+#    bootstrap environment, run static checks, run unit tests, run
+#    acceptance tests with default browser:
+#
+#    $ ./ci.sh --bootstrap --flake8 --unit --acceptance
+#
+#    * BROWSER options are "Firefox" and "Chrome".  Default is "Firefox".
+#
+#  Instructions:
+#   1. ensure you have Xvfb, Firefox or Chrome/Chromium installed
+#   2. $ bzr branch lp:selenium-simple-test
+#   3. cd selenium-simple-test
+#   4. run this this script
 #
 
 
+# command line options
 while [ $# -gt 0 ]; do  # until you run out of parameters
     case "$1" in
         --bootstrap)
@@ -18,19 +30,18 @@ while [ $# -gt 0 ]; do  # until you run out of parameters
         --flake8)
             FLAKE8=1
             ;;
-        -u|--unit)
+        --unit)
             UNIT=1
             ;;
-        -a|--acceptance)
+        --acceptance)
             BROWSER="$2"
-            shift
-            if [[ "$BROWSER" == "Firefox" || "$BROWSER" == "firefox" ]]; then
+            if [[ "$BROWSER" == "Firefox" || "$BROWSER" == "Chrome" ]]; then
+                shift
+            elif [ -z "$BROWSER" ]; then
                 BROWSER="Firefox"
-            elif [[ "$BROWSER" == "Chrome" || "$BROWSER" == "chrome" ]]; then
-                BROWSER="Chrome"
             else
                 echo "browser format $1 not recognized."
-                echo "(try: -a Firefox, or: $0 -a Chrome)"
+                echo "(try: --acceptance Firefox, or: $0 --acceptance Chrome)"
                 exit
             fi
             ;;
@@ -52,7 +63,7 @@ if [ -n "$BOOTSTRAP" ]; then
     echo "creating virtualenv..."
     virtualenv ENV
     source ENV/bin/activate
-    echo "installing modules from depenencies branch..."
+    echo "installing modules from dependencies branch..."
     pip install sst-deps/*.tar.gz
 else
     source ENV/bin/activate
@@ -75,10 +86,12 @@ python -c "import django; print 'Django %s' % django.get_version()"
 python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
 
+# run unit tests
 if [ -n "$UNIT" ]; then
      nosetests --with-xunit -e ENV -e testproject
 fi
 
+# run acceptance tests
 if [ -n "$BROWSER" ]; then
     if [ "$BROWSER" == "Firefox" ]; then
         firefox -v
@@ -86,4 +99,4 @@ if [ -n "$BROWSER" ]; then
     ./sst-run --test -x -s -r xml -b $BROWSER --extended-tracebacks
 fi
 
-echo "Done."
+echo "done."
