@@ -75,11 +75,11 @@ python -c "import django; print 'Django %s' % django.get_version()"
 python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
 
-if [ -n "$UNIT" ]; then
+if [ -z "$UNIT" ]; then
      nosetests --with-xunit -e ENV -e testproject
 fi
 
-if [ -n "$BROWSER" ]; then
+if [ -z "$BROWSER" ]; then
     if [ "$BROWSER" == "Firefox" ]; then
         firefox -v
     fi
