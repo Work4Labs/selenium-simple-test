@@ -41,7 +41,7 @@ while [ $# -gt 0 ]; do  # until you run out of parameters
                 BROWSER="Firefox"
             else
                 echo "browser format $1 not recognized."
-                echo "(try: --acceptance Firefox, or: $0 --acceptance Chrome)"
+                echo "(try: $0 --acceptance Firefox, or: $0 --acceptance Chrome)"
                 exit
             fi
             ;;
