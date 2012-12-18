@@ -88,7 +88,7 @@ python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 
 # run unit tests
 if [ -n "$UNIT" ]; then
-     nosetests --with-xunit -e ENV -e testproject
+     nosetests --with-xunit -m ^test_.* -e ENV -e testproject
 fi
 
 # run acceptance tests
