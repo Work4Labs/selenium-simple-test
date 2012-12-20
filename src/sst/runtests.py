@@ -110,7 +110,7 @@ def runtests(test_names, test_dir='.', report_format='console',
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
         # XXX failfast not supported in XMLTestRunner
-        runner = jxmlrunner.XMLTestRunner(output=fp, verbosity=2)
+        runner = junitxmlrunner.XMLTestRunner(output=fp, verbosity=2)
         
     elif report_format == 'html':
         _make_results_dir()
