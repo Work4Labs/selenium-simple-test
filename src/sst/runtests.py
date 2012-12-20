@@ -21,12 +21,13 @@
 import ast
 import codecs
 import datetime
+import HTMLTestRunner
+import junitxmlrunner
 import os
 import pdb
 import sys
 import traceback
 from textwrap import dedent
-
 
 from unittest2 import (
     SkipTest,
@@ -105,43 +106,24 @@ def runtests(test_names, test_dir='.', report_format='console',
         print 'Error: Did not find any tests'
         sys.exit(1)
 
-    if report_format == 'console':
-        runner = TextTestRunner(verbosity=2, failfast=failfast)
-
-        def run():
-            runner.run(alltests)
-
-    if report_format == 'html':
-        import HTMLTestRunner
+    if report_format == 'xml':
+        _make_results_dir()
+        fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
+        # XXX failfast not supported in XMLTestRunner
+        runner = junitxmlrunner.XMLTestRunner(output=fp, verbosity=2)
+        
+    elif report_format == 'html':
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2, failfast=failfast
         )
 
-        def run():
-            runner.run(alltests)
-
-    if report_format == 'xml':
-        try:
-            import junitxml
-        except ImportError:
-            print 'Error: Please install junitxml to use XML output'
-            sys.exit(1)
-        _make_results_dir()
-        fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
-        result = junitxml.JUnitXmlResult(fp)
-        result.failfast = failfast
-        result.startTestRun()
-
-        def run():
-            try:
-                alltests.run(result)
-            finally:
-                result.stopTestRun()
+    else:
+        runner = TextTestRunner(verbosity=2, failfast=failfast)
 
     try:
-        run()
+        runner.run(alltests)
     except KeyboardInterrupt:
         print >> sys.stderr, "Test run interrupted"
     finally:

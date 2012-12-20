@@ -61,43 +61,51 @@ if [ -n "$BOOTSTRAP" ]; then
         bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
     fi
     echo "creating virtualenv..."
-    virtualenv ENV
+    virtualenv ENV --quiet
+    echo "activating virtualenv..."
     source ENV/bin/activate
     echo "installing modules from dependencies branch..."
-    pip install sst-deps/*.tar.gz
+    DEPS="sst-deps/pythonpackages/"
+    cd $DEPS; ls *.tar.gz
+    pip install *.tar.gz --quiet
+    cd ../..
 else
     source ENV/bin/activate
 fi
 
 echo "setting path..."
-PATH=sst-deps:$PATH  # so bindings find chromedriver
+PATH=sst-deps/bin:$PATH  # so bindings find chromedriver for selenium
 
-if [ -n "$FLAKE8" ]; then
-    echo "running flake8 (pyflakes/pep8) checks..."
-    flake8 src/ docs/ sst-* *.py  > flake8.log
-fi
-
-echo "-----------------"
+echo "----------------------------------"
 echo "environment info:"
-echo "-----------------"
-
 python -V
 python -c "import django; print 'Django %s' % django.get_version()"
 python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
 
-# run unit tests
+if [ -n "$FLAKE8" ]; then
+    echo "----------------------------------"
+    echo "running flake8 (pyflakes/pep8) checks..."
+    flake8 src/ docs/ sst-* *.py > flake8.log
+    cat flake8.log | grep -v ': W'  # print errors, but not warnings
+fi
+
 if [ -n "$UNIT" ]; then
+    echo "----------------------------------"
+    echo "running unit tests..."
     # this generates 'nosetests.xml' in top dir
     nosetests --verbosity=2 --with-xunit -m ^test_.* -e ENV -e testproject
 fi
 
-# run acceptance tests
 if [ -n "$BROWSER" ]; then
     if [ "$BROWSER" == "Firefox" ]; then
+        echo "----------------------------------"
         firefox -v
     fi
+    echo "----------------------------------"
+    echo "running acceptance tests..."
     ./sst-run --test -x -s -r xml -b $BROWSER --extended-tracebacks
 fi
+echo "----------------------------------"
 
-echo "done."
+echo "$0 done."
