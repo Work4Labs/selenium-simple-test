@@ -27,14 +27,12 @@ import sys
 import traceback
 from textwrap import dedent
 
-
 from unittest2 import (
     SkipTest,
     TestCase,
     TestSuite,
     TextTestRunner,
 )
-
 
 from sst import (
     actions,
@@ -124,7 +122,7 @@ def runtests(test_names, test_dir='.', report_format='console',
             runner.run(alltests)
 
     if report_format == 'xml':
-        import xmlrunner
+        import xmlrunner  # from unittest-xml-reporting package
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
         runner = xmlrunner.XMLTestRunner(output=fp, verbosity=2)
