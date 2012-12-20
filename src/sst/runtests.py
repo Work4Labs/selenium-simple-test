@@ -21,6 +21,8 @@
 import ast
 import codecs
 import datetime
+import HTMLTestRunner
+import junitxmlrunner
 import os
 import pdb
 import sys
@@ -104,35 +106,24 @@ def runtests(test_names, test_dir='.', report_format='console',
         print 'Error: Did not find any tests'
         sys.exit(1)
 
-    if report_format == 'console':
-        runner = TextTestRunner(verbosity=2, failfast=failfast)
-
-        def run():
-            runner.run(alltests)
-
-    if report_format == 'html':
-        import HTMLTestRunner
+    if report_format == 'xml':
+        _make_results_dir()
+        fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
+        # XXX failfast not supported in XMLTestRunner
+        runner = jxmlrunner.XMLTestRunner(output=fp, verbosity=2)
+        
+    elif report_format == 'html':
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
         runner = HTMLTestRunner.HTMLTestRunner(
             stream=fp, title='SST Test Report', verbosity=2, failfast=failfast
         )
 
-        def run():
-            runner.run(alltests)
-
-    if report_format == 'xml':
-        import xmlrunner  # from unittest-xml-reporting package
-        _make_results_dir()
-        fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
-        # XXX failfast not supported in XMLTestRunner
-        runner = xmlrunner.XMLTestRunner(output=fp, verbosity=2)
-
-        def run():
-            runner.run(alltests)
+    else:
+        runner = TextTestRunner(verbosity=2, failfast=failfast)
 
     try:
-        run()
+        runner.run(alltests)
     except KeyboardInterrupt:
         print >> sys.stderr, "Test run interrupted"
     finally:
