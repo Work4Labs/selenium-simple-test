@@ -1,3 +1,2 @@
 selenium
-unittest-xml-reporting
 unittest2
