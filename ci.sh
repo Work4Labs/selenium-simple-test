@@ -64,7 +64,7 @@ if [ -n "$BOOTSTRAP" ]; then
     virtualenv ENV
     source ENV/bin/activate
     echo "installing modules from dependencies branch..."
-    pip install sst-deps/*.tar.gz
+    pip install sst-deps/*.tar.gz --quiet
 else
     source ENV/bin/activate
 fi
