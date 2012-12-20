@@ -111,7 +111,7 @@ def runtests(test_names, test_dir='.', report_format='console',
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
         # XXX failfast not supported in XMLTestRunner
         runner = junitxmlrunner.XMLTestRunner(output=fp, verbosity=2)
-        
+
     elif report_format == 'html':
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.html'), 'wb')
@@ -125,7 +125,7 @@ def runtests(test_names, test_dir='.', report_format='console',
     try:
         runner.run(alltests)
     except KeyboardInterrupt:
-        print >> sys.stderr, "Test run interrupted"
+        print >> sys.stderr, 'Test run interrupted'
     finally:
         missing = test_names - found_tests
         for name in missing:
