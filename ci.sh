@@ -64,13 +64,13 @@ if [ -n "$BOOTSTRAP" ]; then
     virtualenv ENV
     source ENV/bin/activate
     echo "installing modules from dependencies branch..."
-    pip install sst-deps/*.tar.gz --quiet
+    pip install sst-deps/pythonpackages/*.tar.gz --quiet
 else
     source ENV/bin/activate
 fi
 
 echo "setting path..."
-PATH=sst-deps:$PATH  # so bindings find chromedriver
+PATH=sst-deps/bin:$PATH  # so bindings find chromedriver for selenium
 
 echo "----------------------------------"
 echo "environment info:"
