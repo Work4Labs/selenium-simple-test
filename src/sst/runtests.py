@@ -35,6 +35,7 @@ from unittest2 import (
     TextTestRunner,
 )
 
+
 from sst import (
     actions,
     config,
@@ -123,22 +124,13 @@ def runtests(test_names, test_dir='.', report_format='console',
             runner.run(alltests)
 
     if report_format == 'xml':
-        try:
-            import junitxml
-        except ImportError:
-            print 'Error: Please install junitxml to use XML output'
-            sys.exit(1)
+        import xmlrunner
         _make_results_dir()
         fp = file(os.path.join(config.results_directory, 'results.xml'), 'wb')
-        result = junitxml.JUnitXmlResult(fp)
-        result.failfast = failfast
-        result.startTestRun()
+        runner = xmlrunner.XMLTestRunner(output=fp, verbosity=2)
 
         def run():
-            try:
-                alltests.run(result)
-            finally:
-                result.stopTestRun()
+            runner.run(alltests)
 
     try:
         run()
