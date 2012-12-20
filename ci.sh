@@ -61,10 +61,14 @@ if [ -n "$BOOTSTRAP" ]; then
         bzr branch lp:~ubuntuone-hackers/selenium-simple-test/sst-deps
     fi
     echo "creating virtualenv..."
-    virtualenv ENV
+    virtualenv ENV --quiet
+    echo "activating virtualenv..."
     source ENV/bin/activate
     echo "installing modules from dependencies branch..."
-    pip install sst-deps/pythonpackages/*.tar.gz --quiet
+    DEPS="sst-deps/pythonpackages/"
+    cd $DEPS; ls *.tar.gz
+    pip install *.tar.gz --quiet
+    cd ../..
 else
     source ENV/bin/activate
 fi
@@ -80,8 +84,10 @@ python -c "import selenium; print 'Selenium %s' % selenium.__version__"
 ./sst-run -V
 
 if [ -n "$FLAKE8" ]; then
+    echo "----------------------------------"
     echo "running flake8 (pyflakes/pep8) checks..."
-    flake8 src/ docs/ sst-* *.py  > flake8.log
+    flake8 src/ docs/ sst-* *.py > flake8.log
+    cat flake8.log | grep -v ': W'  # print errors, but not warnings
 fi
 
 if [ -n "$UNIT" ]; then
