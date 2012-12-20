@@ -18,7 +18,10 @@ version **0.2.3** (?? ?? ??)
 * protect 'wait_for' from transient failures caused by
   StaleElementReferenceException (#1084008)
 * include test class full name in test ids for SSTScriptTestCase (#1087606)
-* add support for xfvb to SSTTestCase (#1084011).
+* add support for xfvb to SSTTestCase (#1084011)
+* removed ``junitxml`` package dependency for junit-style xml output
+* in xml report mode, progress is printed to stdout during test run
+
 
 
 version **0.2.2** (2012 Nov 4)
