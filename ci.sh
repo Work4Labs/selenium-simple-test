@@ -104,7 +104,7 @@ if [ -n "$BROWSER" ]; then
     fi
     echo "----------------------------------"
     echo "running acceptance tests..."
-    ./sst-run --test -x -s -r xml -b $BROWSER --extended-tracebacks
+    ./sst-run --test -x -s -q -r xml -b $BROWSER --extended-tracebacks
 fi
 echo "----------------------------------"
 
