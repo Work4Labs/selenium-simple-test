@@ -36,6 +36,9 @@ class TestSSTTestCase(testtools.TestCase):
 
     def test_results_directory_is_created(self):
         test = FooSSTTestCase('_test_foo')
+        test.results_directory = 'foo_test_results'
         unittest.TextTestRunner().run(test)
-        self.assertIsNot(config.results_directory, None)
+        self.assertEquals(config.results_directory, 'foo_test_results')
         self.assertTrue(os.path.exists(config.results_directory))
+        # Tear down.
+        os.removedirs(config.results_directory)
