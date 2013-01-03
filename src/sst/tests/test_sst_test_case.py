@@ -27,6 +27,10 @@ from sst import config
 
 class FooSSTTestCase(runtests.SSTTestCase):
 
+    def start_browser(self):
+        # We do not need to start the browser.
+        pass
+
     def _test_foo(self):
         pass
 
@@ -36,8 +40,6 @@ class TestSSTTestCase(testtools.TestCase):
     def test_results_directory_is_created(self):
         test = FooSSTTestCase('_test_foo')
         test.results_directory = 'foo_test_results'
-        # We do not need to start the browser.
-        test.start_browser = lambda: None
         test.run()
         self.assertEquals(config.results_directory, 'foo_test_results')
         self.assertTrue(os.path.exists(config.results_directory))
