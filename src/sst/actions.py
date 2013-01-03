@@ -1248,10 +1248,6 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     wait_for(browser.switch_to_alert)
     alert = browser.switch_to_alert()
     alert_text = alert.text
-    # XXX workaround because Selenium sometimes returns the value in a
-    # dictionary. See http://code.google.com/p/selenium/issues/detail?id=2955
-    if isinstance(alert_text, dict):
-        alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
         error_message = 'Element text should be %r. It is %r.' \
             % (expected_text, alert_text)
