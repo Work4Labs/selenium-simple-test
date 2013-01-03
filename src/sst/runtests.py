@@ -264,6 +264,7 @@ class SSTTestCase(TestCase):
     wait_poll = 0.1
     base_url = None
 
+    results_directory = _get_full_path('results')
     screenshots_on = False
     debug_post_mortem = False
     extended_report = False
@@ -280,6 +281,8 @@ class SSTTestCase(TestCase):
             # a new one for the current test, scheduling the shutdown for the
             # end of the test.
             self.xvfb = use_xvfb_server(self)
+        config.results_directory = self.results_directory
+        _make_results_dir()
         self.start_browser()
         self.addCleanup(self.stop_browser)
 

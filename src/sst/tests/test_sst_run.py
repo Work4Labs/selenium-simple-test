@@ -1,6 +1,5 @@
 import testtools
 
-
 from sst import runtests
 
 
