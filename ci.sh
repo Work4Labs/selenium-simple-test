@@ -11,7 +11,7 @@
 #
 #    $ ./ci.sh --bootstrap --flake8 --unit --acceptance
 #
-#    * BROWSER options are "Firefox" and "Chrome".  Default is "Firefox".
+#    * BROWSER options are "Firefox/Chrome/PhantomJS.  Default is "Firefox".
 #
 #  Instructions:
 #   1. ensure you have Xvfb, Firefox or Chrome/Chromium installed
@@ -74,7 +74,7 @@ else
 fi
 
 echo "setting path..."
-PATH=sst-deps/bin:$PATH  # so bindings find chromedriver for selenium
+PATH=sst-deps/bin:$PATH  # so bindings find chromedriver and phantomjs
 
 echo "----------------------------------"
 echo "environment info:"
