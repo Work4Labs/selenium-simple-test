@@ -35,7 +35,7 @@ while [ $# -gt 0 ]; do  # until you run out of parameters
             ;;
         --acceptance)
             BROWSER="$2"
-            if [[ "$BROWSER" == "Firefox" || "$BROWSER" == "Chrome" ]]; then
+            if [[ "$BROWSER" == "Firefox" || "$BROWSER" == "Chrome" || "$BROWSER" == "PhantomJS" ]]; then
                 shift
             elif [ -z "$BROWSER" ]; then
                 BROWSER="Firefox"
