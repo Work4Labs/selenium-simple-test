@@ -82,10 +82,11 @@ __all__ = [
     'get_cookies', 'get_current_url', 'get_element',
     'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
-    'get_link_url', 'get_page_source', 'go_back', 'go_to', 'refresh',
-    'reset_base_url', 'retry_on_stale_element', 'run_test', 'set_base_url',
-    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
-    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
+    'get_link_url', 'get_page_source', 'get_window_size', 'go_back',
+    'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
+    'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
+    'set_radio_value', 'set_wait_timeout', 'set_window_size',
+    'simulate_keys', 'skip', 'sleep', 'start', 'stop',
     'switch_to_frame', 'switch_to_window', 'take_screenshot',
     'toggle_checkbox', 'wait_for', 'wait_for_and_refresh',
     'write_textfield'
@@ -134,7 +135,7 @@ def retry_on_stale_element(func):
     def wrapped(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except StaleElementReferenceException, e:
+        except StaleElementReferenceException as e:
             _print('Retrying after catching: %r' % e)
             return func(*args, **kwargs)
     return wrapped
@@ -1460,6 +1461,20 @@ def clear_cookies():
     """Clear the cookies of current session."""
     _print('Clearing browser session cookies')
     browser.delete_all_cookies()
+
+
+def get_window_size():
+    """Get the current window size (width, height) in pixels."""
+    results = browser.get_window_size()
+    width = results['width']
+    height = results['height']
+    return (width, height)
+
+
+def set_window_size(width, height):
+    """Resize the current window (width, height) in pixels."""
+    _print('Resizing window to: %s x %s' % (width, height))
+    browser.set_window_size(width, height)
 
 
 def execute_script(script, *args):
