@@ -21,15 +21,16 @@ version **0.2.3** (?? ?? ??)
 * add support for xfvb to SSTTestCase (#1084011)
 * removed ``junitxml`` package dependency for junit-style xml output
 * in xml report mode, progress is printed to stdout during test run
-
+* added ``get_window_size`` action
+* added ``set_window_size`` action
 
 
 version **0.2.2** (2012 Nov 4)
 *******************************
 
-* add ``wait_for_and_refresh`` action
+* added ``wait_for_and_refresh`` action
 * ``set_dropdown_value`` can set text or value now
-* add ``add_cleanup`` action
+* added ``add_cleanup`` action
 * made internal tests compatible with Django 1.4
 * added ``config.cache``, a per test cache (dictionary) cleared at the start of
   every test
