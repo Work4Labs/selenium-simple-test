@@ -1464,7 +1464,7 @@ def clear_cookies():
 
 
 def get_window_size():
-    """Get the current window size (width, height) in pixels)."""
+    """Get the current window size (width, height) in pixels."""
     results = browser.get_window_size()
     width = results['width']
     height = results['height']
