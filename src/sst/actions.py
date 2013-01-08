@@ -1463,21 +1463,25 @@ def clear_cookies():
     browser.delete_all_cookies()
 
 
+def _was_resized(orig_width, orig_height):
+    time.sleep(.1)
+    w, h = get_window_size()
+    if (w != orig_width) or (h != orig_height):
+        return True
+    else:
+        return False
+
+
 def maximize_window():
     """Maximize current window.
     
     Returns window size."""
+    # XXX currently fails if you try to maximize 
+    #  a window that is already maximized (cgoldberg)
     _print('Maximizing window')
     orig_width, orig_height = get_window_size()
     browser.maximize_window()
-    def resized():
-        time.sleep(.1)
-        w, h = get_window_size()
-        if (w != orig_width) or (h != orig_height):
-            return True
-        else:
-            return False
-    _wait_for(resized, False, 5, 0.1)
+    _wait_for(_was_resized, False, 5, 0.1, orig_width, orig_height)
     width, height = get_window_size()
     return (width, height)
 
@@ -1487,15 +1491,9 @@ def set_window_size(width, height):
     _print('Resizing window to: %s x %s' % (width, height))
     orig_width, orig_height = get_window_size()
     browser.set_window_size(width, height)
-    def resized():
-        time.sleep(.1)
-        w, h = get_window_size()
-        if (w != orig_width) and (h != orig_height):
-            return True
-        else:
-            return False
-    _wait_for(resized, False, 5, 0.1)
-    width, height = get_window_size()
+    if (orig_width == width) and (orig_height == height):
+        return (width, height)
+    _wait_for(_was_resized, False, 5, 0.1, orig_width, orig_height)
     return (width, height)
 
 

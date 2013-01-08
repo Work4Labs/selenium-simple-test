@@ -21,3 +21,12 @@ assert width == 500
 assert height == 400
 assert width == expected_width
 assert height == expected_height
+
+set_window_size(350, 350)
+# set window to same size
+set_window_size(350, 350)
+width, height = get_window_size()
+assert isinstance(width, int)
+assert isinstance(height, int)
+assert width == 350
+assert height == 350
