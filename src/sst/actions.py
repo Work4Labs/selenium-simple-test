@@ -1473,7 +1473,7 @@ def maximize_window():
     def resized():
         time.sleep(.1)
         w, h = get_window_size()
-        if (w != orig_width) and (h != orig_height):
+        if (w != orig_width) or (h != orig_height):
             return True
         else:
             return False
