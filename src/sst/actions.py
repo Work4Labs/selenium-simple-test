@@ -1490,9 +1490,9 @@ def set_window_size(width, height):
     """Resize the current window (width, height) in pixels."""
     _print('Resizing window to: %s x %s' % (width, height))
     orig_width, orig_height = get_window_size()
-    browser.set_window_size(width, height)
     if (orig_width == width) and (orig_height == height):
         return (width, height)
+    browser.set_window_size(width, height)
     _wait_for(_was_resized, False, 5, 0.1, orig_width, orig_height)
     return (width, height)
 
