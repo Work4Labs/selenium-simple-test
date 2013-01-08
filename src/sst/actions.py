@@ -83,13 +83,13 @@ __all__ = [
     'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
     'get_link_url', 'get_page_source', 'get_window_size', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
-    'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
-    'set_radio_value', 'set_wait_timeout', 'set_window_size',
-    'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot',
-    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh',
-    'write_textfield'
+    'go_to', 'maximize_window', 'refresh', 'reset_base_url',
+    'retry_on_stale_element', 'run_test', 'set_base_url',
+    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
+    'set_wait_timeout', 'set_window_size', 'simulate_keys', 'skip',
+    'sleep', 'start', 'stop', 'switch_to_frame', 'switch_to_window',
+    'take_screenshot', 'toggle_checkbox', 'wait_for',
+    'wait_for_and_refresh', 'write_textfield'
 ]
 
 
@@ -1463,18 +1463,48 @@ def clear_cookies():
     browser.delete_all_cookies()
 
 
-def get_window_size():
-    """Get the current window size (width, height) in pixels."""
-    results = browser.get_window_size()
-    width = results['width']
-    height = results['height']
+def maximize_window():
+    """Maximize current window.
+    
+    Returns window size."""
+    _print('Maximizing window')
+    orig_width, orig_height = get_window_size()
+    browser.maximize_window()
+    def resized():
+        time.sleep(.1)
+        w, h = get_window_size()
+        if (w != orig_width) and (h != orig_height):
+            return True
+        else:
+            return False
+    _wait_for(resized, False, 5, 0.1)
+    width, height = get_window_size()
     return (width, height)
 
 
 def set_window_size(width, height):
     """Resize the current window (width, height) in pixels."""
     _print('Resizing window to: %s x %s' % (width, height))
+    orig_width, orig_height = get_window_size()
     browser.set_window_size(width, height)
+    def resized():
+        time.sleep(.1)
+        w, h = get_window_size()
+        if (w != orig_width) and (h != orig_height):
+            return True
+        else:
+            return False
+    _wait_for(resized, False, 5, 0.1)
+    width, height = get_window_size()
+    return (width, height)
+
+
+def get_window_size():
+    """Get the current window size (width, height) in pixels."""
+    results = browser.get_window_size()
+    width = results['width']
+    height = results['height']
+    return (width, height)
 
 
 def execute_script(script, *args):
