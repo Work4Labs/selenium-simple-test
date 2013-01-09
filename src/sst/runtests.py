@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#   Copyright (c) 2011 Canonical Ltd.
+#   Copyright (c) 2011, 2012, 2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
@@ -296,7 +296,7 @@ class SSTTestCase(testtools.TestCase):
     def stop_browser(self):
         stop()
 
-    def handle_exception(self, exec_info):
+    def handle_exception(self, exc_info):
         if self.screenshots_on:
             self.take_screenshot_and_page_dump()
 
@@ -329,7 +329,7 @@ class SSTScriptTestCase(SSTTestCase):
     script_name = None
 
     def __init__(self, testMethod, context_row=None):
-        super(SSTScriptTestCase, self).__init__('runTest')
+        super(SSTScriptTestCase, self).__init__('run_test_script')
         self.id = lambda: '%s.%s.%s' % (self.__class__.__module__,
                                         self.__class__.__name__, testMethod)
         self.context = context_row
@@ -366,21 +366,15 @@ class SSTScriptTestCase(SSTTestCase):
             source = f.read() + '\n'
         self.code = compile(source, self.script_path, 'exec')
 
-    def runTest(self, result=None):
-        # Run the test catching exceptions sstnam style
+    def run_test_script(self, result=None):
         try:
             exec self.code in self.context
         except EndTest:
             pass
-        except SkipTest:
-            raise
-        except:
-            exc_class, exc, tb = sys.exc_info()
-            self.handle_exception(exc_class, exc, tb)
 
-    def handle_exception(self, exc_class, exc, tb):
-        if self.screenshots_on:
-            self.take_screenshot_and_page_dump()
+    def handle_exception(self, exc_info):
+        super(SSTScriptTestCase, self).handle_exception(exc_info)
+        exc_class, exc, tb = exc_info
         if self.debug_post_mortem:
             traceback.print_exception(exc_class, exc, tb)
             pdb.post_mortem()
