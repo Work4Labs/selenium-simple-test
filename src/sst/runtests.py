@@ -295,7 +295,7 @@ class SSTTestCase(TestCase):
     def stop_browser(self):
         stop()
 
-    def take_screenshot(self):
+    def take_screenshot_and_page_dump(self):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         tc_name = self.script_name[:-3]
         try:
@@ -375,7 +375,7 @@ class SSTScriptTestCase(SSTTestCase):
 
     def handle_exception(self, exc_class, exc, tb):
         if self.screenshots_on:
-            self.take_screenshot()
+            self.take_screenshot_and_page_dump()
         if self.debug_post_mortem:
             traceback.print_exception(exc_class, exc, tb)
             pdb.post_mortem()

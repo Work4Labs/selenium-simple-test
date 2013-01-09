@@ -19,6 +19,7 @@
 
 import os
 
+import mock
 import testtools
 
 from sst import runtests
@@ -26,22 +27,42 @@ from sst import config
 
 
 class FooSSTTestCase(runtests.SSTTestCase):
+    """Test case to use on the tests. All the test methods are private so it's
+    not run as part of the unit test suite.
+
+    """
+
+    results_directory = 'foo_test_results'
 
     def start_browser(self):
         # We do not need to start the browser.
         pass
 
-    def _test_foo(self):
+    def _test_success(self):
         pass
+
+    def _test_failure(self):
+        assert False
 
 
 class TestSSTTestCase(testtools.TestCase):
 
+    def setUp(self):
+        super(TestSSTTestCase, self).setUp()
+        self.addCleanup(self.remove_results_directory)
+
+    def remove_results_directory(self):
+        os.removedirs(config.results_directory)
+
     def test_results_directory_is_created(self):
-        test = FooSSTTestCase('_test_foo')
-        test.results_directory = 'foo_test_results'
+        test = FooSSTTestCase('_test_success')
         test.run()
         self.assertEquals(config.results_directory, 'foo_test_results')
         self.assertTrue(os.path.exists(config.results_directory))
-        # Tear down.
-        os.removedirs(config.results_directory)
+
+    def test_screenshot_and_page_dump_on_failure(self):
+        test = FooSSTTestCase('_test_failure')
+        test.screenshots_on = True
+        test.take_screenshot_and_page_dump = mock.MagicMock()
+        test.run()
+        test.take_screenshot_and_page_dump.assert_called_once_with()
