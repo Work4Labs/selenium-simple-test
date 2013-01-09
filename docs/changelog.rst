@@ -23,7 +23,6 @@ version **0.2.3** (?? ?? ??)
 * in xml report mode, progress is printed to stdout during test run
 * added ``get_window_size`` action
 * added ``set_window_size`` action
-* added ``maximize_window`` action
 
 
 version **0.2.2** (2012 Nov 4)
