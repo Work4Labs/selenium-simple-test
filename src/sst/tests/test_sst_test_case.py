@@ -63,9 +63,16 @@ class TestSSTTestCase(testtools.TestCase):
         self.assertEquals(config.results_directory, 'foo_test_results')
         self.assertTrue(os.path.exists(config.results_directory))
 
-    def test_screenshot_and_page_dump_on_failure(self):
+    def test_screenshot_and_page_dump_on_failure_enabled(self):
         test = FooSSTTestCase('_test_failure')
         test.screenshots_on = True
         test.take_screenshot_and_page_dump = mock.MagicMock()
         test.run()
         test.take_screenshot_and_page_dump.assert_called_once_with()
+
+    def test_screenshot_and_page_dump_on_failure_disabled(self):
+        test = FooSSTTestCase('_test_failure')
+        test.screenshots_on = False
+        test.take_screenshot_and_page_dump = mock.MagicMock()
+        test.run()
+        self.assertFalse(test.take_screenshot_and_page_dump.called)
