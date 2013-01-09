@@ -38,6 +38,7 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
+import random
 import os
 import re
 import time
@@ -1476,10 +1477,10 @@ def maximize_window():
     """Maximize current window.
     
     Returns window size."""
-    # XXX currently fails if you try to maximize 
-    #  a window that is already maximized (cgoldberg)
-    _print('Maximizing window')
+    # resize window before maximizing, so we can detect a size change
+    set_window_size(random.randint(100, 500), random.randint(100, 500))
     orig_width, orig_height = get_window_size()
+    _print('Maximizing window')
     browser.maximize_window()
     _wait_for(_was_resized, False, 5, 0.1, orig_width, orig_height)
     width, height = get_window_size()
