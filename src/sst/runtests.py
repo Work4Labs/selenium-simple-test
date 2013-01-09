@@ -31,10 +31,10 @@ from textwrap import dedent
 
 from unittest2 import (
     SkipTest,
-    TestCase,
     TestSuite,
     TextTestRunner,
 )
+import testtools
 
 from sst import (
     actions,
@@ -246,7 +246,7 @@ def use_xvfb_server(test, xvfb=None):
     return xvfb
 
 
-class SSTTestCase(TestCase):
+class SSTTestCase(testtools.TestCase):
     """A test case that can use the sst framework."""
 
     xvfb = None
@@ -284,6 +284,7 @@ class SSTTestCase(TestCase):
         config.results_directory = self.results_directory
         _make_results_dir()
         self.start_browser()
+        self.addOnException(self.take_screenshot_and_page_dump)
         self.addCleanup(self.stop_browser)
 
     def start_browser(self):
