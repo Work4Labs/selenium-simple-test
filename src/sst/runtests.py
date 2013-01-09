@@ -284,7 +284,7 @@ class SSTTestCase(testtools.TestCase):
         config.results_directory = self.results_directory
         _make_results_dir()
         self.start_browser()
-        self.addOnException(self.take_screenshot_and_page_dump)
+        self.addOnException(self.handle_exception)
         self.addCleanup(self.stop_browser)
 
     def start_browser(self):
@@ -295,6 +295,10 @@ class SSTTestCase(testtools.TestCase):
 
     def stop_browser(self):
         stop()
+
+    def handle_exception(self, exec_info):
+        if self.screenshots_on:
+            self.take_screenshot_and_page_dump()
 
     def take_screenshot_and_page_dump(self):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

@@ -34,8 +34,11 @@ class FooSSTTestCase(runtests.SSTTestCase):
 
     results_directory = 'foo_test_results'
 
+    # We do not need to start the browser.
     def start_browser(self):
-        # We do not need to start the browser.
+        pass
+
+    def stop_browser(self):
         pass
 
     def _test_success(self):
