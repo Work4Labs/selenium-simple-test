@@ -1482,7 +1482,7 @@ def maximize_window():
     orig_width, orig_height = get_window_size()
     _print('Maximizing window')
     browser.maximize_window()
-    _wait_for(_was_resized, False, 5, 0.1, orig_width, orig_height)
+    _wait_for(_was_resized, False, 10, 0.1, orig_width, orig_height)
     width, height = get_window_size()
     return (width, height)
 
@@ -1494,7 +1494,7 @@ def set_window_size(width, height):
     if (orig_width == width) and (orig_height == height):
         return (width, height)
     browser.set_window_size(width, height)
-    _wait_for(_was_resized, False, 5, 0.1, orig_width, orig_height)
+    _wait_for(_was_resized, False, 10, 0.1, orig_width, orig_height)
     return (width, height)
 
 
