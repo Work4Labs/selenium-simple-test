@@ -25,19 +25,34 @@ from sst import runtests
 
 class TestSSTScriptTestCase(testtools.TestCase):
 
-    def test_script_is_run(self):
-        test = runtests.SSTScriptTestCase('test_foo')
-        test.run_test_script = mock.MagicMock()
-        test.run()
-        test.run_test_script.assert_called_once_with()
+    script_name = 'test_foo'
+    script_code = 'pass'
+    test = runtests.SSTScriptTestCase(script_name)
 
-    def test_screenshot_and_page_dump_on_failure_enabled(self):
-        test = runtests.SSTScriptTestCase('test_foo')
-        test.screenshots_on = True
-        test.code = 'assert False'
+    def setUp(self):
+        super(TestSSTScriptTestCase, self).setUp()
+        self.test.script_name = self.script_name
+        self.test.code = compile(self.script_code+'\n', '<string>', 'exec')
         # We don't need to compile the script because we have already define
         # the code to execute.
-        test._compile_script = lambda: None
-        test.take_screenshot_and_page_dump = mock.MagicMock()
-        test.run()
-        test.take_screenshot_and_page_dump.assert_called_once_with()
+        self.test._compile_script = lambda: None
+        # We don't need to start the browser.
+        self.test.start_browser = lambda: None
+        self.test.stop_browser = lambda: None
+
+    @mock.patch.object(runtests.SSTScriptTestCase, 'run_test_script')
+    def test_script_is_run(self, mock_run):
+        self.test.run()
+        mock_run.assert_called_once_with()
+
+class TestSSTScriptTestCaseFailure(TestSSTScriptTestCase):
+
+    script_code = 'assert False'
+
+    @mock.patch.object(runtests.SSTScriptTestCase,
+                       'take_screenshot_and_page_dump')
+    def test_screenshot_and_page_dump_on_failure_enabled(
+            self, mock_screenshot_and_dump):
+        self.test.screenshots_on = True
+        self.test.run()
+        mock_screenshot_and_dump.assert_called_once_with()
