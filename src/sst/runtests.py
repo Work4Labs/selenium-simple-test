@@ -299,6 +299,12 @@ class SSTTestCase(testtools.TestCase):
     def handle_exception(self, exc_info):
         if self.screenshots_on:
             self.take_screenshot_and_page_dump()
+        exc_class, exc, tb = exc_info
+        if self.debug_post_mortem:
+            traceback.print_exception(exc_class, exc, tb)
+            pdb.post_mortem()
+        if self.extended_report:
+            self.report_extensively(exc_class, exc, tb)
 
     def take_screenshot_and_page_dump(self):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -321,6 +327,39 @@ class SSTTestCase(testtools.TestCase):
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
             pass
 
+    def report_extensively(self, exc_class, exc, tb):
+        original_message = str(exc)
+        page_source = 'unavailable'
+        current_url = 'unavailable'
+        try:
+            current_url = actions.get_current_url()
+        except Exception:
+            pass
+        try:
+            page_source = actions.get_page_source()
+        except Exception:
+            pass
+
+        new_message = dedent("""
+        Original exception: %s: %s
+
+        Current url: %s
+
+        Page source:
+
+        %s
+
+        """[1:]) % (
+            exc.__class__.__name__,
+            original_message,
+            current_url,
+            page_source,
+        )
+        if isinstance(new_message, unicode):
+            new_message = new_message.encode('ascii', 'backslashreplace')
+        new_exc = Exception(new_message)
+        raise Exception, new_exc, tb
+
 
 class SSTScriptTestCase(SSTTestCase):
     """Test case used internally by sst-run and sst-remote."""
@@ -328,7 +367,7 @@ class SSTScriptTestCase(SSTTestCase):
     script_dir = '.'
     script_name = None
 
-    def __init__(self, testMethod, context_row=None):
+    def __init__(self, testMethod, context_row={}):
         super(SSTScriptTestCase, self).__init__('run_test_script')
         self.id = lambda: '%s.%s.%s' % (self.__class__.__module__,
                                         self.__class__.__name__, testMethod)
@@ -371,50 +410,6 @@ class SSTScriptTestCase(SSTTestCase):
             exec self.code in self.context
         except EndTest:
             pass
-
-    def handle_exception(self, exc_info):
-        super(SSTScriptTestCase, self).handle_exception(exc_info)
-        exc_class, exc, tb = exc_info
-        if self.debug_post_mortem:
-            traceback.print_exception(exc_class, exc, tb)
-            pdb.post_mortem()
-        if not self.extended_report:
-            raise exc_class, exc, tb
-        else:
-            self.report_extensively(exc_class, exc, tb)
-
-    def report_extensively(self, exc_class, exc, tb):
-        original_message = str(exc)
-        page_source = 'unavailable'
-        current_url = 'unavailable'
-        try:
-            current_url = actions.get_current_url()
-        except Exception:
-            pass
-        try:
-            page_source = actions.get_page_source()
-        except Exception:
-            pass
-
-        new_message = dedent("""
-        Original exception: %s: %s
-
-        Current url: %s
-
-        Page source:
-
-        %s
-
-        """[1:]) % (
-            exc.__class__.__name__,
-            original_message,
-            current_url,
-            page_source,
-        )
-        if isinstance(new_message, unicode):
-            new_message = new_message.encode('ascii', 'backslashreplace')
-        new_exc = Exception(new_message)
-        raise Exception, new_exc, tb
 
 
 def get_case(test_dir, entry, browser_type, browser_version,
