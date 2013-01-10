@@ -32,7 +32,7 @@ class FooSSTTestCase(runtests.SSTTestCase):
 
     """
 
-    results_directory = 'foo_test_results'
+    results_directory = 'tmp/foo_test_results'
 
     # We do not need to start the browser.
     def start_browser(self):
@@ -60,7 +60,7 @@ class TestSSTTestCase(testtools.TestCase):
     def test_results_directory_is_created(self):
         test = FooSSTTestCase('_test_success')
         test.run()
-        self.assertEquals(config.results_directory, 'foo_test_results')
+        self.assertEquals(config.results_directory, 'tmp/foo_test_results')
         self.assertTrue(os.path.exists(config.results_directory))
 
     @mock.patch.object(runtests.SSTTestCase, 'take_screenshot_and_page_dump')

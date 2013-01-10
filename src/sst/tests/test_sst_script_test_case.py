@@ -32,6 +32,7 @@ class TestSSTScriptTestCase(testtools.TestCase):
     def setUp(self):
         super(TestSSTScriptTestCase, self).setUp()
         self.test.script_name = self.script_name
+        self.test.results_directory = 'tmp/foo_test_results'
         self.test.code = compile(self.script_code+'\n', '<string>', 'exec')
         # We don't need to compile the script because we have already define
         # the code to execute.
