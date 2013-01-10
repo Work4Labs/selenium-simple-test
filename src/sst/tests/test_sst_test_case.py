@@ -22,24 +22,16 @@ import os
 import mock
 import testtools
 
-from sst import runtests
-from sst import config
+from sst import runtests, config, tests
 
 
-class FooSSTTestCase(runtests.SSTTestCase):
+class FooSSTTestCase(tests.SSTHeadlessTestCase):
     """Test case to use on the tests. All the test methods are private so it's
     not run as part of the unit test suite.
 
     """
 
     results_directory = 'tmp/foo_test_results'
-
-    # We do not need to start the browser.
-    def start_browser(self):
-        pass
-
-    def stop_browser(self):
-        pass
 
     def _test_success(self):
         pass
