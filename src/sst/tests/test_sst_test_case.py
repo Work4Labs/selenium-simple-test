@@ -18,6 +18,7 @@
 #   limitations under the License.
 
 import os
+import shutil
 
 import mock
 import testtools
@@ -39,6 +40,10 @@ class FooSSTTestCase(tests.SSTHeadlessTestCase):
     def _test_failure(self):
         assert False
 
+    def _test_skip(self):
+        import sst.actions
+        sst.actions.skip()
+
 
 class TestSSTTestCase(testtools.TestCase):
 
@@ -47,7 +52,10 @@ class TestSSTTestCase(testtools.TestCase):
         self.addCleanup(self.remove_results_directory)
 
     def remove_results_directory(self):
-        os.removedirs(config.results_directory)
+        shutil.rmtree(config.results_directory)
+
+
+class TestResultsDirectory(TestSSTTestCase):
 
     def test_results_directory_is_created(self):
         test = FooSSTTestCase('_test_success')
@@ -55,6 +63,9 @@ class TestSSTTestCase(testtools.TestCase):
         self.assertEquals(config.results_directory, 'tmp/foo_test_results')
         self.assertTrue(os.path.exists(config.results_directory))
 
+
+class TestScreenshotAndPageDump(TestSSTTestCase):
+        
     @mock.patch.object(runtests.SSTTestCase, 'take_screenshot_and_page_dump')
     def test_screenshot_and_page_dump_on_failure_enabled(
             self, mock_screenshot_and_dump):
@@ -70,3 +81,15 @@ class TestSSTTestCase(testtools.TestCase):
         test.screenshots_on = False
         test.run()
         self.assertFalse(mock_screenshot_and_dump.called)
+
+
+class TestResults(TestSSTTestCase):
+        
+    def test_is_skipped(self):
+        test = FooSSTTestCase('_test_skip')
+        result = testtools.TestResult()
+        test.run(result)
+        self.assertEqual([], result.errors)
+        self.assertEqual([], result.failures)
+        self.assertFalse(tests.wasSuccessful)
+        self.assertEqual({}, result.skip_reasons)

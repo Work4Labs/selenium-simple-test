@@ -42,12 +42,12 @@ import os
 import re
 import time
 
+import testtools
+
 from datetime import datetime
 from pdb import set_trace as debug
 from textwrap import TextWrapper
 from urlparse import urljoin, urlparse
-
-from unittest2 import SkipTest
 
 from selenium import webdriver
 from selenium.webdriver.common import keys
@@ -174,7 +174,7 @@ def skip(reason=''):
     """
     Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
-    raise SkipTest(reason)
+    raise testtools.TestSkipped(reason)
 
 
 def _print(text):

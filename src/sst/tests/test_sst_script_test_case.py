@@ -21,9 +21,10 @@ import mock
 import testtools
 
 from sst import runtests
+from sst.tests import test_sst_test_case
 
 
-class TestSSTScriptTestCase(testtools.TestCase):
+class TestSSTScriptTestCase(test_sst_test_case.TestSSTTestCase):
 
     script_name = 'test_foo'
     script_code = 'pass'
@@ -41,6 +42,9 @@ class TestSSTScriptTestCase(testtools.TestCase):
         self.test.start_browser = lambda: None
         self.test.stop_browser = lambda: None
 
+
+class TestRunScript(TestSSTScriptTestCase):
+    
     @mock.patch.object(runtests.SSTScriptTestCase, 'run_test_script')
     def test_script_is_run(self, mock_run):
         self.test.run()
@@ -52,8 +56,18 @@ class TestSSTScriptTestCaseFailure(TestSSTScriptTestCase):
 
     @mock.patch.object(runtests.SSTScriptTestCase,
                        'take_screenshot_and_page_dump')
-    def test_screenshot_and_page_dump_on_failure_enabled(
+    def test_screenshot_and_page_dump_enabled(
             self, mock_screenshot_and_dump):
         self.test.screenshots_on = True
         self.test.run()
         mock_screenshot_and_dump.assert_called_once_with()
+
+class TestSSTScriptTestCaseSkip(TestSSTScriptTestCase):
+
+    script_code = 'raise SkipTest()'
+
+    def test_skip(self):
+        result = testtools.TestResult()
+        self.test.run(result)
+        self.assertEqual([], result.skipped)
+
