@@ -410,6 +410,8 @@ class SSTScriptTestCase(SSTTestCase):
             exec self.code in self.context
         except EndTest:
             pass
+        except SkipTest as exception:
+            self.skipTest(str(exception))
 
 
 def get_case(test_dir, entry, browser_type, browser_version,
