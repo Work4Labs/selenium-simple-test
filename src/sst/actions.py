@@ -41,8 +41,7 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 import os
 import re
 import time
-
-import testtools
+import unittest
 
 from datetime import datetime
 from pdb import set_trace as debug
@@ -174,7 +173,7 @@ def skip(reason=''):
     """
     Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
-    raise testtools.TestSkipped(reason)
+    raise unittest.SkipTest(reason)
 
 
 def _print(text):

@@ -42,7 +42,7 @@ class FooSSTTestCase(tests.SSTHeadlessTestCase):
 
     def _test_skip(self):
         import sst.actions
-        sst.actions.skip()
+        sst.actions.skip('test reason')
 
 
 class TestSSTTestCase(testtools.TestCase):
@@ -65,7 +65,7 @@ class TestResultsDirectory(TestSSTTestCase):
 
 
 class TestScreenshotAndPageDump(TestSSTTestCase):
-        
+
     @mock.patch.object(runtests.SSTTestCase, 'take_screenshot_and_page_dump')
     def test_screenshot_and_page_dump_on_failure_enabled(
             self, mock_screenshot_and_dump):
@@ -84,12 +84,9 @@ class TestScreenshotAndPageDump(TestSSTTestCase):
 
 
 class TestResults(TestSSTTestCase):
-        
+
     def test_is_skipped(self):
         test = FooSSTTestCase('_test_skip')
         result = testtools.TestResult()
         test.run(result)
-        self.assertEqual([], result.errors)
-        self.assertEqual([], result.failures)
-        self.assertFalse(tests.wasSuccessful)
-        self.assertEqual({}, result.skip_reasons)
+        self.assertIn('test reason', result.skip_reasons)
