@@ -20,8 +20,8 @@
 from sst import runtests
 
 
-class SSTHeadlessTestCase(runtests.SSTTestCase):
-    """A specialized test class for tests around xvfb."""
+class SSTBrowserLessTestCase(runtests.SSTTestCase):
+    """A specialized test class for tests that don't need a browser."""
 
     # We don't use a browser here so disable its use to speed the tests
     # (i.e. the browser won't be started)

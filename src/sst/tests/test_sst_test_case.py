@@ -26,7 +26,7 @@ import testtools
 from sst import runtests, config, tests
 
 
-class FooSSTTestCase(tests.SSTHeadlessTestCase):
+class FooSSTTestCase(tests.SSTBrowserLessTestCase):
     """Test case to use on the tests. All the test methods are private so it's
     not run as part of the unit test suite.
 
