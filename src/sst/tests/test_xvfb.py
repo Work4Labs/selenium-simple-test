@@ -46,7 +46,7 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
         self.assertEqual([], result.failures)
 
     def test_headless_new_xvfb(self):
-        class HeadlessNewXvfb(tests.SSTHeadlessTestCase):
+        class HeadlessNewXvfb(tests.SSTBrowserLessTestCase):
 
             xserver_headless = True
 
@@ -61,7 +61,7 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
         external_xvfb.start()
         self.addCleanup(external_xvfb.stop)
 
-        class HeadlessReusedXvfb(tests.SSTHeadlessTestCase):
+        class HeadlessReusedXvfb(tests.SSTBrowserLessTestCase):
 
             xserver_headless = True
             xvfb = external_xvfb
