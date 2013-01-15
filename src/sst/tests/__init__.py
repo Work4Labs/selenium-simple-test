@@ -17,6 +17,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import os
+import shutil
+import tempfile
+
+import testtools
+
 from sst import runtests
 
 
@@ -30,3 +36,15 @@ class SSTBrowserLessTestCase(runtests.SSTTestCase):
 
     def stop_browser(self):
         pass
+
+
+def set_cwd_to_tmp(test):
+    """Create a temp dir an cd into it for the test duration.
+
+    This is generally called during a test setup.
+    """
+    test.test_base_dir = tempfile.mkdtemp(prefix='mytests-', suffix='.tmp')
+    test.addCleanup(shutil.rmtree, test.test_base_dir, True)
+    current_dir = os.getcwdu()
+    test.addCleanup(os.chdir, current_dir)
+    os.chdir(test.test_base_dir)
