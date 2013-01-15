@@ -17,57 +17,54 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from cStringIO import StringIO
+import os
+import sys
+
 import mock
 import testtools
 
-from sst import runtests
-from sst.tests import test_sst_test_case
+from testtools import matchers
+
+from sst import (
+    runtests,
+    tests,
+    )
 
 
-class TestSSTScriptTestCase(test_sst_test_case.TestSSTTestCase):
+class SSTStringTestCase(runtests.SSTScriptTestCase):
 
     script_name = 'test_foo'
     script_code = 'pass'
-    test = runtests.SSTScriptTestCase(script_name)
+    xserver_headless = True
 
     def setUp(self):
-        super(TestSSTScriptTestCase, self).setUp()
-        self.test.script_name = self.script_name
-        self.test.results_directory = 'tmp/foo_test_results'
-        self.test.code = compile(self.script_code+'\n', '<string>', 'exec')
         # We don't need to compile the script because we have already define
         # the code to execute.
-        self.test._compile_script = lambda: None
-        # We don't need to start the browser.
-        self.test.start_browser = lambda: None
-        self.test.stop_browser = lambda: None
+        self._compile_script = lambda: None
+        self.code = compile(self.script_code + '\n', '<string>', 'exec')
+        super(SSTStringTestCase, self).setUp()
 
 
-class TestRunScript(TestSSTScriptTestCase):
-    
-    @mock.patch.object(runtests.SSTScriptTestCase, 'run_test_script')
-    def test_script_is_run(self, mock_run):
-        self.test.run()
-        mock_run.assert_called_once_with()
+class TestSSTScriptTestCaseFailureScreenShots(testtools.TestCase):
 
-class TestSSTScriptTestCaseFailure(TestSSTScriptTestCase):
+    def setUp(self):
+        super(TestSSTScriptTestCaseFailureScreenShots, self).setUp()
+        tests.set_cwd_to_tmp(self)
+        # capture test output so we don't pollute the test runs
+        self.out = StringIO()
+        self.patch(sys, 'stdout', self.out)
 
-    script_code = 'assert False'
-
-    @mock.patch.object(runtests.SSTScriptTestCase,
-                       'take_screenshot_and_page_dump')
-    def test_screenshot_and_page_dump_enabled(
-            self, mock_screenshot_and_dump):
-        self.test.screenshots_on = True
-        self.test.run()
-        mock_screenshot_and_dump.assert_called_once_with()
-
-class TestSSTScriptTestCaseSkip(TestSSTScriptTestCase):
-
-    script_code = 'raise SkipTest()'
-
-    def test_skip(self):
+    def test_screenshot_and_page_dump_enabled(self):
+        test = SSTStringTestCase('ignored')
+        test.script_code = 'assert False'
+        test.screenshots_on = True
+        test.results_directory = 'results'
         result = testtools.TestResult()
-        self.test.run(result)
-        self.assertEqual([], result.skipped)
-
+        test.run(result)
+        # We get a screenshot and a pagesource
+        files = os.listdir('results')
+        files.sort()
+        self.assertEqual(2, len(files))
+        self.assertThat(files[0], matchers.StartsWith('pagesource-'))
+        self.assertThat(files[1], matchers.StartsWith('screenshot-'))
