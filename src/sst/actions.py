@@ -41,7 +41,6 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 import os
 import re
 import time
-import unittest
 
 from datetime import datetime
 from pdb import set_trace as debug
@@ -60,6 +59,7 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
     WebDriverException,
 )
+import testtools
 
 from sst import config
 from sst import bmobproxy
@@ -173,7 +173,7 @@ def skip(reason=''):
     """
     Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
-    raise unittest.SkipTest(reason)
+    _test.skipTest(reason)
 
 
 def _print(text):
