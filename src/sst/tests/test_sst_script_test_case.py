@@ -68,3 +68,14 @@ class TestSSTScriptTestCaseFailureScreenShots(testtools.TestCase):
         self.assertEqual(2, len(files))
         self.assertThat(files[0], matchers.StartsWith('pagesource-'))
         self.assertThat(files[1], matchers.StartsWith('screenshot-'))
+
+    def test_screenshot_and_page_dump_disabled(self):
+        test = SSTStringTestCase('ignored')
+        test.script_code = 'assert False'
+        test.screenshots_on = False
+        test.results_directory = 'results'
+        result = testtools.TestResult()
+        test.run(result)
+        # No screenshot required, no files
+        files = os.listdir('results')
+        self.assertEqual(0, len(files))
