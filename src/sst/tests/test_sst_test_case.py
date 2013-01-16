@@ -18,7 +18,6 @@
 #   limitations under the License.
 
 import os
-import shutil
 
 import testtools
 
@@ -57,7 +56,6 @@ class TestScreenshotAndPageDump(testtools.TestCase):
         super(TestScreenshotAndPageDump, self).setUp()
         tests.set_cwd_to_tmp(self)
 
-
     def get_screenshot_test(self, with_screenshots):
         class ForScreenshotTests(tests.SSTBrowserLessTestCase):
 
@@ -75,7 +73,6 @@ class TestScreenshotAndPageDump(testtools.TestCase):
             def test_it(self):
                 """An always failing test."""
                 self.assertTrue(False)
-
 
         return ForScreenshotTests('test_it')
 

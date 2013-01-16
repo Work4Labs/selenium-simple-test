@@ -21,7 +21,6 @@ from cStringIO import StringIO
 import os
 import sys
 
-import mock
 import testtools
 
 from testtools import matchers
@@ -29,7 +28,7 @@ from testtools import matchers
 from sst import (
     runtests,
     tests,
-    )
+)
 
 
 class SSTStringTestCase(runtests.SSTScriptTestCase):
