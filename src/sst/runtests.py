@@ -297,6 +297,9 @@ class SSTTestCase(testtools.TestCase):
         stop()
 
     def handle_exception(self, exc_info):
+        if exc_info[0] is self.skipException:
+            # testools will take care of that
+            return
         if self.screenshots_on:
             self.take_screenshot_and_page_dump()
         exc_class, exc, tb = exc_info
@@ -329,16 +332,14 @@ class SSTTestCase(testtools.TestCase):
 
     def report_extensively(self, exc_class, exc, tb):
         original_message = str(exc)
-        page_source = 'unavailable'
-        current_url = 'unavailable'
         try:
             current_url = actions.get_current_url()
         except Exception:
-            pass
+            current_url = 'unavailable'
         try:
             page_source = actions.get_page_source()
         except Exception:
-            pass
+            page_source = 'unavailable'
 
         new_message = dedent("""
         Original exception: %s: %s
@@ -410,8 +411,6 @@ class SSTScriptTestCase(SSTTestCase):
             exec self.code in self.context
         except EndTest:
             pass
-        except SkipTest as exception:
-            self.skipTest(str(exception))
 
 
 def get_case(test_dir, entry, browser_type, browser_version,
