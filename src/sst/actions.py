@@ -47,6 +47,8 @@ from pdb import set_trace as debug
 from textwrap import TextWrapper
 from urlparse import urljoin, urlparse
 
+from unittest2 import SkipTest
+
 from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -59,7 +61,6 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
     WebDriverException,
 )
-import testtools
 
 from sst import config
 from sst import bmobproxy
@@ -173,7 +174,7 @@ def skip(reason=''):
     """
     Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
-    _test.skipTest(reason)
+    raise SkipTest(reason)
 
 
 def _print(text):

@@ -7,8 +7,8 @@ import testtools
 
 
 from sst import (
+    runtests,
     xvfbdisplay,
-    tests,
 )
 from sst.tests import main
 
@@ -31,6 +31,18 @@ class TestXvfb(testtools.TestCase):
         self.assertEquals(orig, os.environ['DISPLAY'])
 
 
+class Headless(runtests.SSTTestCase):
+    """A specialized test class for tests around xvfb."""
+
+    # We don't use a browser here so disable its use to speed the tests
+    # (i.e. the browser won't be started)
+    def start_browser(self):
+        pass
+
+    def stop_browser(self):
+        pass
+
+
 class TestSSTTestCaseWithXfvb(testtools.TestCase):
 
     def setUp(self):
@@ -46,7 +58,7 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
         self.assertEqual([], result.failures)
 
     def test_headless_new_xvfb(self):
-        class HeadlessNewXvfb(tests.SSTBrowserLessTestCase):
+        class HeadlessNewXvfb(Headless):
 
             xserver_headless = True
 
@@ -61,7 +73,7 @@ class TestSSTTestCaseWithXfvb(testtools.TestCase):
         external_xvfb.start()
         self.addCleanup(external_xvfb.stop)
 
-        class HeadlessReusedXvfb(tests.SSTBrowserLessTestCase):
+        class HeadlessReusedXvfb(Headless):
 
             xserver_headless = True
             xvfb = external_xvfb

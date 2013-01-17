@@ -1,4 +1,4 @@
 from sst.actions import skip
 
-skip('this test is skipped')
+skip()
 raise AssertionError('should never get here')
