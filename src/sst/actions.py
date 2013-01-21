@@ -59,7 +59,6 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
     WebDriverException,
 )
-import testtools
 
 from sst import config
 from sst import bmobproxy
