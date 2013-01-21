@@ -55,14 +55,17 @@ class TestHandleExceptions(testtools.TestCase):
     def setUp(self):
         super(TestHandleExceptions, self).setUp()
         tests.set_cwd_to_tmp(self)
+        self.result = testtools.TestResult()
 
     def get_handle_exceptions_test(self, with_screenshots=False,
-                                   with_debug_post_mortem=False):
+                                   with_debug_post_mortem=False,
+                                   with_extended_report=False):
         class ForHandleExceptionsTests(tests.SSTBrowserLessTestCase):
 
             screenshot_calls = 0
             screenshots_on = with_screenshots
             debug_post_mortem = with_debug_post_mortem
+            extended_report = with_extended_report
 
             def take_screenshot_and_page_dump(self):
                 """Counts the calls.
@@ -80,14 +83,12 @@ class TestHandleExceptions(testtools.TestCase):
 
     def test_screenshot_and_page_dump_on_failure_enabled(self):
         test = self.get_handle_exceptions_test(with_screenshots=True)
-        result = testtools.TestResult()
-        test.run(result)
+        test.run()
         self.assertEquals(1, test.screenshot_calls)
 
     def test_screenshot_and_page_dump_on_failure_disabled(self):
         test = self.get_handle_exceptions_test(with_screenshots=False)
-        result = testtools.TestResult()
-        test.run(result)
+        test.run()
         self.assertEquals(0, test.screenshot_calls)
 
     @mock.patch('pdb.post_mortem')
@@ -99,11 +100,25 @@ class TestHandleExceptions(testtools.TestCase):
                         'AssertionError: False is not true')
         mock_post_mortem.assert_called_with()
 
-    def test_debug_post_moftem_disabled(self):
+    def test_debug_post_mortem_disabled(self):
         test = self.get_handle_exceptions_test(with_debug_post_mortem=False)
         with mock.patch.object(test, 'print_exception_and_enter_post_mortem'):
             test.run()
             self.assertFalse(test.print_exception_and_enter_post_mortem.called)
+
+    def test_report_extensively_enabled(self):
+        test = self.get_handle_exceptions_test(with_extended_report=True)
+        with mock.patch.object(test, 'addDetail'):
+            test.run()
+            test.addDetail.assert_called_with(
+                'Original exception: AssertionError: False is not true\n\n'
+                'Current url: unavailable\n\nPage source:\n\nunavailable\n\n')
+
+    def test_report_extensively_disabled(self):
+        test = self.get_handle_exceptions_test(with_extended_report=False)
+        with mock.patch.object(test, 'report_extensively'):
+            test.run()
+            self.assertFalse(test.report_extensively.called)
 
 
 class TestSkipping(testtools.TestCase):

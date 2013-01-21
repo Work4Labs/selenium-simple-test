@@ -361,8 +361,7 @@ class SSTTestCase(testtools.TestCase):
         )
         if isinstance(new_message, unicode):
             new_message = new_message.encode('ascii', 'backslashreplace')
-        new_exc = Exception(new_message)
-        raise Exception, new_exc, tb
+        self.addDetail(new_message)
 
 
 class SSTScriptTestCase(SSTTestCase):
