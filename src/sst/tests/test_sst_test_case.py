@@ -98,7 +98,9 @@ class TestHandleExceptions(testtools.TestCase):
         test.run()
         self.assertTrue(mock_stderr.getvalue().endswith,
                         'AssertionError: False is not true')
-        mock_post_mortem.assert_called_with()
+        # The traceback passed as a parameter to post_mortem depends on the
+        # execution. Here we are just testing that it was called.
+        mock_post_mortem.assert_called_with(mock.ANY)
 
     def test_debug_post_mortem_disabled(self):
         test = self.get_handle_exceptions_test(with_debug_post_mortem=False)

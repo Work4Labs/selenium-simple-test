@@ -326,7 +326,7 @@ class SSTTestCase(testtools.TestCase):
     def print_exception_and_enter_post_mortem(self, exc_info):
         exc_class, exc, tb = exc_info
         traceback.print_exception(exc_class, exc, tb)
-        pdb.post_mortem()
+        pdb.post_mortem(tb)
 
     def report_extensively(self, exc_info):
         exc_class, exc, tb = exc_info
