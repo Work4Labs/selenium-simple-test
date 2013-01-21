@@ -304,8 +304,7 @@ class SSTTestCase(testtools.TestCase):
             self.take_screenshot_and_page_dump()
         exc_class, exc, tb = exc_info
         if self.debug_post_mortem:
-            traceback.print_exception(exc_class, exc, tb)
-            pdb.post_mortem()
+            self.print_exception_and_enter_post_mortem(exc_class, exc, tb)
         if self.extended_report:
             self.report_extensively(exc_class, exc, tb)
 
@@ -329,6 +328,10 @@ class SSTTestCase(testtools.TestCase):
         except Exception:
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
             pass
+
+    def print_exception_and_enter_post_mortem(self, exc_class, exc, tb):
+        traceback.print_exception(exc_class, exc, tb)
+        pdb.post_mortem()
 
     def report_extensively(self, exc_class, exc, tb):
         original_message = str(exc)

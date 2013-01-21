@@ -15,8 +15,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import cStringIO
 import os
 
+import mock
 import testtools
 
 from sst import tests
@@ -48,17 +50,19 @@ class TestResultsDirectory(testtools.TestCase):
         self.assertTrue(os.path.exists('results'))
 
 
-class TestScreenshotAndPageDump(testtools.TestCase):
+class TestHandleExceptions(testtools.TestCase):
 
     def setUp(self):
-        super(TestScreenshotAndPageDump, self).setUp()
+        super(TestHandleExceptions, self).setUp()
         tests.set_cwd_to_tmp(self)
 
-    def get_screenshot_test(self, with_screenshots):
-        class ForScreenshotTests(tests.SSTBrowserLessTestCase):
+    def get_handle_exceptions_test(self, with_screenshots=False,
+                                   with_debug_post_mortem=False):
+        class ForHandleExceptionsTests(tests.SSTBrowserLessTestCase):
 
-            nb_calls = 0
+            screenshot_calls = 0
             screenshots_on = with_screenshots
+            debug_post_mortem = with_debug_post_mortem
 
             def take_screenshot_and_page_dump(self):
                 """Counts the calls.
@@ -66,25 +70,40 @@ class TestScreenshotAndPageDump(testtools.TestCase):
                 We don't have a browser so won't be able to do a real
                 screenshot anyway.
                 """
-                self.nb_calls += 1
+                self.screenshot_calls += 1
 
             def test_it(self):
                 """An always failing test."""
                 self.assertTrue(False)
 
-        return ForScreenshotTests('test_it')
+        return ForHandleExceptionsTests('test_it')
 
     def test_screenshot_and_page_dump_on_failure_enabled(self):
-        test = self.get_screenshot_test(True)
+        test = self.get_handle_exceptions_test(with_screenshots=True)
         result = testtools.TestResult()
         test.run(result)
-        self.assertEquals(1, test.nb_calls)
+        self.assertEquals(1, test.screenshot_calls)
 
     def test_screenshot_and_page_dump_on_failure_disabled(self):
-        test = self.get_screenshot_test(False)
+        test = self.get_handle_exceptions_test(with_screenshots=False)
         result = testtools.TestResult()
         test.run(result)
-        self.assertEquals(0, test.nb_calls)
+        self.assertEquals(0, test.screenshot_calls)
+
+    @mock.patch('pdb.post_mortem')
+    @mock.patch('sys.stderr', new_callable=cStringIO.StringIO)
+    def test_debug_post_mortem_enabled(self, mock_stderr, mock_post_mortem):
+        test = self.get_handle_exceptions_test(with_debug_post_mortem=True)
+        test.run()
+        self.assertTrue(mock_stderr.getvalue().endswith,
+                        'AssertionError: False is not true')
+        mock_post_mortem.assert_called_with()
+
+    def test_debug_post_moftem_disabled(self):
+        test = self.get_handle_exceptions_test(with_debug_post_mortem=False)
+        with mock.patch.object(test, 'print_exception_and_enter_post_mortem'):
+            test.run()
+            self.assertFalse(test.print_exception_and_enter_post_mortem.called)
 
 
 class TestSkipping(testtools.TestCase):
