@@ -35,6 +35,7 @@ from unittest2 import (
     TextTestRunner,
 )
 import testtools
+import testtools.content
 
 from sst import (
     actions,
@@ -343,25 +344,14 @@ class SSTTestCase(testtools.TestCase):
             page_source = actions.get_page_source()
         except Exception:
             page_source = 'unavailable'
-
-        new_message = dedent("""
-        Original exception: %s: %s
-
-        Current url: %s
-
-        Page source:
-
-        %s
-
-        """[1:]) % (
-            exc.__class__.__name__,
-            original_message,
-            current_url,
-            page_source,
-        )
-        if isinstance(new_message, unicode):
-            new_message = new_message.encode('ascii', 'backslashreplace')
-        self.addDetail(new_message)
+        self.addDetail(
+            'Original exception',
+            testtools.content.text_content('{0} : {1}'.format(
+                exc.__class__.__name__, original_message)))
+        self.addDetail('Current url',
+                       testtools.content.text_content(current_url))
+        self.addDetail('Page source',
+                       testtools.content.text_content(page_source))
 
 
 class SSTScriptTestCase(SSTTestCase):

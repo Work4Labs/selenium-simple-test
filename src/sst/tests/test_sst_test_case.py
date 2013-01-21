@@ -108,11 +108,17 @@ class TestHandleExceptions(testtools.TestCase):
 
     def test_report_extensively_enabled(self):
         test = self.get_handle_exceptions_test(with_extended_report=True)
-        with mock.patch.object(test, 'addDetail'):
-            test.run()
-            test.addDetail.assert_called_with(
-                'Original exception: AssertionError: False is not true\n\n'
-                'Current url: unavailable\n\nPage source:\n\nunavailable\n\n')
+        result = testtools.TextTestResult(cStringIO.StringIO())
+        result.startTestRun()
+        test.run(result)
+        result.stopTestRun()
+        self.assertIn('Current url: {{{unavailable}}}',
+                      result.stream.getvalue())
+        self.assertIn(
+            'Original exception: {{{AssertionError : False is not true}}}',
+            result.stream.getvalue())
+        self.assertIn('Page source: {{{unavailable}}}',
+                      result.stream.getvalue())
 
     def test_report_extensively_disabled(self):
         test = self.get_handle_exceptions_test(with_extended_report=False)
