@@ -27,7 +27,6 @@ import os
 import pdb
 import sys
 import traceback
-from textwrap import dedent
 
 from unittest2 import (
     SkipTest,
@@ -285,7 +284,13 @@ class SSTTestCase(testtools.TestCase):
         config.results_directory = self.results_directory
         _make_results_dir()
         self.start_browser()
-        self.addOnException(self.handle_exception)
+        if self.screenshots_on:
+            self.addOnException(self.take_screenshot_and_page_dump)
+        if self.debug_post_mortem:
+            self.addOnException(
+                self.print_exception_and_enter_post_mortem)
+        if self.extended_report:
+            self.addOnException(self.report_extensively)
         self.addCleanup(self.stop_browser)
 
     def start_browser(self):
@@ -297,19 +302,7 @@ class SSTTestCase(testtools.TestCase):
     def stop_browser(self):
         stop()
 
-    def handle_exception(self, exc_info):
-        if exc_info[0] is self.skipException:
-            # testools will take care of that
-            return
-        if self.screenshots_on:
-            self.take_screenshot_and_page_dump()
-        exc_class, exc, tb = exc_info
-        if self.debug_post_mortem:
-            self.print_exception_and_enter_post_mortem(exc_class, exc, tb)
-        if self.extended_report:
-            self.report_extensively(exc_class, exc, tb)
-
-    def take_screenshot_and_page_dump(self):
+    def take_screenshot_and_page_dump(self, exc_info):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         tc_name = self.script_name[:-3]
         try:
@@ -330,11 +323,13 @@ class SSTTestCase(testtools.TestCase):
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
             pass
 
-    def print_exception_and_enter_post_mortem(self, exc_class, exc, tb):
+    def print_exception_and_enter_post_mortem(self, exc_info):
+        exc_class, exc, tb = exc_info
         traceback.print_exception(exc_class, exc, tb)
         pdb.post_mortem()
 
-    def report_extensively(self, exc_class, exc, tb):
+    def report_extensively(self, exc_info):
+        exc_class, exc, tb = exc_info
         original_message = str(exc)
         try:
             current_url = actions.get_current_url()

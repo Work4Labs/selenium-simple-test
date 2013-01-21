@@ -67,7 +67,7 @@ class TestHandleExceptions(testtools.TestCase):
             debug_post_mortem = with_debug_post_mortem
             extended_report = with_extended_report
 
-            def take_screenshot_and_page_dump(self):
+            def take_screenshot_and_page_dump(self, exc_info):
                 """Counts the calls.
 
                 We don't have a browser so won't be able to do a real
