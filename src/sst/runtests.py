@@ -284,6 +284,7 @@ class SSTTestCase(testtools.TestCase):
         config.results_directory = self.results_directory
         _make_results_dir()
         self.start_browser()
+        self.addCleanup(self.stop_browser)
         if self.screenshots_on:
             self.addOnException(self.take_screenshot_and_page_dump)
         if self.debug_post_mortem:
@@ -291,7 +292,6 @@ class SSTTestCase(testtools.TestCase):
                 self.print_exception_and_enter_post_mortem)
         if self.extended_report:
             self.addOnException(self.report_extensively)
-        self.addCleanup(self.stop_browser)
 
     def start_browser(self):
         self.browser, self.browsermob_proxy = start(
