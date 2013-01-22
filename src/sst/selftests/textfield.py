@@ -35,4 +35,3 @@ assert_text('text_1', '')
 write_textfield('pass_1', 'qaT3st')
 assert_text('pass_1', 'qaT3st')
 fails(assert_text, 'pass_1', 'fake_text')
-

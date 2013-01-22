@@ -39,11 +39,13 @@ elem = get_element(id='longscroll_link', href='/longscroll')
 assert_text(elem, 'link to longscroll page')
 
 # unique_id + tag + href + text
-elem = get_element(tag='a', id='longscroll_link', href='/longscroll', text='link to longscroll page')
+elem = get_element(tag='a', id='longscroll_link', href='/longscroll',
+                   text='link to longscroll page')
 assert_text(elem, 'link to longscroll page')
 
 # unique_id + href + text
-elem = get_element(id='longscroll_link', href='/longscroll', text='link to longscroll page')
+elem = get_element(id='longscroll_link', href='/longscroll',
+                   text='link to longscroll page')
 assert_text(elem, 'link to longscroll page')
 
 # href + text

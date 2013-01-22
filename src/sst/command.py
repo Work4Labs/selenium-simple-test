@@ -29,7 +29,8 @@ try:
     import selenium
 except ImportError as e:
     print e
-    print 'Error: can not import Selenium WebDriver.  Selenium 2.x python bindings are required.'
+    print 'Error: can not import Selenium WebDriver.'
+    print 'Selenium 2.x python bindings are required.'
     sys.exit(1)
 
 import sst

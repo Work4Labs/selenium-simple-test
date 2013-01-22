@@ -4,7 +4,6 @@ import json
 import urllib2
 
 
-
 class BrowserMobProxy:
     def __init__(self, host, command_port):
         self.host = host

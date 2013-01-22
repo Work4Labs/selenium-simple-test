@@ -1,7 +1,6 @@
-
 import os
 
-from sst.actions import *
+from sst.actions import skip
 
 
 def skip_as_jenkins():

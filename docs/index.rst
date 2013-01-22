@@ -71,7 +71,7 @@ a sample test case in SST::
     from sst.actions import *
 
     go_to('http://www.ubuntu.com/')
-    assert_title_contains('Ubuntu homepage')
+    assert_title_contains('Ubuntu')
 
 
 ------------------------------------
@@ -125,15 +125,14 @@ Options::
   -q                        output less debugging info during test run
   -V                        print version info and exit
   -s                        save screenshots on failures
+  -x                        run browser in headless xserver
   --failfast                stop test execution after first failure
   --debug                   drop into debugger on test fail or error
-  --with-flags=WITH_FLAGS   comma separated list of flags to run tests with
+  --with-flags=FLAGS        comma separated list of flags to run tests with
   --disable-flag-skips      run all tests, disable skipping tests due to flags
-  --extended-tracebacks     Add extra information to (page source) to failure
-                            reports
-  --browsermob=BROWSERMOB   enable browsermob-proxy (launcher location)
+  --extended-tracebacks     Add extra information (page source) to failure reports
+  --browsermob=BROWSERMOB   enable browsermob proxy (launcher location)
   --test                    run selftests
-  -x                        run browser in headless xserver
 
 
 -----------------
@@ -284,7 +283,6 @@ putting the following at the start of the test::
     * selenium
     * unittest2
     * junitxml
-    * pyvirtualdisplay
     * django (optional - needed for internal self-tests only)
 
 
@@ -311,6 +309,39 @@ You can run the suite of self-tests (and the test Django server) from your
 local branch like this::
 
     $ ./sst-run --test
+
+---------------------------------
+Using sst in unittest test suites
+---------------------------------
+
+sst uses unittest test cases internally to wrap the execution of the script
+and taking care of starting and stopping the browser. If you prefer to
+integrate some sst tests into an existing unittest test suite you can use
+SSTTestCase from runtests.py::
+
+  from sst.actions import *
+  from sst import runtests
+
+  class TestUbuntu(runtests.SSTTestCase):
+
+      def test_ubuntu_home_page(self):
+          go_to('http://www.ubuntu.com/')
+          assert_title_contains('Ubuntu')
+
+So, with the above in a file name test_ubuntu.py you can run the test with
+(for example)::
+
+  python -m unittest test_ubuntu.py
+
+`sst-run` provides an headless xserver via the `-x` option. `SSTTestCase`
+provides the same feature (sharing the same implementation) via two class
+attributes.
+
+`xserver_headless` when set to `True` will start an headless server for each
+test (and stop it after the test). If you want to share the same server
+across several tests, set `xvfb`. You're then responsible for starting and
+stopping this server (see `src/sst/xvfbdisplay.py` for details or
+`src/sst/tests/test_xvfb.py` for examples.
 
 
 ---------------------------------------------------

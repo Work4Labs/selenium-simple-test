@@ -53,9 +53,14 @@ from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
-    NoSuchElementException, NoSuchAttributeException,
-    InvalidElementStateException, WebDriverException,
-    NoSuchWindowException, NoSuchFrameException)
+    InvalidElementStateException,
+    NoSuchAttributeException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchWindowException,
+    StaleElementReferenceException,
+    WebDriverException,
+)
 
 from sst import config
 from sst import bmobproxy
@@ -67,21 +72,24 @@ __all__ = [
     'assert_displayed', 'assert_dropdown', 'assert_dropdown_value',
     'assert_element', 'assert_equal', 'assert_link', 'assert_not_equal',
     'assert_radio', 'assert_radio_value', 'assert_table_has_rows',
-    'assert_table_headers', 'assert_table_row_contains_text', 'assert_text',
-    'assert_text_contains', 'assert_textfield', 'assert_title',
-    'assert_title_contains', 'assert_url', 'assert_url_contains',
-    'check_flags', 'click_link', 'clear_cookies', 'close_window', 'debug',
-    'dismiss_alert', 'end_test', 'click_button', 'click_element',
-    'execute_script', 'exists_element', 'fails', 'get_argument',
-    'get_base_url', 'get_cookies', 'get_current_url', 'get_element',
-    'get_element_source', 'get_element_by_css', 'get_element_by_xpath',
+    'assert_table_headers', 'assert_table_row_contains_text',
+    'assert_text', 'assert_text_contains', 'assert_textfield',
+    'assert_title', 'assert_title_contains', 'assert_url',
+    'assert_url_contains', 'check_flags', 'clear_cookies',
+    'click_button', 'click_element', 'click_link', 'close_window',
+    'debug', 'dismiss_alert', 'end_test', 'execute_script',
+    'exists_element', 'fails', 'get_argument', 'get_base_url',
+    'get_cookies', 'get_current_url', 'get_element',
+    'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
-    'get_link_url', 'get_page_source', 'get_wait_timeout', 'go_back', 'go_to',
-    'refresh', 'reset_base_url', 'run_test', 'set_base_url',
-    'set_checkbox_value', 'set_dropdown_value', 'set_radio_value',
-    'set_wait_timeout', 'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot',
-    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh', 'write_textfield',
+    'get_link_url', 'get_page_source', 'get_wait_timeout', 'get_window_size',
+    'go_back', 'go_to', 'refresh', 'reset_base_url','retry_on_stale_element',
+    'run_test', 'set_base_url', 'set_checkbox_value',
+    'set_dropdown_value', 'set_radio_value', 'set_wait_timeout',
+    'set_window_size', 'simulate_keys', 'skip', 'sleep', 'start',
+    'stop', 'switch_to_frame', 'switch_to_window',
+    'take_screenshot', 'toggle_checkbox', 'wait_for',
+    'wait_for_and_refresh', 'write_textfield'
 ]
 
 
@@ -111,6 +119,26 @@ _sentinel = _Sentinel()
 def _raise(msg):
     _print(msg)
     raise AssertionError(msg)
+
+
+def retry_on_stale_element(func):
+    """Decorate ``func`` so StaleElementReferenceException triggers a retry.
+
+    ``func`` is retried only once.
+
+    selenium sometimes raises StaleElementReferenceException which leads to
+    spurious failures. In those cases, using this decorator will retry the
+    function once and avoid the spurious failure. This is a work-around until
+    selenium is properly fixed and should not be abused (or there is a
+    significant risk to hide bugs in the user scripts).
+    """
+    def wrapped(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except StaleElementReferenceException as e:
+            _print('Retrying after catching: %r' % e)
+            return func(*args, **kwargs)
+    return wrapped
 
 
 def set_base_url(url):
@@ -209,6 +237,7 @@ def start(browser_type=None, browser_version='',
                                 "name": session_name}
         browser = webdriver.Remote(desired_capabilities=desired_capabilities,
                                    command_executor=webdriver_remote)
+    return browser, browsermob_proxy
 
 
 def stop():
@@ -352,8 +381,8 @@ def _make_useable_har_name(stem=''):
 
 def go_to(url='', wait=True):
     """
-    Go to a specific URL. If the url provided is a relative url it will be added
-    to the base url. You can change the base url for the test with
+    Go to a specific URL. If the url provided is a relative url it will be
+    added to the base url. You can change the base url for the test with
     `set_base_url`.
 
     By default this action will wait until a page with a body element is
@@ -473,8 +502,9 @@ def simulate_keys(id_or_elem, key_to_press):
 
     """
     key_element = _get_elem(id_or_elem)
-    _print('Simulating keypress on %r with %r key' \
-        % (_get_text(key_element), key_to_press))
+    msg = 'Simulating keypress on %r with %r key' \
+        % (_get_text(key_element), key_to_press)
+    _print(msg)
     key_code = _make_keycode(key_to_press)
     key_element.send_keys(key_code)
 
@@ -504,7 +534,9 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     `check=False`.  The field is cleared before written to. You can switch this
     off by passing `clear=False`."""
     textfield = assert_textfield(id_or_elem)
-    _print('Writing to textfield %r with text %r' % (_get_text(textfield), new_text))
+    msg = 'Writing to textfield %r with text %r' \
+        % (_get_text(textfield), new_text)
+    _print(msg)
 
     # clear field like this, don't use clear()
     if clear:
@@ -682,20 +714,25 @@ _POLL = 0.1
 
 def set_wait_timeout(timeout, poll=None):
     """
-    Set the timeout, in seconds, used by `wait_for`. The default at the start of
-    a test is always 10 seconds.
+    Set the timeout, in seconds, used by `wait_for`. The default at the start
+    of a test is always 10 seconds.
 
     The optional second argument, is how long (in seconds) `wait_for` should
     wait in between checking its condition (the poll frequency). The default
     at the start of a test is always 0.1 seconds."""
-    global _TIMEOUT
-    global _POLL
-    _TIMEOUT = timeout
     msg = 'Setting wait timeout to %rs' % timeout
     if poll is not None:
         msg += ('. Setting poll time to %rs' % poll)
-        _POLL = poll
     _print(msg)
+    _set_wait_timeout(timeout, poll)
+
+
+def _set_wait_timeout(timeout, poll=None):
+    global _TIMEOUT
+    global _POLL
+    _TIMEOUT = timeout
+    if poll is not None:
+        _POLL = poll
 
 
 def get_wait_timeout():
@@ -728,7 +765,7 @@ def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
             except AssertionError as e:
                 pass
             else:
-                if result != False:
+                if result is not False:
                     break
             if time.time() > max_time:
                 error = 'Timed out waiting for: %s' % msg
@@ -739,6 +776,8 @@ def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
     finally:
         VERBOSE = original
 
+
+@retry_on_stale_element
 def wait_for(condition, *args, **kwargs):
     """
     Wait for an action to pass. Useful for checking the results of actions
@@ -773,7 +812,8 @@ def wait_for_and_refresh(condition, *args, **kwargs):
     If the specified condition does not become true within 10 seconds then
     `wait_for_and_refresh` fails.
 
-    You can set the timeout for `wait_for_and_refresh` by calling `set_wait_timeout`.
+    You can set the timeout for `wait_for_and_refresh` by calling
+    `set_wait_timeout`.
     """
     _wait_for(condition, True, _TIMEOUT, _POLL, *args, **kwargs)
 
@@ -855,8 +895,8 @@ def assert_dropdown_value(id_or_elem, text_in):
     current = elem.get_attribute('value')
     for element in elem.find_elements_by_tag_name('option'):
         if text_in == element.text and \
-            current == element.get_attribute('value'):
-                return
+                current == element.get_attribute('value'):
+            return
     msg = 'The option is not currently set to: %r' % text_in
     _raise(msg)
 
@@ -891,7 +931,7 @@ def assert_radio_value(id_or_elem, value):
 def set_radio_value(id_or_elem):
     """Select the specified radio button."""
     elem = assert_radio(id_or_elem)
-    _print('Selecting radio button item %r' % _get_text(elem))    
+    _print('Selecting radio button item %r' % _get_text(elem))
     elem.click()
 
 
@@ -1214,10 +1254,6 @@ def _alert_action(action, expected_text=None, text_to_write=None):
     wait_for(browser.switch_to_alert)
     alert = browser.switch_to_alert()
     alert_text = alert.text
-    # XXX workaround because Selenium sometimes returns the value in a
-    # dictionary. See http://code.google.com/p/selenium/issues/detail?id=2955
-    if isinstance(alert_text, dict):
-        alert_text = alert_text['text']
     if expected_text and expected_text != alert_text:
         error_message = 'Element text should be %r. It is %r.' \
             % (expected_text, alert_text)
@@ -1364,9 +1400,11 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     the property using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    _print('Checking css property %r: %s of %r' %
-        (property, value, _get_text(elem)))
+    _print('Checking css property %r: %r of %r' %
+           (property, value, _get_text(elem)))
     actual = elem.value_of_css_property(property)
+    # some browsers return string with space padded commas, some don't.
+    actual = actual.replace(', ', ',')
     if not regex:
         success = value == actual
     else:
@@ -1430,6 +1468,31 @@ def clear_cookies():
     browser.delete_all_cookies()
 
 
+def set_window_size(width, height):
+    """Resize the current window (width, height) in pixels."""
+    _print('Resizing window to: %s x %s' % (width, height))
+    orig_width, orig_height = get_window_size()
+    if (orig_width == width) and (orig_height == height):
+        return (width, height)
+    browser.set_window_size(width, height)
+    def _was_resized(orig_width, orig_height):
+        w, h = get_window_size()
+        if (w != orig_width) or (h != orig_height):
+            return True
+        else:
+            return False
+    _wait_for(_was_resized, False, 5, .1, orig_width, orig_height)
+    return (width, height)
+
+
+def get_window_size():
+    """Get the current window size (width, height) in pixels."""
+    results = browser.get_window_size()
+    width = results['width']
+    height = results['height']
+    return (width, height)
+
+
 def execute_script(script, *args):
     """
     Executes JavaScript in the context of the currently selected
@@ -1440,7 +1503,7 @@ def execute_script(script, *args):
     For example::
 
         execute_script('document.title = "New Title"')
-        
+
     args will be made available to the script if given.
     """
     _print('Executing script')
@@ -1450,5 +1513,4 @@ def execute_script(script, *args):
 def get_element_source(id_or_elem):
     """Gets the innerHTML source of an element."""
     elem = _get_elem(id_or_elem)
-    return elem.get_attribute('innerHTML') 
-
+    return elem.get_attribute('innerHTML')

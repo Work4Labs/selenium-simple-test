@@ -19,17 +19,4 @@
 #
 
 
-__all__ = ['runtests']
-__version__ = '0.2.2dev'
-
-
-try:
-    from .runtests import runtests
-except ImportError as e:
-    # Selenium not installed
-    # this means we can import the __version__
-    # for setup.py when we install, without
-    # *having* to install selenium first
-    def runtests(*args, **kwargs):
-        raise e
-
+__version__ = '0.2.3dev'

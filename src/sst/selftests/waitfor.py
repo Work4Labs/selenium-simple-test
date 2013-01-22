@@ -1,10 +1,14 @@
 from sst.actions import *
 from time import time
 
+
 CALLS = 0
+
+
 def get_condition(result=True, wait=0, raises=False,
                   cond_args=None, cond_kwargs=None):
     initial = time()
+
     def condition(*args, **kwargs):
         global CALLS
         CALLS += 1

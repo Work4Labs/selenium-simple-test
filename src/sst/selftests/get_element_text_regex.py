@@ -15,4 +15,3 @@ get_element(tag='p', text_regex='^Some text.*$')
 exists_element(tag='p', text_regex='^Some text.*$')
 
 assert len(get_elements(tag='p', text_regex='^Some text.*$')) == 1
-

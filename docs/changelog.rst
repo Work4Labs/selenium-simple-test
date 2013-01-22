@@ -9,20 +9,36 @@
 Official Releases:
 ------------------
 
-
-version **0.2.2** (2012 ??? ??)
+version **0.2.3** (?? ?? ??)
 *******************************
 
-* add ``wait_for_and_refresh`` action
+* expose the SSTTestCase class which is used internally to create test cases
+* start implementing an internal test suite (#1084007)
+* ensure Xvfb is properly killed if sst-run is interrupted (#1084006)
+* protect 'wait_for' from transient failures caused by
+  StaleElementReferenceException (#1084008)
+* include test class full name in test ids for SSTScriptTestCase (#1087606)
+* add support for xfvb to SSTTestCase (#1084011)
+* removed ``junitxml`` package dependency for junit-style xml output
+* in xml report mode, progress is printed to stdout during test run
+* added ``get_window_size`` action
+* added ``set_window_size`` action
+
+
+version **0.2.2** (2012 Nov 4)
+*******************************
+
+* added ``wait_for_and_refresh`` action
 * ``set_dropdown_value`` can set text or value now
-* add ``add_cleanup`` action
-* made tests compatible with Django 1.4
+* added ``add_cleanup`` action
+* made internal tests compatible with Django 1.4
 * added ``config.cache``, a per test cache (dictionary) cleared at the start of
   every test
 * added ``--extended-tracebacks`` command line option
 * added ``get_cookies`` and ``clear_cookies`` actions
 * added ``execute_script`` action
 * added ``get_element_source`` action
+* removed PyVirtualDisplay dependency; replaced with lightweight Xvfb wrapper
 
 
 version **0.2.1** (2012 Apr 22)
