@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 #   Copyright (c) 2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
@@ -19,6 +21,7 @@ from cStringIO import StringIO
 import os
 import sys
 
+import mock
 import testtools
 
 from testtools import matchers
@@ -26,7 +29,7 @@ from testtools import matchers
 from sst import (
     runtests,
     tests,
-)
+    )
 
 
 class SSTStringTestCase(runtests.SSTScriptTestCase):

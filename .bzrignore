@@ -13,3 +13,4 @@ sst_docs
 sst.wpr
 sst.wpu
 *.log
+src/testproject/testproj.db

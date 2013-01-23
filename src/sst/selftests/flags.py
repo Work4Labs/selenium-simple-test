@@ -1,13 +1,13 @@
 from sst.actions import *
 from sst import config
 
-from testtools.testcase import TestSkipped
+from unittest2 import SkipTest
 
 
 try:
     # this should always skip
     check_flags('never-passed')
-except TestSkipped:
+except SkipTest:
     pass
 else:
     raise AssertionError('Test not skipped')

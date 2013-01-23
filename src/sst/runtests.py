@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#   Copyright (c) 2011, 2012, 2013 Canonical Ltd.
+#   Copyright (c) 2011 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
@@ -33,6 +33,7 @@ from unittest2 import (
     TestSuite,
     TextTestRunner,
 )
+
 import testtools
 import testtools.content
 
@@ -355,17 +356,24 @@ class SSTScriptTestCase(SSTTestCase):
     script_dir = '.'
     script_name = None
 
-    def __init__(self, testMethod, context_row={}):
-        super(SSTScriptTestCase, self).__init__('run_test_script')
+    def __init__(self, testMethod, context_row=None):
+        super(SSTScriptTestCase, self).__init__('runTest')
         self.id = lambda: '%s.%s.%s' % (self.__class__.__module__,
                                         self.__class__.__name__, testMethod)
         self.context = context_row
 
     def __str__(self):
-        # Since we use runTest to encapsulate the call to the compiled code, we
-        # need to override __str__ to get a proper name reported
+        # Since we use run_test_script to encapsulate the call to the
+        # compiled code, we need to override __str__ to get a proper name
+        # reported.
         return "%s (%s.%s)" % (self.id(), self.__class__.__module__,
                                self.__class__.__name__)
+
+    def shortDescription(self):
+        # The description should be first line of the test method's docstring.
+        # Since we have no real test method here, we override it to always
+        # return none.
+        return None
 
     def setUp(self):
         self.script_path = os.path.join(self.script_dir, self.script_name)
@@ -393,7 +401,8 @@ class SSTScriptTestCase(SSTTestCase):
             source = f.read() + '\n'
         self.code = compile(source, self.script_path, 'exec')
 
-    def run_test_script(self, result=None):
+    def runTest(self, result=None):
+        # Run the test catching exceptions sstnam style
         try:
             exec self.code in self.context
         except EndTest:

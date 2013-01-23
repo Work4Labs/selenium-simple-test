@@ -47,6 +47,8 @@ from pdb import set_trace as debug
 from textwrap import TextWrapper
 from urlparse import urljoin, urlparse
 
+from unittest2 import SkipTest
+
 from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -80,14 +82,14 @@ __all__ = [
     'get_cookies', 'get_current_url', 'get_element',
     'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
-    'get_link_url', 'get_page_source', 'get_window_size', 'go_back',
-    'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
-    'run_test', 'set_base_url', 'set_checkbox_value', 'set_dropdown_value',
-    'set_radio_value', 'set_wait_timeout', 'set_window_size',
-    'simulate_keys', 'skip', 'sleep', 'start', 'stop',
-    'switch_to_frame', 'switch_to_window', 'take_screenshot',
-    'toggle_checkbox', 'wait_for', 'wait_for_and_refresh',
-    'write_textfield'
+    'get_link_url', 'get_page_source', 'get_wait_timeout', 'get_window_size',
+    'go_back', 'go_to', 'refresh', 'reset_base_url','retry_on_stale_element',
+    'run_test', 'set_base_url', 'set_checkbox_value',
+    'set_dropdown_value', 'set_radio_value', 'set_wait_timeout',
+    'set_window_size', 'simulate_keys', 'skip', 'sleep', 'start',
+    'stop', 'switch_to_frame', 'switch_to_window',
+    'take_screenshot', 'toggle_checkbox', 'wait_for',
+    'wait_for_and_refresh', 'write_textfield'
 ]
 
 
@@ -172,7 +174,7 @@ def skip(reason=''):
     """
     Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
-    _test.skipTest(reason)
+    raise SkipTest(reason)
 
 
 def _print(text):
@@ -562,8 +564,7 @@ def assert_link(id_or_elem):
     Raises a failure exception if the element specified doesn't exist or
     isn't a link"""
     link = _get_elem(id_or_elem)
-    href = link.get_attribute('href')
-    if href is None:
+    if link.tag_name != 'a':
         msg = 'The text %r is not part of a Link or a Link ID' \
             % _get_text(link)
         _raise(msg)
@@ -731,6 +732,11 @@ def _set_wait_timeout(timeout, poll=None):
     _TIMEOUT = timeout
     if poll is not None:
         _POLL = poll
+
+
+def get_wait_timeout():
+    """Get the timeout, in seconds, used by `wait_for`."""
+    return _TIMEOUT
 
 
 def _get_name(obj):
@@ -1461,18 +1467,29 @@ def clear_cookies():
     browser.delete_all_cookies()
 
 
+def set_window_size(width, height):
+    """Resize the current window (width, height) in pixels."""
+    _print('Resizing window to: %s x %s' % (width, height))
+    orig_width, orig_height = get_window_size()
+    if (orig_width == width) and (orig_height == height):
+        return (width, height)
+    browser.set_window_size(width, height)
+    def _was_resized(orig_width, orig_height):
+        w, h = get_window_size()
+        if (w != orig_width) or (h != orig_height):
+            return True
+        else:
+            return False
+    _wait_for(_was_resized, False, 5, .1, orig_width, orig_height)
+    return (width, height)
+
+
 def get_window_size():
     """Get the current window size (width, height) in pixels."""
     results = browser.get_window_size()
     width = results['width']
     height = results['height']
     return (width, height)
-
-
-def set_window_size(width, height):
-    """Resize the current window (width, height) in pixels."""
-    _print('Resizing window to: %s x %s' % (width, height))
-    browser.set_window_size(width, height)
 
 
 def execute_script(script, *args):
@@ -1489,7 +1506,7 @@ def execute_script(script, *args):
     args will be made available to the script if given.
     """
     _print('Executing script')
-    browser.execute_script(script, *args)
+    return browser.execute_script(script, *args)
 
 
 def get_element_source(id_or_elem):
