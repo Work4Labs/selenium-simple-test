@@ -29,7 +29,7 @@ from testtools import matchers
 from sst import (
     runtests,
     tests,
-    )
+)
 
 
 class SSTStringTestCase(runtests.SSTScriptTestCase):
