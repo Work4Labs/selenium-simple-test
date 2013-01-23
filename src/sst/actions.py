@@ -564,8 +564,7 @@ def assert_link(id_or_elem):
     Raises a failure exception if the element specified doesn't exist or
     isn't a link"""
     link = _get_elem(id_or_elem)
-    href = link.get_attribute('href')
-    if href is None:
+    if link.tag_name != 'a':
         msg = 'The text %r is not part of a Link or a Link ID' \
             % _get_text(link)
         _raise(msg)
