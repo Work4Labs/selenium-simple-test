@@ -357,7 +357,7 @@ class SSTScriptTestCase(SSTTestCase):
     script_name = None
 
     def __init__(self, testMethod, context_row=None):
-        super(SSTScriptTestCase, self).__init__('runTest')
+        super(SSTScriptTestCase, self).__init__('run_test_script')
         self.id = lambda: '%s.%s.%s' % (self.__class__.__module__,
                                         self.__class__.__name__, testMethod)
         self.context = context_row
@@ -401,7 +401,7 @@ class SSTScriptTestCase(SSTTestCase):
             source = f.read() + '\n'
         self.code = compile(source, self.script_path, 'exec')
 
-    def runTest(self, result=None):
+    def run_test_script(self, result=None):
         # Run the test catching exceptions sstnam style
         try:
             exec self.code in self.context
