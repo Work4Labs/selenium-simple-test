@@ -1502,7 +1502,7 @@ def execute_script(script, *args):
     args will be made available to the script if given.
     """
     _print('Executing script')
-    browser.execute_script(script, *args)
+    return browser.execute_script(script, *args)
 
 
 def get_element_source(id_or_elem):
