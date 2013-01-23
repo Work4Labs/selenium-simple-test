@@ -82,8 +82,8 @@ __all__ = [
     'get_cookies', 'get_current_url', 'get_element',
     'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
-    'get_link_url', 'get_page_source', 'get_window_size', 'go_back',
-    'go_to', 'refresh', 'reset_base_url','retry_on_stale_element',
+    'get_link_url', 'get_page_source', 'get_wait_timeout', 'get_window_size',
+    'go_back', 'go_to', 'refresh', 'reset_base_url','retry_on_stale_element',
     'run_test', 'set_base_url', 'set_checkbox_value',
     'set_dropdown_value', 'set_radio_value', 'set_wait_timeout',
     'set_window_size', 'simulate_keys', 'skip', 'sleep', 'start',
@@ -732,6 +732,11 @@ def _set_wait_timeout(timeout, poll=None):
     _TIMEOUT = timeout
     if poll is not None:
         _POLL = poll
+
+
+def get_wait_timeout():
+    """Get the timeout, in seconds, used by `wait_for`."""
+    return _TIMEOUT
 
 
 def _get_name(obj):
