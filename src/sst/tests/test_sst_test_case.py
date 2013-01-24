@@ -1,3 +1,4 @@
+#
 #   Copyright (c) 2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
@@ -14,6 +15,8 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+#
+
 
 import cStringIO
 import os

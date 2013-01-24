@@ -1,3 +1,4 @@
+#
 #   Copyright (c) 2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
