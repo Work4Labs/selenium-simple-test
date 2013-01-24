@@ -22,7 +22,6 @@ from cStringIO import StringIO
 import os
 import sys
 
-import mock
 import testtools
 
 from testtools import matchers

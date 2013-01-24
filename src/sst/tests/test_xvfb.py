@@ -29,7 +29,6 @@ from sst import (
     runtests,
     xvfbdisplay,
 )
-from sst.tests import main
 
 
 class TestXvfb(testtools.TestCase):

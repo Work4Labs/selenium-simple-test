@@ -20,8 +20,6 @@ import os
 import shutil
 import tempfile
 
-import testtools
-
 from sst import runtests
 
 
