@@ -27,14 +27,15 @@ import os
 import pdb
 import sys
 import traceback
-from textwrap import dedent
 
 from unittest2 import (
     SkipTest,
-    TestCase,
     TestSuite,
     TextTestRunner,
 )
+
+import testtools
+import testtools.content
 
 from sst import (
     actions,
@@ -246,7 +247,7 @@ def use_xvfb_server(test, xvfb=None):
     return xvfb
 
 
-class SSTTestCase(TestCase):
+class SSTTestCase(testtools.TestCase):
     """A test case that can use the sst framework."""
 
     xvfb = None
@@ -285,6 +286,13 @@ class SSTTestCase(TestCase):
         _make_results_dir()
         self.start_browser()
         self.addCleanup(self.stop_browser)
+        if self.screenshots_on:
+            self.addOnException(self.take_screenshot_and_page_dump)
+        if self.debug_post_mortem:
+            self.addOnException(
+                self.print_exception_and_enter_post_mortem)
+        if self.extended_report:
+            self.addOnException(self.report_extensively)
 
     def start_browser(self):
         self.browser, self.browsermob_proxy = start(
@@ -295,7 +303,7 @@ class SSTTestCase(TestCase):
     def stop_browser(self):
         stop()
 
-    def take_screenshot(self):
+    def take_screenshot_and_page_dump(self, exc_info):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         tc_name = self.script_name[:-3]
         try:
@@ -316,6 +324,31 @@ class SSTTestCase(TestCase):
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
             pass
 
+    def print_exception_and_enter_post_mortem(self, exc_info):
+        exc_class, exc, tb = exc_info
+        traceback.print_exception(exc_class, exc, tb)
+        pdb.post_mortem(tb)
+
+    def report_extensively(self, exc_info):
+        exc_class, exc, tb = exc_info
+        original_message = str(exc)
+        try:
+            current_url = actions.get_current_url()
+        except Exception:
+            current_url = 'unavailable'
+        try:
+            page_source = actions.get_page_source()
+        except Exception:
+            page_source = 'unavailable'
+        self.addDetail(
+            'Original exception',
+            testtools.content.text_content('{0} : {1}'.format(
+                exc.__class__.__name__, original_message)))
+        self.addDetail('Current url',
+                       testtools.content.text_content(current_url))
+        self.addDetail('Page source',
+                       testtools.content.text_content(page_source))
+
 
 class SSTScriptTestCase(SSTTestCase):
     """Test case used internally by sst-run and sst-remote."""
@@ -324,7 +357,7 @@ class SSTScriptTestCase(SSTTestCase):
     script_name = None
 
     def __init__(self, testMethod, context_row=None):
-        super(SSTScriptTestCase, self).__init__('runTest')
+        super(SSTScriptTestCase, self).__init__('run_test_script')
         self.id = lambda: '%s.%s.%s' % (self.__class__.__module__,
                                         self.__class__.__name__, testMethod)
         self.context = context_row
@@ -368,61 +401,12 @@ class SSTScriptTestCase(SSTTestCase):
             source = f.read() + '\n'
         self.code = compile(source, self.script_path, 'exec')
 
-    def runTest(self, result=None):
+    def run_test_script(self, result=None):
         # Run the test catching exceptions sstnam style
         try:
             exec self.code in self.context
         except EndTest:
             pass
-        except SkipTest:
-            raise
-        except:
-            exc_class, exc, tb = sys.exc_info()
-            self.handle_exception(exc_class, exc, tb)
-
-    def handle_exception(self, exc_class, exc, tb):
-        if self.screenshots_on:
-            self.take_screenshot()
-        if self.debug_post_mortem:
-            traceback.print_exception(exc_class, exc, tb)
-            pdb.post_mortem()
-        if not self.extended_report:
-            raise exc_class, exc, tb
-        else:
-            self.report_extensively(exc_class, exc, tb)
-
-    def report_extensively(self, exc_class, exc, tb):
-        original_message = str(exc)
-        page_source = 'unavailable'
-        current_url = 'unavailable'
-        try:
-            current_url = actions.get_current_url()
-        except Exception:
-            pass
-        try:
-            page_source = actions.get_page_source()
-        except Exception:
-            pass
-
-        new_message = dedent("""
-        Original exception: %s: %s
-
-        Current url: %s
-
-        Page source:
-
-        %s
-
-        """[1:]) % (
-            exc.__class__.__name__,
-            original_message,
-            current_url,
-            page_source,
-        )
-        if isinstance(new_message, unicode):
-            new_message = new_message.encode('ascii', 'backslashreplace')
-        new_exc = Exception(new_message)
-        raise Exception, new_exc, tb
 
 
 def get_case(test_dir, entry, browser_type, browser_version,

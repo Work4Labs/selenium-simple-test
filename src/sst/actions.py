@@ -47,8 +47,6 @@ from pdb import set_trace as debug
 from textwrap import TextWrapper
 from urlparse import urljoin, urlparse
 
-from unittest2 import SkipTest
-
 from selenium import webdriver
 from selenium.webdriver.common import keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -83,7 +81,7 @@ __all__ = [
     'get_element_by_css', 'get_element_by_xpath', 'get_element_source',
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
     'get_link_url', 'get_page_source', 'get_wait_timeout', 'get_window_size',
-    'go_back', 'go_to', 'refresh', 'reset_base_url','retry_on_stale_element',
+    'go_back', 'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
     'run_test', 'set_base_url', 'set_checkbox_value',
     'set_dropdown_value', 'set_radio_value', 'set_wait_timeout',
     'set_window_size', 'simulate_keys', 'skip', 'sleep', 'start',
@@ -174,7 +172,7 @@ def skip(reason=''):
     """
     Skip the test. Unlike `end_test` a skipped test will be reported
     as a skip rather than a pass."""
-    raise SkipTest(reason)
+    _test.skipTest(reason)
 
 
 def _print(text):
@@ -1474,12 +1472,14 @@ def set_window_size(width, height):
     if (orig_width == width) and (orig_height == height):
         return (width, height)
     browser.set_window_size(width, height)
+
     def _was_resized(orig_width, orig_height):
         w, h = get_window_size()
         if (w != orig_width) or (h != orig_height):
             return True
         else:
             return False
+
     _wait_for(_was_resized, False, 5, .1, orig_width, orig_height)
     return (width, height)
 
