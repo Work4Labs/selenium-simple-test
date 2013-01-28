@@ -74,6 +74,8 @@ class TestHandleExceptions(testtools.TestCase):
                 screenshot anyway.
                 """
                 self.screenshot_calls += 1
+                super(ForHandleExceptionsTests,
+                      self).take_screenshot_and_page_dump(exc_info)
 
             def test_it(self):
                 """An always failing test."""
@@ -81,10 +83,13 @@ class TestHandleExceptions(testtools.TestCase):
 
         return ForHandleExceptionsTests('test_it')
 
-    def test_screenshot_and_page_dump_on_failure_enabled(self):
+    @mock.patch('sst.actions.take_screenshot')
+    def test_screenshot_and_page_dump_on_failure_enabled(self,
+                                                         mock_screenshot):
         test = self.get_handle_exceptions_test(with_screenshots=True)
         test.run()
         self.assertEquals(1, test.screenshot_calls)
+        mock_screenshot.assert_called_with()
 
     def test_screenshot_and_page_dump_on_failure_disabled(self):
         test = self.get_handle_exceptions_test(with_screenshots=False)
