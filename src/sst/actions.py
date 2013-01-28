@@ -82,7 +82,7 @@ __all__ = [
     'get_elements', 'get_elements_by_css', 'get_elements_by_xpath',
     'get_link_url', 'get_page_source', 'get_wait_timeout', 'get_window_size',
     'go_back', 'go_to', 'refresh', 'reset_base_url', 'retry_on_stale_element',
-    'run_test', 'set_base_url', 'set_checkbox_value',
+    'run_test', 'save_page_source', 'set_base_url', 'set_checkbox_value',
     'set_dropdown_value', 'set_radio_value', 'set_wait_timeout',
     'set_window_size', 'simulate_keys', 'skip', 'sleep', 'start',
     'stop', 'switch_to_frame', 'switch_to_window',
@@ -288,12 +288,32 @@ def take_screenshot(filename='screenshot.png', add_timestamp=True):
     _print('Capturing Screenshot')
     _make_results_dir()
     if add_timestamp:
-        now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        root, extension = os.path.splitext(filename)
-        filename = '{0}-{1}{2}'.format(root, now, extension)
+        filename = _add_time_stamp(filename)
     screenshot_file = os.path.join(config.results_directory, filename)
     browser.get_screenshot_as_file(screenshot_file)
     return screenshot_file
+
+
+def _add_time_stamp(filename):
+    now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    root, extension = os.path.splitext(filename)
+    return '{0}-{1}{2}'.format(root, now, extension)
+
+
+def save_page_source(filename='pagedump.html', add_timestamp=True):
+    """
+    Save the source of the currently opened page.
+    Called automatically on failures when running `-s` mode.
+
+    Return the path to the saved file."""
+    _print('Saving page source')
+    _make_results_dir()
+    if add_timestamp:
+        filename = _add_time_stamp(filename)
+    page_source_file = os.path.join(config.results_directory, filename)
+    with open(page_source_file, 'w') as file_:
+        file_.write(get_page_source())
+    return page_source_file
 
 
 def _make_results_dir():
