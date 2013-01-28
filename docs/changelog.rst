@@ -12,6 +12,8 @@ Official Releases:
 version **0.2.3** (?? ?? ??)
 *******************************
 
+* added a parameter to ``take_screnshot`` to include a timestamp in the file 
+  name
 * expose the SSTTestCase class which is used internally to create test cases
 * start implementing an internal test suite (#1084007)
 * ensure Xvfb is properly killed if sst-run is interrupted (#1084006)

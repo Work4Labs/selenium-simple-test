@@ -279,14 +279,21 @@ def refresh(wait=True):
         browsermob_proxy.save_har(_make_useable_har_name())
 
 
-def take_screenshot(filename='screenshot.png'):
+def take_screenshot(filename='screenshot.png', add_timestamp=True):
     """
-    Takes a screenshot of the browser window. Called automatically on failures
-    when running in `-s` mode."""
+    Take a screenshot of the browser window. Called automatically on failures
+    when running in `-s` mode.
+
+    Return the path to the saved screenshot."""
     _print('Capturing Screenshot')
     _make_results_dir()
+    if add_timestamp:
+        now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        root, extension = os.path.splitext(filename)
+        filename = '{0}-{1}{2}'.format(root, now, extension)
     screenshot_file = os.path.join(config.results_directory, filename)
     browser.get_screenshot_as_file(screenshot_file)
+    return screenshot_file
 
 
 def _make_results_dir():

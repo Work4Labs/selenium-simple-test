@@ -24,6 +24,7 @@ urlpatterns = patterns('',
                        (r'alerts', 'simple.views.alerts'),
                        (r'yui', 'simple.views.yui'),
                        (r'tables', 'simple.views.tables'),
+                       (r'page_to_save', 'simple.views.page_to_save'),
                        (r'kill_django', 'simple.views.kill_django'),
                        (r'^admin/', include(admin.site.urls)),
                        (r'', 'simple.views.index'),)
