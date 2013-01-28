@@ -20,9 +20,16 @@ import os
 import sst.actions
 
 
+def is_png(data):
+    return (data[:8] == '\211PNG\r\n\032\n'and (data[12:16] == 'IHDR'))
+
+
 sst.actions.go_to('/page_to_save')
 screenshot_path = sst.actions.take_screenshot()
 assert os.path.isfile(screenshot_path)
+with open(screenshot_path, 'rb') as screenshot_file:
+    data = screenshot_file.read()
+    assert is_png(data)
 # TODO compare the screenshot with the expected one.
 # This is easy to do if we are using the same browser. It's harder to compare
 # screenshots taken on different browsers.
