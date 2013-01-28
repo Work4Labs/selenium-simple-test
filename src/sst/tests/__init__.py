@@ -1,3 +1,4 @@
+#
 #   Copyright (c) 2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
@@ -18,8 +19,6 @@
 import os
 import shutil
 import tempfile
-
-import testtools
 
 from sst import runtests
 
