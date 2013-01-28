@@ -305,9 +305,8 @@ class SSTTestCase(testtools.TestCase):
 
     def take_screenshot_and_page_dump(self, exc_info):
         now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        tc_name = self.script_name[:-3]
         try:
-            filename = 'screenshot-%s-%s.png' % (now, tc_name)
+            filename = 'screenshot-{0}.png'.format(self.id())
             actions.take_screenshot(filename)
         except Exception:
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
