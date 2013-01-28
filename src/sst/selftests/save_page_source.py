@@ -15,14 +15,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import os
-
 import sst.actions
 
 
 sst.actions.go_to('/page_to_save')
 page_source_path = sst.actions.save_page_source()
-assert os.path.isfile(page_source_path)
-# TODO compare the file with the expected one.
-# This is easy to do if we are using the same browser. It's harder to compare
-# HTMLs saved on different browsers.
+with open(page_source_path, 'r') as page_source_file:
+    page_source = page_source_file.read()
+assert page_source == sst.actions.get_page_source()
