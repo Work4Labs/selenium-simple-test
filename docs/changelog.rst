@@ -13,7 +13,7 @@ version **0.2.3** (?? ?? ??)
 *******************************
 
 * added the ``save_page_source`` action.
-* added a parameter to ``take_screnshot`` to include a timestamp in the file 
+* added a parameter to ``take_screenshot`` to include a timestamp in the file 
   name
 * expose the SSTTestCase class which is used internally to create test cases
 * start implementing an internal test suite (#1084007)
