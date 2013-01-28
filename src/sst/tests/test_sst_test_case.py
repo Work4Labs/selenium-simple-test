@@ -73,12 +73,15 @@ class TestHandleExceptions(testtools.TestCase):
         return ForHandleExceptionsTests('test_it')
 
     @mock.patch('sst.actions.take_screenshot')
-    def test_screenshot_and_page_dump_on_failure_enabled(self,
-                                                         mock_screenshot):
+    @mock.patch('sst.actions.save_page_source')
+    def test_screenshot_and_page_dump_on_failure_enabled(
+            self, mock_page_dump, mock_screenshot):
         test = self.get_handle_exceptions_test(with_screenshots=True)
         test.run()
         mock_screenshot.assert_called_once_with(
             'screenshot-{0}.png'.format(test.id()))
+        mock_page_dump.assert_called_once_with(
+            'pagesource-{0}.html'.format(test.id()))
 
     def test_screenshot_and_page_dump_on_failure_disabled(self):
         test = self.get_handle_exceptions_test(with_screenshots=False)

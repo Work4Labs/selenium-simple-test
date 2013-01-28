@@ -304,7 +304,8 @@ class SSTTestCase(testtools.TestCase):
         stop()
 
     def take_screenshot_and_page_dump(self, exc_info):
-        now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        # FIXME: Urgh, config.results_directory is a global set in
+        # runtests() -- vila 2012-10-29
         try:
             filename = 'screenshot-{0}.png'.format(self.id())
             actions.take_screenshot(filename)
@@ -313,12 +314,8 @@ class SSTTestCase(testtools.TestCase):
             pass
         try:
             # also dump page source
-            filename = 'pagesource-%s-%s.html' % (now, tc_name)
-            # FIXME: Urgh, config.results_directory is a global set in
-            # runtests() -- vila 2012-10-29
-            path = os.path.join(config.results_directory, filename)
-            with codecs.open(path, 'w', encoding='utf-8') as f:
-                f.write(actions.get_page_source())
+            filename = 'pagesource-{0}.html'.format(self.id())
+            actions.save_page_source(filename)
         except Exception:
             # FIXME: Needs to be reported somehow ? -- vila 2012-10-16
             pass
