@@ -65,18 +65,9 @@ class TestHandleExceptions(testtools.TestCase):
                                    with_extended_report=False):
         class ForHandleExceptionsTests(tests.SSTBrowserLessTestCase):
 
-            screenshot_calls = 0
             screenshots_on = with_screenshots
             debug_post_mortem = with_debug_post_mortem
             extended_report = with_extended_report
-
-            def take_screenshot_and_page_dump(self, exc_info):
-                """Counts the calls.
-
-                We don't have a browser so won't be able to do a real
-                screenshot anyway.
-                """
-                self.screenshot_calls += 1
 
             def test_it(self):
                 """An always failing test."""
@@ -84,15 +75,22 @@ class TestHandleExceptions(testtools.TestCase):
 
         return ForHandleExceptionsTests('test_it')
 
-    def test_screenshot_and_page_dump_on_failure_enabled(self):
+    @mock.patch('sst.actions.take_screenshot')
+    @mock.patch('sst.actions.save_page_source')
+    def test_screenshot_and_page_dump_on_failure_enabled(
+            self, mock_page_dump, mock_screenshot):
         test = self.get_handle_exceptions_test(with_screenshots=True)
         test.run()
-        self.assertEquals(1, test.screenshot_calls)
+        mock_screenshot.assert_called_once_with(
+            'screenshot-{0}.png'.format(test.id()))
+        mock_page_dump.assert_called_once_with(
+            'pagesource-{0}.html'.format(test.id()))
 
     def test_screenshot_and_page_dump_on_failure_disabled(self):
         test = self.get_handle_exceptions_test(with_screenshots=False)
-        test.run()
-        self.assertEquals(0, test.screenshot_calls)
+        with mock.patch.object(test, 'take_screenshot_and_page_dump'):
+            test.run()
+            self.assertFalse(test.take_screenshot_and_page_dump.called)
 
     @mock.patch('pdb.post_mortem')
     @mock.patch('sys.stderr', new_callable=cStringIO.StringIO)

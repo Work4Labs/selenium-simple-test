@@ -49,5 +49,9 @@ def tables(request):
     return render_to_response('tables.html')
 
 
+def page_to_save(request):
+    return render_to_response('page_to_save.html')
+
+
 def kill_django(request):
     os.kill(os.getpid(), signal.SIGKILL)
