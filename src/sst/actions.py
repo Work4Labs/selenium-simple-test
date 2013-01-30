@@ -770,7 +770,7 @@ def _get_name(obj):
         return repr(obj)
 
 
-def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
+def _wait_for(condition, refresh_page, timeout, poll, *args, **kwargs):
     global VERBOSE
     _print('Waiting for %r' % _get_name(condition))
     original = VERBOSE
@@ -780,7 +780,7 @@ def _wait_for(condition, refresh, timeout, poll, *args, **kwargs):
         msg = _get_name(condition)
         while True:
             #refresh the page if requested
-            if refresh:
+            if refresh_page:
                 refresh()
             e = None
             try:
