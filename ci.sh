@@ -94,7 +94,7 @@ if [ -n "$UNIT" ]; then
     echo "----------------------------------"
     echo "running unit tests..."
     # this generates 'nosetests.xml' in top dir
-    nosetests --verbosity=2 --with-xunit -m ^test_.* -e ENV -e testproject
+    nosetests --verbosity=2 --with-xunit -m ^test_.* -e ENV -e testproject -e selftests
 fi
 
 if [ -n "$BROWSER" ]; then
