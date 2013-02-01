@@ -405,21 +405,17 @@ class SSTScriptTestCase(SSTTestCase):
             pass
 
 
-def _is_testcase(test_dir, entry):
-    script_path = os.path.join(test_dir, entry)
-    with open(script_path) as f:
-        source = f.read() + '\n'
-    code = compile(source, script_path, 'exec')
-    return ('SSTTestCase' in code.co_names)
-
-
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              context=None, failfast=False, debug=False, extended=False):
-    if _is_testcase(test_dir, entry):
+    # our naming convention for tests requires SSTTescase class-based
+    # test files to be named 'test_*.py'.  Script-based cases must not
+    # begin with test_*
+    if entry.startswith('test_'):
+        # load just the individual test
         this_test = defaultTestLoader.discover(test_dir, pattern=entry)
-    else:
+    else:  # this is for script-based test
         context_provided = True
         if context is None:
             context_provided = False
