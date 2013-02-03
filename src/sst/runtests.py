@@ -269,7 +269,7 @@ class SSTTestCase(testtools.TestCase):
     screenshots_on = False
     debug_post_mortem = False
     extended_report = False
-
+                               
     def setUp(self):
         super(SSTTestCase, self).setUp()
         if self.base_url is not None:
@@ -404,6 +404,17 @@ class SSTScriptTestCase(SSTTestCase):
         except EndTest:
             pass
 
+def _has_classes(test_dir, entry):
+    with open(os.path.join(test_dir, entry)) as f:
+        source = f.read() + '\n'
+    found_classes = []
+    def visit_class_def(node):
+        found_classes.append(True)
+    V = ast.NodeVisitor()
+    V.visit_ClassDef = visit_class_def
+    V.visit(ast.parse(source))
+    return bool(found_classes)
+
 
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
@@ -412,7 +423,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
     # our naming convention for tests requires SSTTescase class-based
     # test files to be named 'test_*.py'.  Script-based cases must not
     # begin with test_*
-    if entry.startswith('test_'):
+    
+    if entry.startswith('test_') and _has_classes(test_dir, entry):
         # load just the individual test
         this_test = defaultTestLoader.discover(test_dir, pattern=entry)
     else:  # this is for script-based test
