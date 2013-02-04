@@ -404,7 +404,9 @@ class SSTScriptTestCase(SSTTestCase):
         except EndTest:
             pass
 
+
 def _has_classes(test_dir, entry):
+    """scan Python source file and check for a class definition."""
     with open(os.path.join(test_dir, entry)) as f:
         source = f.read() + '\n'
     found_classes = []
@@ -420,10 +422,12 @@ def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              context=None, failfast=False, debug=False, extended=False):
-    # our naming convention for tests requires SSTTescase class-based
-    # test files to be named 'test_*.py'.  Script-based cases must not
-    # begin with test_*
-    
+    # our naming convention for tests requires that script-based tests must not
+    # begin with test_*.  SSTTestCase class-based or other TestCase based source
+    # files must begin with test_*.  
+    # we also scan the source file to see if it has class definitions,
+    # since script base cases normally don't, but TestCase class-based
+    # tests always will. 
     if entry.startswith('test_') and _has_classes(test_dir, entry):
         # load just the individual test
         this_test = defaultTestLoader.discover(test_dir, pattern=entry)
