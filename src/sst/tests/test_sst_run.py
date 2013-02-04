@@ -19,8 +19,10 @@
 
 
 import testtools
+import unittest
 
 from sst import runtests
+from sst import tests
 
 
 class TestSSTScriptTestCase(testtools.TestCase):
@@ -32,3 +34,10 @@ class TestSSTScriptTestCase(testtools.TestCase):
         # test infrastructure for that (yet) -- vila 2012-12-07
         test = runtests.SSTScriptTestCase('foo')
         self.assertEqual('sst.runtests.SSTScriptTestCase.foo', test.id())
+        
+
+class TestSSTSTestCase(testtools.TestCase):
+
+    def test_id(self):
+        test = runtests.SSTTestCase('run')
+        self.assertEqual('sst.runtests.SSTTestCase.run', test.id())
