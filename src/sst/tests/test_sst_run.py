@@ -19,25 +19,37 @@
 
 
 import testtools
-import unittest
 
 from sst import runtests
-from sst import tests
+
 
 
 class TestSSTScriptTestCase(testtools.TestCase):
 
-    def test_id(self):
-        """The test id mentions the python class path and the test name."""
-        # FIXME: This is a minimal test to cover http://pad.lv/1087606, it
-        # would be better to check a results.xml file but we don't have the
-        # test infrastructure for that (yet) -- vila 2012-12-07
+    def test_attributes(self):
         test = runtests.SSTScriptTestCase('foo')
+        self.assertEqual(test._testMethodName, 'run_test_script')
+        self.assertIsNone(test.base_url)
+        self.assertEqual(test.browser_platform, 'ANY')
+        self.assertEqual(test.browser_type, 'Firefox')
+        self.assertFalse(test.javascript_disabled)
+        self.assertFalse(test.screenshots_on)
+        self.assertEqual(test.wait_poll, 0.1)
+        self.assertEqual(test.wait_timeout, 10)
+        #self.assertEqual(test.shortDescription(), 'sst.runtests.SSTTestCase.foo')
         self.assertEqual('sst.runtests.SSTScriptTestCase.foo', test.id())
-        
 
-class TestSSTSTestCase(testtools.TestCase):
+class TestSSTTestCase(testtools.TestCase):
 
-    def test_id(self):
+    def test_attributes(self):
         test = runtests.SSTTestCase('run')
+        self.assertEqual(test._testMethodName, 'run')
+        self.assertIsNone(test.base_url)
+        self.assertEqual(test.browser_platform, 'ANY')
+        self.assertEqual(test.browser_type, 'Firefox')
+        self.assertFalse(test.javascript_disabled)
+        self.assertFalse(test.screenshots_on)
+        self.assertEqual(test.wait_poll, 0.1)
+        self.assertEqual(test.wait_timeout, 10)
+        self.assertEqual(test.shortDescription(), 'sst.runtests.SSTTestCase.run')
         self.assertEqual('sst.runtests.SSTTestCase.run', test.id())
