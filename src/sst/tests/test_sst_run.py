@@ -17,32 +17,64 @@
 #   limitations under the License.
 #
 
+
+import sys
 import os
+from cStringIO import StringIO
 
 import testtools
 
-from sst import runtests
-from sst import config
+from sst import (
+    config,
+    runtests,
+    tests,
+)
+
+
+
+class SSTBrowserlessTestCase(runtests.SSTScriptTestCase):
+    def setUp(self):
+        # We don't need to compile the script because we have already defined
+        # the code to execute.
+        self._compile_script = lambda: None
+        self.code = compile(self.script_code + '\n', '<string>', 'exec')
+        super(SSTBrowserlessTestCase, self).setUp()
+    
+    def start_browser(self):
+        pass
+
+    def stop_browser(self):
+        pass
 
 
 
 class TestSSTScriptTestCase(testtools.TestCase):
+    
+    def setUp(self):
+        super(TestSSTScriptTestCase, self).setUp()
+        tests.set_cwd_to_tmp(self)
+        # capture test output so we don't pollute the test runs
+        self.out = StringIO()
+        self.patch(sys, 'stdout', self.out)
+        self.test = runtests.SSTScriptTestCase('foo')
 
     def test_attributes(self):
-        test = runtests.SSTScriptTestCase('foo')
+        test = self.test
+        
         self.assertEqual(test._testMethodName, 'run_test_script')
         # why is base_url "None" ???
-        #self.assertIsNone(test.base_url)
+        self.assertIsNone(test.base_url)
         self.assertEqual(test.browser_platform, 'ANY')
         self.assertEqual(test.browser_type, 'Firefox')
         self.assertFalse(test.javascript_disabled)
         self.assertFalse(test.screenshots_on)
         self.assertEqual(test.wait_poll, 0.1)
         self.assertEqual(test.wait_timeout, 10)
-        # why is test.shortDescription() "None" ???
-        #self.assertEqual(test.shortDescription(), 'sst.runtests.SSTTestCase.foo')
-        self.assertEqual('sst.runtests.SSTScriptTestCase.foo', test.id())
-    
+        # why is test.shortDescription() "None" ???  --cmg
+        #self.assertEqual(test.shortDescription(), 'test_sst_run.SSTStringTestCase.foo')
+        self.assertEqual(test.id(), 'sst.runtests.SSTScriptTestCase.foo')
+
+
     def test_config(self):
         self.assertIsNone(config._current_context)
         self.assertEqual(config.browser_type, 'Firefox')
@@ -55,21 +87,38 @@ class TestSSTScriptTestCase(testtools.TestCase):
 
 
 class TestSSTTestCase(testtools.TestCase):
+    
+    def setUp(self):
+        super(TestSSTTestCase, self).setUp()
+        
+        self.test = SSTBrowserlessTestCase('testing')
+        self.test.script_code = 'assert True'
+        self.test.results_directory = 'results'
+        result = testtools.TestResult()
+        self.test.run(result)
+        
+        tests.set_cwd_to_tmp(self)
+        # capture test output so we don't pollute the test runs
+        self.out = StringIO()
+        self.patch(sys, 'stdout', self.out)
+
 
     def test_attributes(self):
-        test = runtests.SSTTestCase('run')
-        self.assertEqual(test._testMethodName, 'run')
-        # why is base_url "None" ???
-        #self.assertIsNone(test.base_url)
+        test = self.test
+        self.assertEqual(test._testMethodName, 'run_test_script')
+        # why is base_url "None" ???  --cmg
+        self.assertIsNone(test.base_url)
         self.assertEqual(test.browser_platform, 'ANY')
         self.assertEqual(test.browser_type, 'Firefox')
         self.assertFalse(test.javascript_disabled)
         self.assertFalse(test.screenshots_on)
         self.assertEqual(test.wait_poll, 0.1)
         self.assertEqual(test.wait_timeout, 10)
-        self.assertEqual(test.shortDescription(), 'sst.runtests.SSTTestCase.run')
-        self.assertEqual('sst.runtests.SSTTestCase.run', test.id())
-        
+        # why is test.shortDescription() "None" ???  --cmg
+        #self.assertEqual(test.shortDescription(), 'test_sst_run.SSTBrowserlessTestCase.testing')
+        self.assertEqual(test.id(), 'test_sst_run.SSTBrowserlessTestCase.testing')
+
+
     def test_config(self):
         self.assertIsNone(config._current_context)
         self.assertEqual(config.browser_type, 'Firefox')
