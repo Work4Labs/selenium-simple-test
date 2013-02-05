@@ -79,4 +79,3 @@ class TestSSTTestCase(testtools.TestCase):
         self.assertFalse(config.browsermob_enabled)
         self.assertEqual(os.path.split(config.results_directory)[-1], 'results')
         self.assertEqual(os.path.split(config.shared_directory)[-1], 'shared')
-
