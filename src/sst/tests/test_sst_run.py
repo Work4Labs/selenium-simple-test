@@ -30,13 +30,26 @@ from sst import (
 )
 
 
+class TestSSTScriptTestCase(testtools.TestCase):
+
+    def setUp(self):
+        super(TestSSTScriptTestCase, self).setUp()     
+        self.test = runtests.SSTScriptTestCase('foo')
+
+    def test_id(self):
+        """The test id mentions the python class path and the test name."""
+        # FIXME: This is a minimal test to cover http://pad.lv/1087606, it
+        # would be better to check a results.xml file but we don't have the
+        # test infrastructure for that (yet) -- vila 2012-12-07
+        self.assertEqual('sst.runtests.SSTScriptTestCase.foo', self.test.id())
+
 
 class TestSSTTestCase(testtools.TestCase):
     
     def setUp(self):
         super(TestSSTTestCase, self).setUp()       
         self.test = tests.SSTBrowserLessTestCase('run')
-        self.addCleanup(shutil.rmtree, config.results_directory)
+        self.addCleanup(shutil.rmtree, 'results')
         self.result = testtools.TestResult()
         self.test.run(self.result)
 
