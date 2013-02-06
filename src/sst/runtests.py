@@ -406,15 +406,15 @@ class SSTScriptTestCase(SSTTestCase):
 
 
 def _has_classes(test_dir, entry):
-    """scan Python source file and check for a class definition."""
+    """Scan Python source file and check for a class definition."""
     with open(os.path.join(test_dir, entry)) as f:
         source = f.read() + '\n'
     found_classes = []
     def visit_class_def(node):
         found_classes.append(True)
-    V = ast.NodeVisitor()
-    V.visit_ClassDef = visit_class_def
-    V.visit(ast.parse(source))
+    node_visitor = ast.NodeVisitor()
+    node_visitor.visit_ClassDef = visit_class_def
+    node_visitor.visit(ast.parse(source))
     return bool(found_classes)
 
 
