@@ -33,7 +33,7 @@ from sst import (
 class TestSSTScriptTestCase(testtools.TestCase):
 
     def setUp(self):
-        super(TestSSTScriptTestCase, self).setUp()     
+        super(TestSSTScriptTestCase, self).setUp()
         self.test = runtests.SSTScriptTestCase('foo')
 
     def test_id(self):
@@ -45,24 +45,21 @@ class TestSSTScriptTestCase(testtools.TestCase):
 
 
 class TestSSTTestCase(testtools.TestCase):
-    
+
     def setUp(self):
-        super(TestSSTTestCase, self).setUp()       
+        super(TestSSTTestCase, self).setUp()
         self.test = tests.SSTBrowserLessTestCase('run')
         self.addCleanup(shutil.rmtree, 'results')
         self.result = testtools.TestResult()
         self.test.run(self.result)
 
-    
     def test_results(self):
-        test = self.test
         result = self.result
         self.assertEqual(result.testsRun, 1)
         self.assertTrue(result.wasSuccessful())
         self.assertEqual(result.errors, [])
         self.assertEqual(result.failures, [])
         self.assertEqual(result.skipped, [])
-
 
     def test_attributes(self):
         test = self.test
@@ -75,9 +72,9 @@ class TestSSTTestCase(testtools.TestCase):
         self.assertFalse(test.screenshots_on)
         self.assertEqual(test.wait_poll, 0.1)
         self.assertEqual(test.wait_timeout, 10)
-        self.assertEqual(test.shortDescription(), 'sst.tests.SSTBrowserLessTestCase.run')
+        self.assertEqual(test.shortDescription(),
+                         'sst.tests.SSTBrowserLessTestCase.run')
         self.assertEqual(test.id(), 'sst.tests.SSTBrowserLessTestCase.run')
-
 
     def test_config(self):
         self.assertIsNone(config._current_context)
@@ -86,5 +83,5 @@ class TestSSTTestCase(testtools.TestCase):
         self.assertEqual(config.flags, [])
         self.assertFalse(config.javascript_disabled)
         self.assertFalse(config.browsermob_enabled)
-        self.assertEqual(os.path.split(config.results_directory)[-1], 'results')
-
+        self.assertEqual(os.path.split(config.results_directory)[-1],
+                         'results')
