@@ -270,6 +270,9 @@ class SSTTestCase(testtools.TestCase):
     debug_post_mortem = False
     extended_report = False
 
+    def shortDescription(self):
+        return None
+
     def setUp(self):
         super(SSTTestCase, self).setUp()
         if self.base_url is not None:

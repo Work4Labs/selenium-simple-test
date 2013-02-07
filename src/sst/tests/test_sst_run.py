@@ -72,8 +72,7 @@ class TestSSTTestCase(testtools.TestCase):
         self.assertFalse(test.screenshots_on)
         self.assertEqual(test.wait_poll, 0.1)
         self.assertEqual(test.wait_timeout, 10)
-        self.assertEqual(test.shortDescription(),
-                         'sst.tests.SSTBrowserLessTestCase.run')
+        self.assertIsNone(test.shortDescription())
         self.assertEqual(test.id(), 'sst.tests.SSTBrowserLessTestCase.run')
 
     def test_config(self):
