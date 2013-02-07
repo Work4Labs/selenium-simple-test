@@ -268,7 +268,9 @@ class _XMLTestResult(_TextTestResult):
         if isinstance(test_runner.output, str) and not \
                 os.path.exists(test_runner.output):
             os.makedirs(test_runner.output)
-
+        
+        test_runner.output.write('<?xml version="1.0"?>\n')
+        
         for suite, tests in all_results.items():
             doc = Document()
             
@@ -279,10 +281,8 @@ class _XMLTestResult(_TextTestResult):
             for test in tests:
                 _XMLTestResult._report_testcase(suite, test, testsuite, doc)
             _XMLTestResult._report_output(test_runner, testsuite, doc)
-            
-            # hack so we don't get multiple declarations in the same doc.  -cmg
-            xml_content_without_declarations = doc.documentElement.toprettyxml(indent='\t')
-            xml_content = '<?xml version="1.0"?>\n' + xml_content_without_declarations
+
+            xml_content = doc.documentElement.toprettyxml(indent='\t')
             
             if type(test_runner.output) is str:
                 report_file = open('%s%sTEST-%s-%s.xml' %
