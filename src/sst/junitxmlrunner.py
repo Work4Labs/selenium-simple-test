@@ -269,7 +269,7 @@ class _XMLTestResult(_TextTestResult):
                 os.path.exists(test_runner.output):
             os.makedirs(test_runner.output)
         
-        test_runner.output.write('<?xml version="1.0"?>\n')
+        test_runner.output.write('<?xml version="1.0"?>\n<testsuites>\n')
         
         for suite, tests in all_results.items():
             doc = Document()
@@ -295,6 +295,8 @@ class _XMLTestResult(_TextTestResult):
             else:
                 # Assume that test_runner.output is a stream
                 test_runner.output.write(xml_content)
+
+        test_runner.output.write('</testsuites>')
 
 
 class XMLTestRunner(TextTestRunner):
