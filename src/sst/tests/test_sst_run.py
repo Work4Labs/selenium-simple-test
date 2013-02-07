@@ -18,17 +18,69 @@
 #
 
 
+import os
+import shutil
+
 import testtools
 
-from sst import runtests
+from sst import (
+    config,
+    runtests,
+    tests,
+)
 
 
 class TestSSTScriptTestCase(testtools.TestCase):
+
+    def setUp(self):
+        super(TestSSTScriptTestCase, self).setUp()
+        self.test = runtests.SSTScriptTestCase('foo')
 
     def test_id(self):
         """The test id mentions the python class path and the test name."""
         # FIXME: This is a minimal test to cover http://pad.lv/1087606, it
         # would be better to check a results.xml file but we don't have the
         # test infrastructure for that (yet) -- vila 2012-12-07
-        test = runtests.SSTScriptTestCase('foo')
-        self.assertEqual('sst.runtests.SSTScriptTestCase.foo', test.id())
+        self.assertEqual('sst.runtests.SSTScriptTestCase.foo', self.test.id())
+
+
+class TestSSTTestCase(testtools.TestCase):
+
+    def setUp(self):
+        super(TestSSTTestCase, self).setUp()
+        self.test = tests.SSTBrowserLessTestCase('run')
+        self.addCleanup(shutil.rmtree, 'results')
+        self.result = testtools.TestResult()
+        self.test.run(self.result)
+
+    def test_results(self):
+        result = self.result
+        self.assertEqual(result.testsRun, 1)
+        self.assertTrue(result.wasSuccessful())
+        self.assertEqual(result.errors, [])
+        self.assertEqual(result.failures, [])
+        self.assertEqual(result.skipped, [])
+
+    def test_attributes(self):
+        test = self.test
+        self.assertEqual(test._testMethodName, 'run')
+        # why is base_url "None" ???  --cmg
+        self.assertIsNone(test.base_url)
+        self.assertEqual(test.browser_platform, 'ANY')
+        self.assertEqual(test.browser_type, 'Firefox')
+        self.assertFalse(test.javascript_disabled)
+        self.assertFalse(test.screenshots_on)
+        self.assertEqual(test.wait_poll, 0.1)
+        self.assertEqual(test.wait_timeout, 10)
+        self.assertIsNone(test.shortDescription())
+        self.assertEqual(test.id(), 'sst.tests.SSTBrowserLessTestCase.run')
+
+    def test_config(self):
+        self.assertIsNone(config._current_context)
+        self.assertEqual(config.browser_type, 'Firefox')
+        self.assertEqual(config.cache, {})
+        self.assertEqual(config.flags, [])
+        self.assertFalse(config.javascript_disabled)
+        self.assertFalse(config.browsermob_enabled)
+        self.assertEqual(os.path.split(config.results_directory)[-1],
+                         'results')

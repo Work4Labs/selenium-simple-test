@@ -28,6 +28,7 @@ import sys
 import traceback
 
 from unittest2 import (
+    defaultTestLoader,
     SkipTest,
     TestSuite,
     TextTestRunner,
@@ -269,6 +270,9 @@ class SSTTestCase(testtools.TestCase):
     debug_post_mortem = False
     extended_report = False
 
+    def shortDescription(self):
+        return None
+
     def setUp(self):
         super(SSTTestCase, self).setUp()
         if self.base_url is not None:
@@ -404,31 +408,55 @@ class SSTScriptTestCase(SSTTestCase):
             pass
 
 
+def _has_classes(test_dir, entry):
+    """Scan Python source file and check for a class definition."""
+    with open(os.path.join(test_dir, entry)) as f:
+        source = f.read() + '\n'
+    found_classes = []
+
+    def visit_class_def(node):
+        found_classes.append(True)
+
+    node_visitor = ast.NodeVisitor()
+    node_visitor.visit_ClassDef = visit_class_def
+    node_visitor.visit(ast.parse(source))
+    return bool(found_classes)
+
+
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              context=None, failfast=False, debug=False, extended=False):
-    context_provided = True
-    if context is None:
-        context_provided = False
-        context = {}
+    # our naming convention for tests requires that script-based tests must
+    # not begin with "test_*."  SSTTestCase class-based or other
+    # unittest.TestCase based source files must begin with "test_*".
+    # we also scan the source file to see if it has class definitions,
+    # since script base cases normally don't, but TestCase class-based
+    # tests always will.
+    if entry.startswith('test_') and _has_classes(test_dir, entry):
+        # load just the individual test
+        this_test = defaultTestLoader.discover(test_dir, pattern=entry)
+    else:  # this is for script-based test
+        context_provided = True
+        if context is None:
+            context_provided = False
+            context = {}
+        name = entry[:-3]
+        test_name = 'test_%s' % name
+        this_test = SSTScriptTestCase(test_name, context)
+        this_test.script_dir = test_dir
+        this_test.script_name = entry
+        this_test.browser_type = browser_type
+        this_test.browser_version = browser_version
+        this_test.browser_platform = browser_platform
+        this_test.webdriver_remote_url = webdriver_remote_url
 
-    name = entry[:-3]
-    test_name = 'test_%s' % name
-    this_test = SSTScriptTestCase(test_name, context)
-    this_test.script_dir = test_dir
-    this_test.script_name = entry
-    this_test.browser_type = browser_type
-    this_test.browser_version = browser_version
-    this_test.browser_platform = browser_platform
-    this_test.webdriver_remote_url = webdriver_remote_url
+        this_test.session_name = session_name
+        this_test.javascript_disabled = javascript_disabled
 
-    this_test.session_name = session_name
-    this_test.javascript_disabled = javascript_disabled
-
-    this_test.screenshots_on = screenshots_on
-    this_test.debug_post_mortem = debug
-    this_test.extended_report = extended
+        this_test.screenshots_on = screenshots_on
+        this_test.debug_post_mortem = debug
+        this_test.extended_report = extended
 
     return this_test
 
