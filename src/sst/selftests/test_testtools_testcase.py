@@ -4,6 +4,8 @@ from testtools import TestCase
 
 
 class TestTestToolsTestCase(TestCase):
+    def shortDescription():
+        return None
 
     def test_true(self):
         self.assertTrue(True)
