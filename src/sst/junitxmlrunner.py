@@ -279,7 +279,10 @@ class _XMLTestResult(_TextTestResult):
             for test in tests:
                 _XMLTestResult._report_testcase(suite, test, testsuite, doc)
             _XMLTestResult._report_output(test_runner, testsuite, doc)
-            xml_content = doc.documentElement.toprettyxml(indent='\t')
+            
+            # hack so we don't get multiple declarations in the same doc.  -cmg
+            xml_content_without_declarations = doc.documentElement.toprettyxml(indent='\t')
+            xml_content = '<?xml version="1.0"?>\n' + xml_content_without_declarations
             
             if type(test_runner.output) is str:
                 report_file = open('%s%sTEST-%s-%s.xml' %
