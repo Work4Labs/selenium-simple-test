@@ -37,6 +37,7 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
+import logging
 import os
 import re
 import time
@@ -98,6 +99,8 @@ _test = None
 BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
+
+logger = logging.getLogger('SST')
 
 
 class EndTest(StandardError):
@@ -181,7 +184,7 @@ def _print(text):
             initial_indent=(' ' * 4),
             subsequent_indent=(' ' * 8),
         )
-        print text_wrapper.fill(text)
+        logger.debug(text_wrapper.fill(text))
 
 
 def start(browser_type=None, browser_version='',
