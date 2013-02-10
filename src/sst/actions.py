@@ -101,10 +101,7 @@ __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
 
 logger = logging.getLogger('SST')
-console_handler = logging.StreamHandler()
-formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
+
 
 class EndTest(StandardError):
     pass
