@@ -101,7 +101,10 @@ __DEFAULT_BASE_URL__ = BASE_URL
 VERBOSE = True
 
 logger = logging.getLogger('SST')
-
+console_handler = logging.StreamHandler()
+formatter = logging.Formatter('    %(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
 
 class EndTest(StandardError):
     pass
@@ -179,12 +182,13 @@ def skip(reason=''):
 
 def _print(text):
     if VERBOSE:
-        text_wrapper = TextWrapper(
-            width=80,
-            initial_indent=(' ' * 4),
-            subsequent_indent=(' ' * 8),
-        )
-        logger.debug(text_wrapper.fill(text))
+        #text_wrapper = TextWrapper(
+        #    width=80,
+        #    initial_indent=(' ' * 4),
+        #    subsequent_indent=(' ' * 8),
+        #)
+        #logger.debug(text_wrapper.fill(text))
+        logger.debug(text)
 
 
 def start(browser_type=None, browser_version='',
