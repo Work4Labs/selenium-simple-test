@@ -1416,8 +1416,9 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     the property using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    logger.debug('Checking css property %r: %r of %r' %
-           (property, value, _get_text(elem)))
+    logger.debug(
+        'Checking css property %r: %r of %r' % (
+            property, value, _get_text(elem)))
     actual = elem.value_of_css_property(property)
     # some browsers return string with space padded commas, some don't.
     actual = actual.replace(', ', ',')
