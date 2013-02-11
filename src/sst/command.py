@@ -159,7 +159,7 @@ def get_opts(get_options):
         print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
         sys.exit(1)
 
-    logging.basicConfig()
+    logging.basicConfig(format='    %(levelname)s:%(name)s:%(message)s')
     logger = logging.getLogger('SST')
     if cmd_opts.quiet:
         logger.setLevel(logging.WARNING)

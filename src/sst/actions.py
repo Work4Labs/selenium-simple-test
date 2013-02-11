@@ -188,6 +188,13 @@ def start(browser_type=None, browser_version='',
     if browser_type is None:
         browser_type = config.browser_type
 
+    if logger.isEnabledFor(logging.DEBUG):
+        # XXX We print a new line because otherwise the first debug message
+        # will be printed on the same line as the name of the test. This is 
+        # hacky and doesn't cover cases when the script logs things higher 
+        # than debug, but this way we are keeping the same behavior we had
+        # before adding the log.
+        print
     logger.debug('Starting browser: %s' % browser_type)
 
     if webdriver_remote is None:
