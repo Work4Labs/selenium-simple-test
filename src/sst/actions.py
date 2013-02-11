@@ -1,5 +1,5 @@
 #
-#   Copyright (c) 2011-2012 Canonical Ltd.
+#   Copyright (c) 2011,2012,2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
@@ -44,7 +44,6 @@ import time
 
 from datetime import datetime
 from pdb import set_trace as debug
-from textwrap import TextWrapper
 from urlparse import urljoin, urlparse
 
 from selenium import webdriver
@@ -98,7 +97,6 @@ _test = None
 
 BASE_URL = 'http://localhost:8000/'
 __DEFAULT_BASE_URL__ = BASE_URL
-VERBOSE = True
 
 logger = logging.getLogger('SST')
 
@@ -117,7 +115,7 @@ _sentinel = _Sentinel()
 
 
 def _raise(msg):
-    _print(msg)
+    logger.error(msg)
     raise AssertionError(msg)
 
 
@@ -136,7 +134,7 @@ def retry_on_stale_element(func):
         try:
             return func(*args, **kwargs)
         except StaleElementReferenceException as e:
-            _print('Retrying after catching: %r' % e)
+            logger.warning('Retrying after catching: %r' % e)
             return func(*args, **kwargs)
     return wrapped
 
@@ -146,7 +144,7 @@ def set_base_url(url):
     global BASE_URL
     if not url.startswith('http') and not url.startswith('file'):
         url = 'http://' + url
-    _print('Setting base url to: %r' % url)
+    logger.debug('Setting base url to: %r' % url)
     BASE_URL = url
 
 
@@ -177,17 +175,6 @@ def skip(reason=''):
     _test.skipTest(reason)
 
 
-def _print(text):
-    if VERBOSE:
-        #text_wrapper = TextWrapper(
-        #    width=80,
-        #    initial_indent=(' ' * 4),
-        #    subsequent_indent=(' ' * 8),
-        #)
-        #logger.debug(text_wrapper.fill(text))
-        logger.debug(text)
-
-
 def start(browser_type=None, browser_version='',
           browser_platform='ANY', session_name='',
           javascript_disabled=False, assume_trusted_cert_issuer=False,
@@ -201,8 +188,7 @@ def start(browser_type=None, browser_version='',
     if browser_type is None:
         browser_type = config.browser_type
 
-    _print('')
-    _print('Starting browser: %s' % browser_type)
+    logger.debug('Starting browser: %s' % browser_type)
 
     if webdriver_remote is None:
         if browser_type == 'Firefox':
@@ -248,13 +234,13 @@ def stop():
     global browser
     global browsermob_proxy
 
-    _print('Stopping browser')
+    logger.debug('Stopping browser')
     # quit calls close() and does cleanup
     browser.quit()
     browser = None
 
     if browsermob_proxy is not None:
-        _print('Closing http proxy')
+        logger.debug('Closing http proxy')
         browsermob_proxy.close()
         browsermob_proxy = None
 
@@ -267,17 +253,17 @@ def refresh(wait=True):
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     if browsermob_proxy is not None:
-        _print('Capturing http traffic...')
+        logger.debug('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Refreshing current page')
+    logger.debug('Refreshing current page')
     browser.refresh()
 
     if wait:
         _waitforbody()
 
     if browsermob_proxy is not None:
-        _print('Saving HAR output')
+        logger.debug('Saving HAR output')
         _make_results_dir()
         browsermob_proxy.save_har(_make_useable_har_name())
 
@@ -288,7 +274,7 @@ def take_screenshot(filename='screenshot.png', add_timestamp=True):
     when running in `-s` mode.
 
     Return the path to the saved screenshot."""
-    _print('Capturing Screenshot')
+    logger.debug('Capturing Screenshot')
     _make_results_dir()
     if add_timestamp:
         filename = _add_time_stamp(filename)
@@ -309,7 +295,7 @@ def save_page_source(filename='pagedump.html', add_timestamp=True):
     Called automatically on failures when running `-s` mode.
 
     Return the path to the saved file."""
-    _print('Saving page source')
+    logger.debug('Saving page source')
     _make_results_dir()
     if add_timestamp:
         filename = _add_time_stamp(filename)
@@ -332,7 +318,7 @@ def sleep(secs):
     """
     Delay execution for a given number of seconds. The argument may be a
     floating point number for subsecond precision."""
-    _print('Sleeping %s secs' % secs)
+    logger.debug('Sleeping %s secs' % secs)
     time.sleep(secs)
 
 
@@ -391,7 +377,7 @@ def run_test(name, **kwargs):
     when `run_test` returns."""
     # delayed import to workaround circular imports
     from sst import context
-    _print('Executing test: %s' % name)
+    logger.debug('Executing test: %s' % name)
     return context.run_test(name, kwargs)
 
 
@@ -422,17 +408,17 @@ def go_to(url='', wait=True):
     url = _fix_url(url)
 
     if browsermob_proxy is not None:
-        _print('Capturing http traffic...')
+        logger.debug('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Going to... %s' % url)
+    logger.debug('Going to... %s' % url)
     browser.get(url)
 
     if wait:
         _waitforbody()
 
     if browsermob_proxy is not None:
-        _print('Saving HAR output')
+        logger.debug('Saving HAR output')
         _make_results_dir()
         browsermob_proxy.save_har(_make_useable_har_name(url))
 
@@ -445,17 +431,17 @@ def go_back(wait=True):
     available after the click. You can switch off this behaviour by passing
     `wait=False`."""
     if browsermob_proxy is not None:
-        _print('Capturing http traffic...')
+        logger.debug('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Going back one step in browser history')
+    logger.debug('Going back one step in browser history')
     browser.back()
 
     if wait:
         _waitforbody()
 
     if browsermob_proxy is not None:
-        _print('Saving HAR output')
+        logger.debug('Saving HAR output')
         _make_results_dir()
         browsermob_proxy.save_har(_make_useable_har_name())
 
@@ -489,7 +475,7 @@ def toggle_checkbox(id_or_elem):
     Toggle the checkbox value. Takes an element id or object. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = assert_checkbox(id_or_elem)
-    _print('Toggling checkbox: %r' % _get_text(checkbox))
+    logger.debug('Toggling checkbox: %r' % _get_text(checkbox))
     before = checkbox.is_selected()
     checkbox.click()
     after = checkbox.is_selected()
@@ -504,7 +490,8 @@ def set_checkbox_value(id_or_elem, new_value):
     Set a checkbox to a specific value, either True or False. Raises a failure
     exception if the element specified doesn't exist or isn't a checkbox."""
     checkbox = assert_checkbox(id_or_elem)
-    _print('Setting checkbox %r to %r' % (_get_text(checkbox), new_value))
+    logger.debug(
+        'Setting checkbox %r to %r' % (_get_text(checkbox), new_value))
     # There is no method to 'unset' a checkbox in the browser object
     current_value = checkbox.is_selected()
     if new_value != current_value:
@@ -532,7 +519,7 @@ def simulate_keys(id_or_elem, key_to_press):
     key_element = _get_elem(id_or_elem)
     msg = 'Simulating keypress on %r with %r key' \
         % (_get_text(key_element), key_to_press)
-    _print(msg)
+    logger.debug(msg)
     key_code = _make_keycode(key_to_press)
     key_element.send_keys(key_code)
 
@@ -564,7 +551,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
     textfield = assert_textfield(id_or_elem)
     msg = 'Writing to textfield %r with text %r' \
         % (_get_text(textfield), new_text)
-    _print(msg)
+    logger.debug(msg)
 
     # clear field like this, don't use clear()
     if clear:
@@ -577,7 +564,7 @@ def write_textfield(id_or_elem, new_text, check=True, clear=True):
         textfield.send_keys(str(new_text))
     if not check:
         return
-    _print('Check text wrote correctly')
+    logger.debug('Check text wrote correctly')
     current_text = textfield.get_attribute('value')
     if current_text != new_text:
         msg = 'Textfield: %r - did not write. Text was: %r' \
@@ -601,7 +588,7 @@ def assert_link(id_or_elem):
 
 def get_link_url(id_or_elem):
     """Return the URL from a link."""
-    _print('Getting url from link %r' % id_or_elem)
+    logger.debug('Getting url from link %r' % id_or_elem)
     link = assert_link(id_or_elem)
     link_url = link.get_attribute('href')
     return link_url
@@ -625,17 +612,17 @@ def click_link(id_or_elem, check=False, wait=True):
     link_url = link.get_attribute('href')
 
     if browsermob_proxy is not None:
-        _print('Capturing http traffic...')
+        _logger.debug('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Clicking link %r' % _get_text(link))
+    logger.debug('Clicking link %r' % _get_text(link))
     link.click()
 
     if wait:
         _waitforbody()
 
     if browsermob_proxy is not None:
-        _print('Saving HAR output')
+        logger.debug('Saving HAR output')
         _make_results_dir()
         browsermob_proxy.save_har(_make_useable_har_name())
 
@@ -669,17 +656,17 @@ def click_element(id_or_elem, wait=True):
     elem = _get_elem(id_or_elem)
 
     if browsermob_proxy is not None:
-        _print('Capturing http traffic...')
+        logger.debug('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Clicking element %r' % _get_text(elem))
+    logger.debug('Clicking element %r' % _get_text(elem))
     elem.click()
 
     if wait:
         _waitforbody()
 
     if browsermob_proxy is not None:
-        _print('Saving HAR output')
+        logger.debug('Saving HAR output')
         _make_results_dir()
         browsermob_proxy.save_har(_make_useable_har_name())
 
@@ -750,7 +737,7 @@ def set_wait_timeout(timeout, poll=None):
     msg = 'Setting wait timeout to %rs' % timeout
     if poll is not None:
         msg += ('. Setting poll time to %rs' % poll)
-    _print(msg)
+    logger.debug(msg)
     _set_wait_timeout(timeout, poll)
 
 
@@ -775,10 +762,9 @@ def _get_name(obj):
 
 
 def _wait_for(condition, refresh_page, timeout, poll, *args, **kwargs):
-    global VERBOSE
-    _print('Waiting for %r' % _get_name(condition))
-    original = VERBOSE
-    VERBOSE = False
+    logger.debug('Waiting for %r' % _get_name(condition))
+    # Disable logging levels equal to or lower than INFO.
+    logging.disable(logging.INFO)
     try:
         max_time = time.time() + timeout
         msg = _get_name(condition)
@@ -801,7 +787,8 @@ def _wait_for(condition, refresh_page, timeout, poll, *args, **kwargs):
                 _raise(error)
             time.sleep(poll)
     finally:
-        VERBOSE = original
+        # Re-enable logging.
+        logging.disable(logging.NOTSET)
 
 
 @retry_on_stale_element
@@ -854,7 +841,7 @@ def fails(action, *args, **kwargs):
     `fails` succeeds. If the function does *not* raise an AssertionError then
     this action raises the appropriate failure exception. Alll other
     exceptions will be propagated normally."""
-    _print('Trying action failure: %s' % _get_name(action))
+    logger.debug('Trying action failure: %s' % _get_name(action))
     try:
         action(*args, **kwargs)
     except AssertionError:
@@ -896,7 +883,8 @@ def assert_dropdown(id_or_elem):
 def set_dropdown_value(id_or_elem, text=None, value=None):
     """Set the select drop-list to a text or value specified."""
     elem = assert_dropdown(id_or_elem)
-    _print('Setting %r option list to %r' % (_get_text(elem), text or value))
+    logger.debug(
+        'Setting %r option list to %r' % (_get_text(elem), text or value))
     if text and not value:
         for element in elem.find_elements_by_tag_name('option'):
             if element.text == text:
@@ -958,7 +946,7 @@ def assert_radio_value(id_or_elem, value):
 def set_radio_value(id_or_elem):
     """Select the specified radio button."""
     elem = assert_radio(id_or_elem)
-    _print('Selecting radio button item %r' % _get_text(elem))
+    logger.debug('Selecting radio button item %r' % _get_text(elem))
     elem.click()
 
 
@@ -1158,17 +1146,17 @@ def click_button(id_or_elem, wait=True):
     button = assert_button(id_or_elem)
 
     if browsermob_proxy is not None:
-        _print('Capturing http traffic...')
+        logger.debug('Capturing http traffic...')
         browsermob_proxy.new_har()
 
-    _print('Clicking button %r' % _get_text(button))
+    logger.debug('Clicking button %r' % _get_text(button))
     button.click()
 
     if wait:
         _waitforbody()
 
     if browsermob_proxy is not None:
-        _print('Saving HAR output')
+        logger.debug('Saving HAR output')
         _make_results_dir()
         browsermob_proxy.save_har(_make_useable_har_name())
 
@@ -1220,7 +1208,7 @@ def get_page_source():
 
 def close_window():
     """ Closes the current window """
-    _print('Closing the current window')
+    logger.debug('Closing the current window')
     browser.close()
 
 
@@ -1230,7 +1218,7 @@ def switch_to_window(index_or_name=None):
 
     if no window is given, switch focus to the default window."""
     if index_or_name is None:
-        _print('Switching to default window')
+        logger.debug('Switching to default window')
         browser.switch_to_window('')
     elif isinstance(index_or_name, int):
         index = index_or_name
@@ -1240,7 +1228,7 @@ def switch_to_window(index_or_name=None):
             _raise(msg)
         window = window_handles[index]
         try:
-            _print('Switching to window: %r' % window)
+            logger.debug('Switching to window: %r' % window)
             browser.switch_to_window(window)
         except NoSuchWindowException:
             msg = 'Could not find window: %r' % window
@@ -1248,7 +1236,7 @@ def switch_to_window(index_or_name=None):
     else:
         name = index_or_name
         try:
-            _print('Switching to window: %r' % name)
+            logger.debug('Switching to window: %r' % name)
             browser.switch_to_window(name)
         except NoSuchWindowException:
             msg = 'Could not find window: %r' % name
@@ -1261,10 +1249,10 @@ def switch_to_frame(index_or_name=None):
 
     if no frame is given, switch focus to the default content frame."""
     if index_or_name is None:
-        _print('Switching to default content frame')
+        logger.debug('Switching to default content frame')
         browser.switch_to_default_content()
     else:
-        _print('Switching to frame: %r' % index_or_name)
+        logger.debug('Switching to frame: %r' % index_or_name)
         try:
             browser.switch_to_frame(index_or_name)
         except NoSuchFrameException:
@@ -1305,7 +1293,7 @@ def accept_alert(expected_text=None, text_to_write=None):
     Note that the action that opens the alert should not wait for a page with
     a body element. This means that you should call functions like
     click_element with the argument wait=Fase."""
-    _print('Accepting Alert')
+    logger.debug('Accepting Alert')
     _alert_action('accept', expected_text, text_to_write)
 
 
@@ -1319,7 +1307,7 @@ def dismiss_alert(expected_text=None, text_to_write=None):
     Note that the action that opens the alert should not wait for a page with
     a body element. This means that you should call functions like
     click_element with the argument wait=Fase."""
-    _print('Dismissing Alert')
+    logger.debug('Dismissing Alert')
     _alert_action('dismiss', expected_text, text_to_write)
 
 
@@ -1328,7 +1316,7 @@ def assert_table_headers(id_or_elem, headers):
     Assert table `id_or_elem` has headers (<th> tags) where the text matches
     the sequence `headers`.
     """
-    _print('Checking headers for %r' % (id_or_elem,))
+    logger.debug('Checking headers for %r' % (id_or_elem,))
     elem = _get_elem(id_or_elem)
     if not elem.tag_name == 'table':
         _raise('Element %r is not a table.' % (id_or_elem,))
@@ -1345,7 +1333,7 @@ def assert_table_has_rows(id_or_elem, num_rows):
     Assert the specified table has the specified number of rows (<tr> tags
     inside the <tbody>).
     """
-    _print('Checking table %r has %s rows' % (id_or_elem, num_rows))
+    logger.debug('Checking table %r has %s rows' % (id_or_elem, num_rows))
     elem = _get_elem(id_or_elem)
     if not elem.tag_name == 'table':
         _raise('Element %r is not a table.' % (id_or_elem,))
@@ -1372,7 +1360,8 @@ def assert_table_row_contains_text(id_or_elem, row, contents, regex=False):
     The row will be looked for inside the <tbody>, to check headers use
     `assert_table_headers`.
     """
-    _print('Checking the contents of table %r, row %s.' % (id_or_elem, row))
+    logger.debug(
+        'Checking the contents of table %r, row %s.' % (id_or_elem, row))
     elem = _get_elem(id_or_elem)
     if not elem.tag_name == 'table':
         _raise('Element %r is not a table.' % (id_or_elem,))
@@ -1407,7 +1396,7 @@ def assert_attribute(id_or_elem, attribute, value, regex=False):
     the attribute using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    _print('Checking attribute %r of %r' % (attribute, _get_text(elem)))
+    logger.debug('Checking attribute %r of %r' % (attribute, _get_text(elem)))
     actual = elem.get_attribute(attribute)
     if not regex:
         success = value == actual
@@ -1427,7 +1416,7 @@ def assert_css_property(id_or_elem, property, value, regex=False):
     the property using a regular expression search.
     """
     elem = _get_elem(id_or_elem)
-    _print('Checking css property %r: %r of %r' %
+    logger.debug('Checking css property %r: %r of %r' %
            (property, value, _get_text(elem)))
     actual = elem.value_of_css_property(property)
     # some browsers return string with space padded commas, some don't.
@@ -1491,13 +1480,13 @@ def get_cookies():
 
 def clear_cookies():
     """Clear the cookies of current session."""
-    _print('Clearing browser session cookies')
+    logger.debug('Clearing browser session cookies')
     browser.delete_all_cookies()
 
 
 def set_window_size(width, height):
     """Resize the current window (width, height) in pixels."""
-    _print('Resizing window to: %s x %s' % (width, height))
+    logger.debug('Resizing window to: %s x %s' % (width, height))
     orig_width, orig_height = get_window_size()
     if (orig_width == width) and (orig_height == height):
         return (width, height)
@@ -1535,7 +1524,7 @@ def execute_script(script, *args):
 
     args will be made available to the script if given.
     """
-    _print('Executing script')
+    logger.debug('Executing script')
     return browser.execute_script(script, *args)
 
 
