@@ -18,7 +18,7 @@
 
 
 from cStringIO import StringIO
-import sys
+import logging
 
 
 import testtools
@@ -33,7 +33,8 @@ class TestRetryOnStale(testtools.TestCase):
         super(TestRetryOnStale, self).setUp()
         self.out = StringIO()
         # Capture output from retry_on_stale_element calls
-        self.patch(sys, 'stdout', self.out)
+        logger = logging.getLogger('SST')
+        logger.addHandler(logging.StreamHandler(self.out))
         self.nb_calls = 0
 
     def raise_stale_element(self):
@@ -49,7 +50,7 @@ class TestRetryOnStale(testtools.TestCase):
         self.assertEqual(2, self.nb_calls)
         # And we get some feedback about the exception
         self.assertIn(
-            '    Retrying after catching: StaleElementReferenceException()\n',
+            'Retrying after catching: StaleElementReferenceException()',
             self.out.getvalue())
 
     def test_retry_on_stale_only_once(self):
