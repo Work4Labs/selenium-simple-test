@@ -18,6 +18,7 @@
 #
 
 import __main__
+import logging
 import os
 import sys
 import shutil
@@ -158,8 +159,12 @@ def get_opts(get_options):
         print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
         sys.exit(1)
 
+    logging.basicConfig(format='    %(levelname)s:%(name)s:%(message)s')
+    logger = logging.getLogger('SST')
     if cmd_opts.quiet:
-        actions.VERBOSE = False
+        logger.setLevel(logging.WARNING)
+    else:
+        logger.setLevel(logging.DEBUG)
     if cmd_opts.disable_flags:
         actions._check_flags = False
 
