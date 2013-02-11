@@ -14,3 +14,4 @@ sst.wpr
 sst.wpu
 *.log
 src/testproject/testproj.db
+.tox
