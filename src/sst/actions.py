@@ -115,7 +115,7 @@ _sentinel = _Sentinel()
 
 
 def _raise(msg):
-    logger.error(msg)
+    logger.debug(msg)
     raise AssertionError(msg)
 
 
