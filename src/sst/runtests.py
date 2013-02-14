@@ -200,19 +200,6 @@ def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
 
     # filter directory entries that don't match the file match pattern
     dir_list = [f for f in dir_list if fnmatch.fnmatch(f, file_match)]
-    
-    #pathname = os.path.join(test_dir, file_match)
-    #dir_list = glob.glob(os.path.join(test_dir, file_match))
-    #dir_list = glob.glob(os.path.join(test_dir, file_match))
-    #print 'PN', pathname
-    #print 'TD', test_dir
-    #print 'DL', dir_list
-    #matched_dir_list = []
-
-    #for entry in dir_list:
-    #    matches = re.findall(file_match, entry)
-    #    if matches:
-    #        matched_dir_list.append(matches[0])
 
     for entry in dir_list:
         if not entry.endswith('.py'):
