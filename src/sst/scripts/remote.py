@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-#   Copyright (c) 2011 Canonical Ltd.
+#   Copyright (c) 2011-2013 Canonical Ltd.
 #
 #   This file is part of: SST (selenium-simple-test)
 #   https://launchpad.net/selenium-simple-test
@@ -34,6 +34,7 @@ def main():
     runtests.runtests(
         args,
         test_dir=cmd_opts.dir_name,
+        file_match=cmd_opts.file_match,
         report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type,
         browser_version=cmd_opts.browser_version,

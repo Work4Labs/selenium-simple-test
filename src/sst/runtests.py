@@ -20,6 +20,7 @@
 import ast
 import codecs
 import datetime
+import fnmatch
 import HTMLTestRunner
 import junitxmlrunner
 import os
@@ -53,11 +54,11 @@ from .context import populate_context
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='.', report_format='console',
-             browser_type='Firefox', javascript_disabled=False,
-             browsermob_enabled=False, shared_directory=None,
-             screenshots_on=False, failfast=False, debug=False,
-             webdriver_remote_url=None, browser_version='',
+def runtests(test_names, test_dir='.', file_match='*.py',
+             report_format='console', browser_type='Firefox',
+             javascript_disabled=False, browsermob_enabled=False,
+             shared_directory=None, screenshots_on=False, failfast=False,
+             debug=False, webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None,
              extended=False):
 
@@ -86,7 +87,7 @@ def runtests(test_names, test_dir='.', report_format='console',
 
     suites = (
         get_suite(
-            test_names, root, browser_type, browser_version,
+            test_names, root, file_match, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, found_tests, failfast, debug,
             extended=extended,
@@ -188,12 +189,30 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def get_suite(test_names, test_dir, browser_type, browser_version,
+def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, found, failfast, debug,
               extended=False):
+
     suite = TestSuite()
+
     dir_list = os.listdir(test_dir)
+
+    # filter directory entries that don't match the file match pattern
+    dir_list = [f for f in dir_list if fnmatch.fnmatch(f, file_match)]
+    
+    #pathname = os.path.join(test_dir, file_match)
+    #dir_list = glob.glob(os.path.join(test_dir, file_match))
+    #dir_list = glob.glob(os.path.join(test_dir, file_match))
+    #print 'PN', pathname
+    #print 'TD', test_dir
+    #print 'DL', dir_list
+    #matched_dir_list = []
+
+    #for entry in dir_list:
+    #    matches = re.findall(file_match, entry)
+    #    if matches:
+    #        matched_dir_list.append(matches[0])
 
     for entry in dir_list:
         if not entry.endswith('.py'):

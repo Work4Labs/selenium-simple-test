@@ -70,6 +70,7 @@ def main():
         print '  date time: %s' \
             % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         print '  test directory: %r' % cmd_opts.dir_name
+        print '  file match pattern: %r' % cmd_opts.file_match
         print '  report format: %r' % cmd_opts.report_format
         print '  browser type: %r' % cmd_opts.browser_type
         print '  javascript disabled: %r' % cmd_opts.javascript_disabled
@@ -86,6 +87,7 @@ def main():
         runtests.runtests(
             args,
             test_dir=cmd_opts.dir_name,
+            file_match=cmd_opts.file_match,
             report_format=cmd_opts.report_format,
             browser_type=cmd_opts.browser_type,
             javascript_disabled=cmd_opts.javascript_disabled,
