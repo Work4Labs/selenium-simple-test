@@ -18,7 +18,7 @@ version **0.2.3** (?? ?? ??)
 * expose the SSTTestCase class which is used internally to create test cases
 * start implementing an internal test suite (#1084007)
 * ensure Xvfb is properly killed if sst-run is interrupted (#1084006)
-* protect 'wait_for' from transient failures caused by
+* protect ``wait_for`` from transient failures caused by
   StaleElementReferenceException (#1084008)
 * include test class full name in test ids for SSTScriptTestCase (#1087606)
 * add support for xfvb to SSTTestCase (#1084011)
@@ -26,6 +26,9 @@ version **0.2.3** (?? ?? ??)
 * in xml report mode, progress is printed to stdout during test run
 * added ``get_window_size`` action
 * added ``set_window_size`` action
+* added ``testtools`` dependency
+* new command-line parameter: ``-f`` (file match pattern) for test
+  loading/discovery
 
 
 version **0.2.2** (2012 Nov 4)
