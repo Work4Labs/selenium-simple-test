@@ -57,9 +57,6 @@ def get_common_options():
     parser.add_option('-d', dest='dir_name',
                       default='.',
                       help='directory of test case files')
-    parser.add_option('-f', dest='file_match',
-                      default='*.py',
-                      help='file matching pattern')
     parser.add_option('-r', dest='report_format',
                       default='console',
                       help='results report format (html, xml, console)')
@@ -99,6 +96,9 @@ def get_common_options():
                       action='store_true', default=False,
                       help='Add extra information (page source) to failure '
                       'reports')
+    parser.add_option('--count-only', dest='count_only',
+                      action='store_true', default=False,
+                      help='Count cases without running tests')
     return parser
 
 

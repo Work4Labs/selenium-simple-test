@@ -54,7 +54,7 @@ from .context import populate_context
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='.', file_match='*.py',
+def runtests(test_names, test_dir='.', count_only=False,
              report_format='console', browser_type='Firefox',
              javascript_disabled=False, browsermob_enabled=False,
              shared_directory=None, screenshots_on=False, failfast=False,
@@ -82,31 +82,34 @@ def runtests(test_names, test_dir='.', file_match='*.py',
 
     config.browsermob_enabled = browsermob_enabled
 
-    found_tests = set()
     test_names = set(test_names)
-
-    suites = (
+        
+    suites = [
         get_suite(
-            test_names, root, file_match, browser_type, browser_version,
+            test_names, root, count_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
-            webdriver_remote_url, screenshots_on, found_tests, failfast, debug,
+            webdriver_remote_url, screenshots_on, failfast, debug,
             extended=extended,
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_directory and
         not os.path.abspath(root).startswith(shared_directory + os.path.sep)
         and not os.path.split(root)[1].startswith('_')
-    )
-
+    ]
+    
     alltests = TestSuite(suites)
-
+    
     print ''
     print '  %s test cases loaded\n' % alltests.countTestCases()
     print '--------------------------------------------------------------'
-
+    
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
         sys.exit(1)
+
+    if count_only:
+        print 'Count-Only Enabled, Not Running Tests'
+        sys.exit(0)
 
     if report_format == 'xml':
         _make_results_dir()
@@ -129,16 +132,8 @@ def runtests(test_names, test_dir='.', file_match='*.py',
     except KeyboardInterrupt:
         print >> sys.stderr, 'Test run interrupted'
     finally:
-        missing = test_names - found_tests
-        for name in missing:
-            # only warn for missing cases if name was not a glob patern
-            if '*' not in name:
-                msg = 'Warning: test %r not found' % name
-                print >> sys.stderr, msg
-
-
-def _has_glob_pattern(txt):
-    return ('*' in txt)
+        # XXX should warn on cases that were specified but not found
+        pass
 
 
 def _get_full_path(path):
@@ -195,7 +190,7 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def find_cases(test_names, test_dir)
+def find_cases(test_names, test_dir):
     found = set()
     dir_list = os.listdir(test_dir)
     
@@ -214,10 +209,9 @@ def find_cases(test_names, test_dir)
     for entry in filtered_dir_list:
         if not entry.endswith('.py'):
             continue
-        elif not expanded_test_names:
-            if entry.startswith('_'):
-                # ignore entries starting with underscore unless specified
-                continue
+        if entry.startswith('_'):
+            # ignore entries starting with underscore
+            continue
         found.add(entry)
     return found
 
@@ -230,14 +224,14 @@ def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
     suite = TestSuite()
 
     for case in find_cases(test_names, test_dir):
-        csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
+        csv_path = os.path.join(test_dir, case.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             # reading the csv file now
             for row in get_data(csv_path):
                 # row is a dictionary of variables
                 suite.addTest(
                     get_case(
-                        test_dir, entry, browser_type, browser_version,
+                        test_dir, case, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
                         failfast=failfast, debug=debug, extended=extended
@@ -246,7 +240,7 @@ def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
         else:
             suite.addTest(
                 get_case(
-                    test_dir, entry, browser_type, browser_version,
+                    test_dir, case, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     failfast=failfast, debug=debug, extended=extended

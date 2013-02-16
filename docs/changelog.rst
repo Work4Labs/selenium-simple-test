@@ -27,8 +27,8 @@ version **0.2.3** (?? ?? ??)
 * added ``get_window_size`` action
 * added ``set_window_size`` action
 * added ``testtools`` dependency
-* new command-line parameter: ``-f`` (file match pattern) for test
-  loading/discovery
+* command-line test names can be file glob patterns for loading wildcards
+* tests must be invoked using file name or wildcard name
 
 
 version **0.2.2** (2012 Nov 4)
