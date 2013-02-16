@@ -195,17 +195,8 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-#def find_cases()
-
-    #return found
-    
-def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
-              browser_platform, session_name, javascript_disabled,
-              webdriver_remote_url, screenshots_on, found, failfast, debug,
-              extended=False):
-
-    suite = TestSuite()
-
+def find_cases(test_names, test_dir)
+    found = set()
     dir_list = os.listdir(test_dir)
     
     expanded_test_names = []
@@ -228,7 +219,17 @@ def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
                 # ignore entries starting with underscore unless specified
                 continue
         found.add(entry)
+    return found
 
+
+def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
+              browser_platform, session_name, javascript_disabled,
+              webdriver_remote_url, screenshots_on, failfast, debug,
+              extended=False):
+
+    suite = TestSuite()
+
+    for case in find_cases(test_names, test_dir):
         csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             # reading the csv file now
