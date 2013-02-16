@@ -131,8 +131,14 @@ def runtests(test_names, test_dir='.', file_match='*.py',
     finally:
         missing = test_names - found_tests
         for name in missing:
-            msg = 'Warning: test %r not found' % name
-            print >> sys.stderr, msg
+            # only warn for missing cases if name was not a glob patern
+            if '*' not in name:
+                msg = 'Warning: test %r not found' % name
+                print >> sys.stderr, msg
+
+
+def _has_glob_pattern(txt):
+    return ('*' in txt)
 
 
 def _get_full_path(path):
@@ -189,6 +195,10 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
+def find_cases()
+
+    return found
+    
 def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, found, failfast, debug,
@@ -197,20 +207,27 @@ def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
     suite = TestSuite()
 
     dir_list = os.listdir(test_dir)
+    
+    expanded_test_names = []
+    filtered_dir_list = []
+    if not test_names:
+        test_names = ['*',]
+    for name_pattern in test_names:
+        matches = fnmatch.filter(dir_list, name_pattern)
+        if matches:
+            filtered_dir_list.extend(matches)
+            expanded_test_names.extend(matches)
+    expanded_test_names = set(test_names)
+    filtered_dir_list = set(filtered_dir_list)
 
-    # filter directory entries that don't match the file match pattern
-    dir_list = [f for f in dir_list if fnmatch.fnmatch(f, file_match)]
-
-    for entry in dir_list:
+    for entry in filtered_dir_list:
         if not entry.endswith('.py'):
             continue
-        if test_names and entry[:-3] not in test_names:
-            continue
-        elif not test_names:
+        elif not expanded_test_names:
             if entry.startswith('_'):
                 # ignore entries starting with underscore unless specified
                 continue
-        found.add(entry[:-3])
+        found.add(entry)
 
         csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
