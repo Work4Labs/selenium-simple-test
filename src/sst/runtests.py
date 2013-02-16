@@ -195,9 +195,9 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def find_cases()
+#def find_cases()
 
-    return found
+    #return found
     
 def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
