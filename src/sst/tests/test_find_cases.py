@@ -39,7 +39,7 @@ class TestFindCases(testtools.TestCase):
             'script.py',
             'not_a_test',
             'test_not_a_test.p',
-             '_hidden.py',
+            '_hidden.py',
         ))
         for fn in file_names:
             with open(os.path.join(self.test_dir, fn), 'w'):
