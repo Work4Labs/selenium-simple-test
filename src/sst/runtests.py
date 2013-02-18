@@ -193,8 +193,7 @@ def find_shared_directory(test_dir, shared_directory):
 def find_cases(test_names, test_dir):
     found = set()
     dir_list = os.listdir(test_dir)
-    
-    expanded_test_names = []
+
     filtered_dir_list = []
     if not test_names:
         test_names = ['*',]
@@ -202,21 +201,22 @@ def find_cases(test_names, test_dir):
         matches = fnmatch.filter(dir_list, name_pattern)
         if matches:
             filtered_dir_list.extend(matches)
-            expanded_test_names.extend(matches)
-    expanded_test_names = set(test_names)
     filtered_dir_list = set(filtered_dir_list)
 
     for entry in filtered_dir_list:
         if not entry.endswith('.py'):
             continue
+        if not os.path.isfile(os.path.join(test_dir, entry)):
+            continue
         if entry.startswith('_'):
             # ignore entries starting with underscore
             continue
         found.add(entry)
+
     return found
 
 
-def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
+def get_suite(test_names, test_dir, count_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
               extended=False):
