@@ -194,22 +194,20 @@ def find_cases(test_names, test_dir):
     found = set()
     dir_list = os.listdir(test_dir)
 
-    filtered_dir_list = []
+    filtered_dir_list = set()
     if not test_names:
         test_names = ['*',]
     for name_pattern in test_names:
         matches = fnmatch.filter(dir_list, name_pattern)
         if matches:
-            filtered_dir_list.extend(matches)
-    filtered_dir_list = set(filtered_dir_list)
-
+            for match in matches:
+                if os.path.isfile(os.path.join(test_dir, match)):
+                    filtered_dir_list.add(match)
     for entry in filtered_dir_list:
+        # conditions for ignoring files
         if not entry.endswith('.py'):
             continue
-        if not os.path.isfile(os.path.join(test_dir, entry)):
-            continue
         if entry.startswith('_'):
-            # ignore entries starting with underscore
             continue
         found.add(entry)
 
