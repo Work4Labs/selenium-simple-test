@@ -35,6 +35,7 @@ class TestFindCases(testtools.TestCase):
         os.mkdir(self.test_dir)
         file_names = set((
             'test_a_real_test.py',
+            'test_a_real_test2.py',
             'script.py',
             'not_a_test',
             'test_not_a_test.p',
@@ -45,19 +46,32 @@ class TestFindCases(testtools.TestCase):
                 pass
 
 
-    def test_find_cases(self):
-        found_files = (
+    def test_find_cases_single_name(self):
+        find_files = (
+            'test_a_real_test.py',
+        )
+        found = runtests.find_cases(find_files, self.test_dir)
+        self.assertSetEqual(set(find_files), found)
+
+
+    def test_find_cases_multi_name(self):
+        find_files = (
             'test_a_real_test.py',
             'script.py',
         )
-        dont_find_files = (
-            'not_a_test',
-            'test_not_a_test.p',
-             '_hidden.py',
-        )
-        found = runtests.find_cases(found_files, self.test_dir)
-        self.assertSetEqual(set(found_files), found)
-        for name in dont_find_files:
-            self.assertNotIn(name, found)
+        found = runtests.find_cases(find_files, self.test_dir)
+        self.assertSetEqual(set(find_files), found)
 
-        
+
+    def test_find_cases_glob(self):
+        find_files = (
+            'test_a_real_test.py',
+            'test_a_real_test2.py',
+        )
+        found = runtests.find_cases(('test_a_real_test*', ), self.test_dir)
+        self.assertSetEqual(set(find_files), found)
+        found = runtests.find_cases(('test_a_real_test*.py', ), self.test_dir)
+        self.assertSetEqual(set(find_files), found)
+        found = runtests.find_cases(('*_a_real_test*', ), self.test_dir)
+        self.assertSetEqual(set(find_files), found)
+
