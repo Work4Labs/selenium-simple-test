@@ -34,7 +34,7 @@ def main():
     runtests.runtests(
         args,
         test_dir=cmd_opts.dir_name,
-        file_match=cmd_opts.file_match,
+        count_only=cmd_opts.count_only,
         report_format=cmd_opts.report_format,
         browser_type=cmd_opts.browser_type,
         browser_version=cmd_opts.browser_version,

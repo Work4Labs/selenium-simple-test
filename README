@@ -6,7 +6,7 @@
 :Project Home: https://launchpad.net/selenium-simple-test
 :PyPI: http://pypi.python.org/pypi/sst
 :License: Apache License, Version 2.0
-:Author: Copyright (c) 2011-2012 Canonical Ltd.
+:Author: Copyright (c) 2011-2013 Canonical Ltd.
 
 
 ---------------------------------
@@ -73,9 +73,7 @@ Create a Python script (.py) file, and add your test code.
 
 Then call your test script from the command line, using `sst-run`::
 
-    $ sst-run mytest
-
-* note: you don't add the .py extension to your test invocation
+    $ sst-run mytest.py
 
 
 -------------------------------

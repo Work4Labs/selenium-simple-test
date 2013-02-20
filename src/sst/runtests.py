@@ -54,7 +54,7 @@ from .context import populate_context
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='.', file_match='*.py',
+def runtests(test_names, test_dir='.', count_only=False,
              report_format='console', browser_type='Firefox',
              javascript_disabled=False, browsermob_enabled=False,
              shared_directory=None, screenshots_on=False, failfast=False,
@@ -82,31 +82,34 @@ def runtests(test_names, test_dir='.', file_match='*.py',
 
     config.browsermob_enabled = browsermob_enabled
 
-    found_tests = set()
     test_names = set(test_names)
-
-    suites = (
+        
+    suites = [
         get_suite(
-            test_names, root, file_match, browser_type, browser_version,
+            test_names, root, count_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
-            webdriver_remote_url, screenshots_on, found_tests, failfast, debug,
+            webdriver_remote_url, screenshots_on, failfast, debug,
             extended=extended,
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_directory and
         not os.path.abspath(root).startswith(shared_directory + os.path.sep)
         and not os.path.split(root)[1].startswith('_')
-    )
-
+    ]
+    
     alltests = TestSuite(suites)
-
+    
     print ''
     print '  %s test cases loaded\n' % alltests.countTestCases()
     print '--------------------------------------------------------------'
-
+    
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
         sys.exit(1)
+
+    if count_only:
+        print 'Count-Only Enabled, Not Running Tests'
+        sys.exit(0)
 
     if report_format == 'xml':
         _make_results_dir()
@@ -129,10 +132,8 @@ def runtests(test_names, test_dir='.', file_match='*.py',
     except KeyboardInterrupt:
         print >> sys.stderr, 'Test run interrupted'
     finally:
-        missing = test_names - found_tests
-        for name in missing:
-            msg = 'Warning: test %r not found' % name
-            print >> sys.stderr, msg
+        # XXX should warn on cases that were specified but not found
+        pass
 
 
 def _get_full_path(path):
@@ -189,37 +190,46 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
+def find_cases(test_names, test_dir):
+    found = set()
+    dir_list = os.listdir(test_dir)
+
+    filtered_dir_list = set()
+    if not test_names:
+        test_names = ['*',]
+    for name_pattern in test_names:
+        matches = fnmatch.filter(dir_list, name_pattern)
+        if matches:
+            for match in matches:
+                if os.path.isfile(os.path.join(test_dir, match)):
+                    filtered_dir_list.add(match)
+    for entry in filtered_dir_list:
+        # conditions for ignoring files
+        if not entry.endswith('.py'):
+            continue
+        if entry.startswith('_'):
+            continue
+        found.add(entry)
+
+    return found
+
+
+def get_suite(test_names, test_dir, count_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
-              webdriver_remote_url, screenshots_on, found, failfast, debug,
+              webdriver_remote_url, screenshots_on, failfast, debug,
               extended=False):
 
     suite = TestSuite()
 
-    dir_list = os.listdir(test_dir)
-
-    # filter directory entries that don't match the file match pattern
-    dir_list = [f for f in dir_list if fnmatch.fnmatch(f, file_match)]
-
-    for entry in dir_list:
-        if not entry.endswith('.py'):
-            continue
-        if test_names and entry[:-3] not in test_names:
-            continue
-        elif not test_names:
-            if entry.startswith('_'):
-                # ignore entries starting with underscore unless specified
-                continue
-        found.add(entry[:-3])
-
-        csv_path = os.path.join(test_dir, entry.replace('.py', '.csv'))
+    for case in find_cases(test_names, test_dir):
+        csv_path = os.path.join(test_dir, case.replace('.py', '.csv'))
         if os.path.isfile(csv_path):
             # reading the csv file now
             for row in get_data(csv_path):
                 # row is a dictionary of variables
                 suite.addTest(
                     get_case(
-                        test_dir, entry, browser_type, browser_version,
+                        test_dir, case, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
                         failfast=failfast, debug=debug, extended=extended
@@ -228,7 +238,7 @@ def get_suite(test_names, test_dir, file_match, browser_type, browser_version,
         else:
             suite.addTest(
                 get_case(
-                    test_dir, entry, browser_type, browser_version,
+                    test_dir, case, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     failfast=failfast, debug=debug, extended=extended
