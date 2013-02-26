@@ -84,18 +84,11 @@ def runtests(test_names, test_dir='.', count_only=False,
 
     test_names = set(test_names)
         
-    suites = [
-        get_suite(
-            test_names, root, count_only, browser_type, browser_version,
-            browser_platform, session_name, javascript_disabled,
-            webdriver_remote_url, screenshots_on, failfast, debug,
-            extended=extended,
-        )
-        for root, _, _ in os.walk(test_dir, followlinks=True)
-        if os.path.abspath(root) != shared_directory and
-        not os.path.abspath(root).startswith(shared_directory + os.path.sep)
-        and not os.path.split(root)[1].startswith('_')
-    ]
+    suites = get_suites(test_names, test_dir, shared_directory, count_only, browser_type, browser_version,
+                        browser_platform, session_name, javascript_disabled,
+                        webdriver_remote_url, screenshots_on, failfast, debug,
+                        extended=extended,
+                        )
     
     alltests = TestSuite(suites)
     
@@ -188,6 +181,26 @@ def find_shared_directory(test_dir, shared_directory):
                 relpath = os.path.split(relpath)[0]
 
     return _get_full_path(shared_directory)
+
+
+def get_suites(test_names, test_dir, shared_dir, count_only, browser_type, browser_version,
+               browser_platform, session_name, javascript_disabled,
+               webdriver_remote_url, screenshots_on, failfast, debug,
+               extended=False
+               ):
+    suites = [
+        get_suite(
+            test_names, test_dir, count_only, browser_type, browser_version,
+            browser_platform, session_name, javascript_disabled,
+            webdriver_remote_url, screenshots_on, failfast, debug,
+            extended=extended,
+        )
+        for root, _, _ in os.walk(test_dir, followlinks=True)
+        if os.path.abspath(root) != shared_dir and
+        not os.path.abspath(root).startswith(shared_dir + os.path.sep)
+        and not os.path.split(root)[1].startswith('_')
+    ]
+    return suites
 
 
 def find_cases(test_names, test_dir):
@@ -450,7 +463,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
     # since script base cases normally don't, but TestCase class-based
     # tests always will.
     if entry.startswith('test_') and _has_classes(test_dir, entry):
-        # load just the individual test
+        # load just the individual file's tests
         this_test = defaultTestLoader.discover(test_dir, pattern=entry)
     else:  # this is for script-based test
         context_provided = True
