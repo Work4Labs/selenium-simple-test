@@ -100,11 +100,28 @@ class TestGetSuites(testtools.TestCase):
         # assert we loaded correct number of cases
         self.assertEquals(len(suite), 6)
         
-        # for every test found, assert it is script based or testcase based
+        expected_scripted_tests = (
+            'test_script1',
+            'test_script2',
+            'test_class_hiding_case',
+        )
+        expected_testcase_tests = (
+            'test_test_a_real_test',
+            'test_test_a_real_test1',
+            'test_test_a_real_test2',
+        )
+        
         for test in suite:
             if issubclass(test.__class__, runtests.SSTTestCase):
                 self.assertIsInstance(test, runtests.SSTTestCase)
+                name = test.id().split('.')[-1]
+                self.assertIn(name, expected_scripted_tests)
             elif issubclass(test.__class__, unittest2.suite.TestSuite):
                 self.assertIsInstance(test, unittest2.suite.TestSuite)
+                for test_class in test._tests:
+                    for case in test_class._tests:
+                        for t in case._tests:
+                            name = t.id().split('.')[-1]
+                            self.assertIn(name, expected_testcase_tests)
             else:
                 raise Exception('Can not identify test')
