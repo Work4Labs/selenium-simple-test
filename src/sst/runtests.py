@@ -188,9 +188,9 @@ def get_suites(test_names, test_dir, shared_dir, count_only, browser_type, brows
                webdriver_remote_url, screenshots_on, failfast, debug,
                extended=False
                ):
-    suites = [
+    return [
         get_suite(
-            test_names, test_dir, count_only, browser_type, browser_version,
+            test_names, root, count_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
             extended=extended,
@@ -200,7 +200,6 @@ def get_suites(test_names, test_dir, shared_dir, count_only, browser_type, brows
         not os.path.abspath(root).startswith(shared_dir + os.path.sep)
         and not os.path.split(root)[1].startswith('_')
     ]
-    return suites
 
 
 def find_cases(test_names, test_dir):
