@@ -205,9 +205,7 @@ def get_suites(test_names, test_dir, shared_dir, count_only, browser_type, brows
 def find_cases(test_names, test_dir):
     found = set()
     dir_list = os.listdir(test_dir)
-
     filtered_dir_list = set()
-    
     if not test_names:
         test_names = ['*',]
     for name_pattern in test_names:
