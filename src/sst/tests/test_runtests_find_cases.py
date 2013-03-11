@@ -50,47 +50,54 @@ class TestFindCases(testtools.TestCase):
 
     def test_runtests_find_cases_multi_name(self):
         _make_empty_files(self.cases_dir)
-        find_files = (
+        args = set((
+            'test_a_real_test',
+            'script',
+        ))
+        matches = set((
             'test_a_real_test.py',
             'script.py',
-        )
-        found = runtests.find_cases(find_files, self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
+        ))
+        found = runtests.find_cases(args, self.cases_dir)
+        self.assertSetEqual(matches, found)
 
     def test_runtests_find_cases_single_name(self):
         _make_empty_files(self.cases_dir)
-        find_files = (
+        args = set((
+            'test_a_real_test',
+        ))
+        matches = set((
             'test_a_real_test.py',
-        )
-        found = runtests.find_cases(find_files, self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
+        ))
+        found = runtests.find_cases(args, self.cases_dir)
+        self.assertSetEqual(matches, found)
 
     def test_runtests_find_cases_glob(self):
         _make_empty_files(self.cases_dir)
-        find_files = (
+        matches = set((
             'test_a_real_test.py',
             'test_a_real_test2.py',
-        )
+        ))
         found = runtests.find_cases(('test_a_real_test*', ), self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
-        found = runtests.find_cases(('test_a_real_test*.py', ), self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
+        self.assertSetEqual(matches, found)
+        found = runtests.find_cases(('test_*_test*', ), self.cases_dir)
+        self.assertSetEqual(matches, found)
         found = runtests.find_cases(('*_a_real_test*', ), self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
+        self.assertSetEqual(matches, found)
 
     def test_runtests_find_cases_glob_and_name(self):
         _make_empty_files(self.cases_dir)
-        find_files = (
+        matches = set((
             'test_a_real_test.py',
             'test_a_real_test2.py',
             'script.py',
-        )
-        found = runtests.find_cases(('test_*', 'script.py'), self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
+        ))
+        found = runtests.find_cases(('test_*', 'script'), self.cases_dir)
+        self.assertSetEqual(matches, found)
 
     def test_runtests_find_cases_none_found(self):
         _make_empty_files(self.cases_dir)
-        find_files = []
+        matches = set([])
         found = runtests.find_cases(('xNOMATCHx', ), self.cases_dir)
-        self.assertSetEqual(set(find_files), found)
+        self.assertSetEqual(matches, found)
         self.assertEqual(len(found), 0)
