@@ -209,7 +209,7 @@ def find_cases(test_names, test_dir):
     if not test_names:
         test_names = ['*',]
     for name_pattern in test_names:
-        if not name_pattern.endswith('*'):
+        if not name_pattern.endswith('.py'):
             name_pattern += '.py'
         matches = fnmatch.filter(dir_list, name_pattern)
         if matches:

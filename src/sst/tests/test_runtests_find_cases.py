@@ -78,6 +78,7 @@ class TestFindCases(testtools.TestCase):
             'test_a_real_test.py',
             'test_a_real_test2.py',
         )
+
         args = (
             'test_a_real_test*',
         )
@@ -90,9 +91,15 @@ class TestFindCases(testtools.TestCase):
         found = runtests.find_cases(args, self.cases_dir)
         self.assertItemsEqual(matches, found)
 
+    def test_runtests_find_cases_glob_singlechar(self):
+        _make_empty_files(self.cases_dir)
         args = (
-            '*_a_real_test*',
+            'test_a_real_test?',
         )
+        matches = (
+            'test_a_real_test2.py',
+        )
+        
         found = runtests.find_cases(args, self.cases_dir)
         self.assertItemsEqual(matches, found)
 
