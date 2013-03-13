@@ -212,10 +212,10 @@ def start(browser_type=None, browser_version='',
             if assume_trusted_cert_issuer:
                 profile.set_preference(
                     'webdriver_assume_untrusted_issuer', False)
-                profile.setPreference(
+                profile.set_preference(
                     'capability.policy.default.Window.QueryInterface',
                     'allAccess')
-                profile.setPreference(
+                profile.set_preference(
                     'capability.policy.default.Window.frameElement.get',
                     'allAccess')
             if javascript_disabled:
