@@ -27,8 +27,7 @@ version **0.2.3** (?? ?? ??)
 * added ``get_window_size`` action
 * added ``set_window_size`` action
 * added ``testtools`` dependency
-* command-line test names can be file glob patterns for loading wildcards
-* tests must be invoked using file name or wildcard name
+* command-line test names may use glob patterns for discovery
 
 
 version **0.2.2** (2012 Nov 4)
