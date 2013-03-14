@@ -50,7 +50,7 @@ class TestSSTScriptTestCaseFailureScreenShots(testtools.TestCase):
 
     def setUp(self):
         super(TestSSTScriptTestCaseFailureScreenShots, self).setUp()
-        #tests.set_cwd_to_tmp(self)
+        tests.set_cwd_to_tmp(self)
         # capture test output so we don't pollute the test runs
         self.out = StringIO()
         self.patch(sys, 'stdout', self.out)
