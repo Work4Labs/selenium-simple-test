@@ -37,6 +37,7 @@ id, tag, text, class or other attributes. See the `get_element` documentation.
 """
 
 
+import codecs
 import logging
 import os
 import re
@@ -307,8 +308,8 @@ def save_page_source(filename='pagedump.html', add_timestamp=True):
     if add_timestamp:
         filename = _add_time_stamp(filename)
     page_source_file = os.path.join(config.results_directory, filename)
-    with open(page_source_file, 'w') as file_:
-        file_.write(get_page_source())
+    with codecs.open(page_source_file, 'w', encoding='utf-8') as f:
+        f.write(get_page_source())
     return page_source_file
 
 

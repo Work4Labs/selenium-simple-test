@@ -63,9 +63,14 @@ class TestSSTScriptTestCaseFailureScreenShots(testtools.TestCase):
         result = testtools.TestResult()
         test.run(result)
         # We get a screenshot and a pagesource
-        files = os.listdir('results')
-        files.sort()
+        files = sorted(os.listdir('results'))
         self.assertEqual(2, len(files))
+        byte_sizes = [
+            os.path.getsize(os.path.join(test.results_directory, f)) 
+            for f in files
+        ]
+        for size in byte_sizes:
+            self.assertGreater(size, 0)
         self.assertThat(files[0], matchers.StartsWith('pagesource-'))
         self.assertThat(files[1], matchers.StartsWith('screenshot-'))
 
