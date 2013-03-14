@@ -70,7 +70,7 @@ class TestSSTScriptTestCaseFailureScreenShots(testtools.TestCase):
             for f in files
         ]
         for size in byte_sizes:
-            self.assertGreater(size, 100)
+            self.assertGreater(size, 0)
         self.assertThat(files[0], matchers.StartsWith('pagesource-'))
         self.assertThat(files[1], matchers.StartsWith('screenshot-'))
 
