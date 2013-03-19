@@ -96,9 +96,9 @@ def get_common_options():
                       action='store_true', default=False,
                       help='Add extra information (page source) to failure '
                       'reports')
-    parser.add_option('--count-only', dest='count_only',
+    parser.add_option('--collect-only', dest='collect_only',
                       action='store_true', default=False,
-                      help='Count cases without running tests')
+                      help='Collect/print cases without running tests')
     return parser
 
 
