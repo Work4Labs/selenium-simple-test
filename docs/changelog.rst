@@ -28,6 +28,7 @@ version **0.2.3** (?? ?? ??)
 * added ``set_window_size`` action
 * added ``testtools`` dependency
 * command-line test names may use glob patterns for discovery
+* added `--collect-only` option to `sst-run` command line
 
 
 version **0.2.2** (2012 Nov 4)

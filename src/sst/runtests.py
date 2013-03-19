@@ -54,7 +54,7 @@ from .context import populate_context
 __all__ = ['runtests']
 
 
-def runtests(test_names, test_dir='.', count_only=False,
+def runtests(test_names, test_dir='.', collect_only=False,
              report_format='console', browser_type='Firefox',
              javascript_disabled=False, browsermob_enabled=False,
              shared_directory=None, screenshots_on=False, failfast=False,
@@ -83,25 +83,29 @@ def runtests(test_names, test_dir='.', count_only=False,
     config.browsermob_enabled = browsermob_enabled
 
     test_names = set(test_names)
-        
-    suites = get_suites(test_names, test_dir, shared_directory, count_only, browser_type, browser_version,
+
+    suites = get_suites(test_names, test_dir, shared_directory, collect_only, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, failfast, debug,
                         extended=extended,
                         )
-    
+
     alltests = TestSuite(suites)
-    
+
     print ''
     print '  %s test cases loaded\n' % alltests.countTestCases()
     print '--------------------------------------------------------------'
-    
+
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
         sys.exit(1)
 
-    if count_only:
-        print 'Count-Only Enabled, Not Running Tests'
+    if collect_only:
+        print 'Collect-Only Enabled, Not Running Tests...\n'
+        print 'Tests Collected:'
+        print '-' * 16
+        for t in sorted(testtools.testsuite.iterate_tests(alltests)):
+            print t.id()
         sys.exit(0)
 
     if report_format == 'xml':
@@ -183,14 +187,14 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def get_suites(test_names, test_dir, shared_dir, count_only, browser_type, browser_version,
+def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, browser_version,
                browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
                extended=False
                ):
     return [
         get_suite(
-            test_names, root, count_only, browser_type, browser_version,
+            test_names, root, collect_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
             extended=extended,
@@ -227,7 +231,7 @@ def find_cases(test_names, test_dir):
     return found
 
 
-def get_suite(test_names, test_dir, count_only, browser_type, browser_version,
+def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
               extended=False):
