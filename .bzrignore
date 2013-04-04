@@ -13,5 +13,6 @@ sst_docs
 sst.wpr
 sst.wpu
 *.log
+*.pyc
 src/testproject/testproj.db
 .tox
