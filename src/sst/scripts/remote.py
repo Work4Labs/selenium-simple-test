@@ -19,7 +19,6 @@
 #
 
 
-import sst
 from sst import runtests
 from sst.command import clear_old_results, get_opts_remote
 
