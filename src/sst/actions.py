@@ -179,7 +179,7 @@ def skip(reason=''):
 def start(browser_type=None, browser_version='',
           browser_platform='ANY', session_name='',
           javascript_disabled=False, assume_trusted_cert_issuer=False,
-          webdriver_remote=None):
+          webdriver_remote=None, additional_capabilities=None):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""
@@ -191,8 +191,8 @@ def start(browser_type=None, browser_version='',
 
     if logger.isEnabledFor(logging.DEBUG):
         # XXX We print a new line because otherwise the first debug message
-        # will be printed on the same line as the name of the test. This is 
-        # hacky and doesn't cover cases when the script logs things higher 
+        # will be printed on the same line as the name of the test. This is
+        # hacky and doesn't cover cases when the script logs things higher
         # than debug, but this way we are keeping the same behavior we had
         # before adding the log.
         print
@@ -230,6 +230,8 @@ def start(browser_type=None, browser_version='',
                                 "version": browser_version,
                                 "javascriptEnabled": not javascript_disabled,
                                 "name": session_name}
+        if additional_capabilities:
+            desired_capabilities.update(additional_capabilities)
         browser = webdriver.Remote(desired_capabilities=desired_capabilities,
                                    command_executor=webdriver_remote)
     return browser, browsermob_proxy
