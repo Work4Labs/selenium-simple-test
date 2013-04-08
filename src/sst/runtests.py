@@ -314,6 +314,7 @@ class SSTTestCase(testtools.TestCase):
     base_url = None
 
     results_directory = _get_full_path('results')
+    error_count = 0
     screenshots_on = False
     debug_post_mortem = False
     extended_report = False
@@ -341,6 +342,7 @@ class SSTTestCase(testtools.TestCase):
         _make_results_dir()
         self.start_browser()
         self.addCleanup(self.stop_browser)
+        self.addOnException(self.count_exception)
         if self.screenshots_on:
             self.addOnException(self.take_screenshot_and_page_dump)
         if self.debug_post_mortem:
@@ -356,7 +358,13 @@ class SSTTestCase(testtools.TestCase):
             self.assume_trusted_cert_issuer, self.webdriver_remote_url,
             additional_capabilities=self.additional_capabilities)
 
+    def count_exception(self):
+        self.error_count += 1
+
     def stop_browser(self):
+        # Notify saucelabs of the result
+        if self.sauce_username:
+            self.browser.job_update(not self.error_count)
         stop()
 
     def take_screenshot_and_page_dump(self, exc_info):

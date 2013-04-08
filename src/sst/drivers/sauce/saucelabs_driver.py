@@ -47,7 +47,7 @@ class SauceLabsDriver(webdriver.Remote):
                                                self.session_id,
                                                token)
 
-    def jobs_read(self, job_id):
+    def job_read(self, job_id):
         result = self._call_rest(
             'GET',
             '/jobs/%s' % job_id
@@ -56,7 +56,7 @@ class SauceLabsDriver(webdriver.Remote):
             return result.text
         return None
 
-    def jobs_update(self, result):
+    def job_update(self, result):
         data = json.dumps({
             'public': 'false',
             'passed': result
@@ -64,12 +64,12 @@ class SauceLabsDriver(webdriver.Remote):
 
         result = self._call_rest(
             'PUT',
-            '/jobs/%s' % self.driver.session_id,
+            '/jobs/%s' % self.session_id,
             data
         )
         return result.status_code == requests.codes.ok
 
-    def jobs_list(self, result):
+    def job_list(self, result):
         result = self._call_rest(
             'GET',
             '/jobs'
