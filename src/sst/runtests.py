@@ -295,6 +295,7 @@ class SSTTestCase(testtools.TestCase):
     javascript_disabled = False
     assume_trusted_cert_issuer = False
     webdriver_remote_url = None
+    additional_capabilities = {}
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -304,6 +305,10 @@ class SSTTestCase(testtools.TestCase):
     screenshots_on = False
     debug_post_mortem = False
     extended_report = False
+
+    def add_additional_capabilities(self, additional_capabilities):
+        """Can also be used to overload capabilities from inside a test."""
+        self.additional_capabilities.update(additional_capabilities)
 
     def shortDescription(self):
         return None
@@ -336,7 +341,8 @@ class SSTTestCase(testtools.TestCase):
         self.browser, self.browsermob_proxy = start(
             self.browser_type, self.browser_version, self.browser_platform,
             self.session_name, self.javascript_disabled,
-            self.assume_trusted_cert_issuer, self.webdriver_remote_url)
+            self.assume_trusted_cert_issuer, self.webdriver_remote_url,
+            additional_capabilities=self.additional_capabilities)
 
     def stop_browser(self):
         stop()
