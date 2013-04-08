@@ -356,7 +356,7 @@ class SSTTestCase(testtools.TestCase):
 
     def stop_browser(self):
         # Notify saucelabs of the result
-        if self.sauce_username:
+        if self.sauce_labs:
             self.browser.job_update(not self.error_count)
         stop()
 
