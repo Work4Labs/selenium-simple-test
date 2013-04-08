@@ -60,6 +60,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None,
+             sauce_username=None, sauce_acesskey=None,
              custom_options=None, extended=False):
 
     if test_dir == 'selftests':
@@ -504,6 +505,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
     this_test.webdriver_remote_url = webdriver_remote_url
     this_test.custom_options = custom_options
 
+    # TODO: session_name should be the test class name, at least for saucelabs
     this_test.session_name = session_name
     this_test.javascript_disabled = javascript_disabled
 

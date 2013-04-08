@@ -179,7 +179,8 @@ def skip(reason=''):
 def start(browser_type=None, browser_version='',
           browser_platform='ANY', session_name='',
           javascript_disabled=False, assume_trusted_cert_issuer=False,
-          webdriver_remote=None, additional_capabilities=None):
+          webdriver_remote=None, additional_capabilities=None
+          webdriver_class=None):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""
@@ -232,8 +233,10 @@ def start(browser_type=None, browser_version='',
                                 "name": session_name}
         if additional_capabilities:
             desired_capabilities.update(additional_capabilities)
-        browser = webdriver.Remote(desired_capabilities=desired_capabilities,
-                                   command_executor=webdriver_remote)
+
+        browser_class = webdriver_class if webdriver_class else webdriver.Remote
+        browser = browser_class(desired_capabilities=desired_capabilities,
+                                command_executor=webdriver_remote)
     return browser, browsermob_proxy
 
 

@@ -46,6 +46,8 @@ def main():
         failfast=cmd_opts.failfast,
         debug=cmd_opts.debug,
         extended=cmd_opts.extended_tracebacks,
+        sauce_username=cmd_opts.sauce_username,
+        sauce_acesskey=cmd_opts.sauce_acesskey,
         custom_options=cmd_opts.custom
     )
 
