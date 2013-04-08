@@ -79,6 +79,7 @@ def main():
         print '  failfast: %r' % cmd_opts.failfast
         print '  debug: %r' % cmd_opts.debug
         print '  headless xserver: %r' % cmd_opts.xserver_headless
+        print '  custom options: %r' % cmd_opts.custom
         print ''
 
     try:
@@ -96,6 +97,7 @@ def main():
             failfast=cmd_opts.failfast,
             debug=cmd_opts.debug,
             extended=cmd_opts.extended_tracebacks,
+            custom_options=cmd_opts.custom
         )
     finally:
 

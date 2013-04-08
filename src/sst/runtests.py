@@ -60,7 +60,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None,
-             extended=False):
+             custom_options=None, extended=False):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -87,7 +87,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
     suites = get_suites(test_names, test_dir, shared_directory, collect_only, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, failfast, debug,
-                        extended=extended,
+                        custom_options=custom_options, extended=extended,
                         )
 
     alltests = TestSuite(suites)
@@ -190,14 +190,14 @@ def find_shared_directory(test_dir, shared_directory):
 def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, browser_version,
                browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
-               extended=False
+               custom_options=None, extended=False
                ):
     return [
         get_suite(
             test_names, root, collect_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
-            extended=extended,
+            custom_options=custom_options, extended=extended,
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_dir and
@@ -234,7 +234,7 @@ def find_cases(test_names, test_dir):
 def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
-              extended=False):
+              custom_options=None, extended=False):
 
     suite = TestSuite()
 
@@ -249,7 +249,8 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                         test_dir, case, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
-                        failfast=failfast, debug=debug, extended=extended
+                        custom_options=custom_options, failfast=failfast,
+                        debug=debug, extended=extended
                     )
                 )
         else:
@@ -258,7 +259,8 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                     test_dir, case, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
-                    failfast=failfast, debug=debug, extended=extended
+                    custom_options=custom_options, failfast=failfast,
+                    debug=debug, extended=extended
                 )
             )
 
@@ -459,7 +461,8 @@ def _has_classes(test_dir, entry):
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
-             context=None, failfast=False, debug=False, extended=False):
+             custom_options=None, context=None, failfast=False,
+             debug=False, extended=False):
     # our naming convention for tests requires that script-based tests must
     # not begin with "test_*."  SSTTestCase class-based or other
     # unittest.TestCase based source files must begin with "test_*".
