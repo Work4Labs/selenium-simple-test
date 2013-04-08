@@ -473,13 +473,11 @@ def get_case(test_dir, entry, browser_type, browser_version,
         # load just the individual file's tests
         this_test = defaultTestLoader.discover(test_dir, pattern=entry)
     else:  # this is for script-based test
-        context_provided = True
-        if context is None:
-            context_provided = False
-            context = {}
+        context = {} if context is None else context
         name = entry[:-3]
         test_name = 'test_%s' % name
         this_test = SSTScriptTestCase(test_name, context)
+
         this_test.script_dir = test_dir
         this_test.script_name = entry
         this_test.browser_type = browser_type
