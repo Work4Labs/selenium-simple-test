@@ -103,7 +103,7 @@ def get_common_options():
                       help='Custom parameters')
     parser.add_option('-sl', '--sauce-labs', dest='sauce_labs',
                       action='store_true', default=False,
-                      help='Saucelabs username')
+                      help='Activate the Saucelabs behavior')
     return parser
 
 
