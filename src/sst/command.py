@@ -99,6 +99,8 @@ def get_common_options():
     parser.add_option('--collect-only', dest='collect_only',
                       action='store_true', default=False,
                       help='Collect/print cases without running tests')
+    parser.add_option('-c', '--custom', action='append', dest='custom',
+                      help='Custom parameters')
     return parser
 
 
@@ -153,6 +155,18 @@ def get_opts(get_options):
     if cmd_opts.print_version:
         print 'SST version: %s' % sst.__version__
         sys.exit()
+
+    # parse custom options
+    if cmd_opts.custom:
+        custom_opts = {}
+        for custom_op in cmd_opts.custom:
+            try:
+                key, value = custom_op.split('=')
+                custom_opts.update({key: value})
+            except ValueError:
+                print 'Missing "=" in custom option: %s' % custom_op
+                sys.exit(1)
+        cmd_opts.custom = custom_opts
 
     run_tests = getattr(cmd_opts, 'run_tests', False)
     if cmd_opts.dir_name == '.' and not args and not run_tests:
