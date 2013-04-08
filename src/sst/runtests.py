@@ -87,6 +87,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
     suites = get_suites(test_names, test_dir, shared_directory, collect_only, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, failfast, debug,
+                        sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
                         custom_options=custom_options, extended=extended,
                         )
 
@@ -190,6 +191,7 @@ def find_shared_directory(test_dir, shared_directory):
 def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, browser_version,
                browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
+               sauce_username=None, sauce_acesskey=None,
                custom_options=None, extended=False
                ):
     return [
@@ -197,6 +199,7 @@ def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, bro
             test_names, root, collect_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
+            sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
             custom_options=custom_options, extended=extended,
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
@@ -234,6 +237,7 @@ def find_cases(test_names, test_dir):
 def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
+              sauce_username=None, sauce_acesskey=None,
               custom_options=None, extended=False):
 
     suite = TestSuite()
@@ -249,6 +253,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                         test_dir, case, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
+                        sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
                         custom_options=custom_options, failfast=failfast,
                         debug=debug, extended=extended
                     )
@@ -259,6 +264,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                     test_dir, case, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
+                    sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
                     custom_options=custom_options, failfast=failfast,
                     debug=debug, extended=extended
                 )
@@ -295,7 +301,12 @@ class SSTTestCase(testtools.TestCase):
     javascript_disabled = False
     assume_trusted_cert_issuer = False
     webdriver_remote_url = None
+    custom_options = None
     additional_capabilities = {}
+
+    custom_driver_class = None
+    sauce_username = None
+    sauce_acesskey = None
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -467,6 +478,7 @@ def _has_classes(test_dir, entry):
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
+             sauce_username=None, sauce_acesskey=None,
              custom_options=None, context=None, failfast=False,
              debug=False, extended=False):
     # our naming convention for tests requires that script-based tests must
@@ -484,19 +496,26 @@ def get_case(test_dir, entry, browser_type, browser_version,
         test_name = 'test_%s' % name
         this_test = SSTScriptTestCase(test_name, context)
 
-        this_test.script_dir = test_dir
-        this_test.script_name = entry
-        this_test.browser_type = browser_type
-        this_test.browser_version = browser_version
-        this_test.browser_platform = browser_platform
-        this_test.webdriver_remote_url = webdriver_remote_url
+    this_test.script_dir = test_dir
+    this_test.script_name = entry
+    this_test.browser_type = browser_type
+    this_test.browser_version = browser_version
+    this_test.browser_platform = browser_platform
+    this_test.webdriver_remote_url = webdriver_remote_url
+    this_test.custom_options = custom_options
 
-        this_test.session_name = session_name
-        this_test.javascript_disabled = javascript_disabled
+    this_test.session_name = session_name
+    this_test.javascript_disabled = javascript_disabled
 
-        this_test.screenshots_on = screenshots_on
-        this_test.debug_post_mortem = debug
-        this_test.extended_report = extended
+    this_test.sauce_username = sauce_username
+    this_test.sauce_acesskey = sauce_acesskey
+    if sauce_username:
+        from .drivers.sauce.saucelabs_driver import SauceLabsDriver
+        this_test.custom_driver_class = SauceLabsDriver
+
+    this_test.screenshots_on = screenshots_on
+    this_test.debug_post_mortem = debug
+    this_test.extended_report = extended
 
     return this_test
 
