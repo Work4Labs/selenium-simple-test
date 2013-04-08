@@ -101,12 +101,9 @@ def get_common_options():
                       help='Collect/print cases without running tests')
     parser.add_option('-c', '--custom', action='append', dest='custom',
                       help='Custom parameters')
-    parser.add_option('-su', '--sauce-username', dest='sauce_username',
-                      default=None,
+    parser.add_option('-sl', '--sauce-labs', dest='sauce_labs',
+                      action='store_true', default=False,
                       help='Saucelabs username')
-    parser.add_option('-sk', '--sauce-accesskey', dest='sauce_accesskey',
-                      default=None,
-                      help='Saucelabs access key')
     return parser
 
 

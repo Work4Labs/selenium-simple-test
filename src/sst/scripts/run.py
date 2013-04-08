@@ -97,8 +97,7 @@ def main():
             failfast=cmd_opts.failfast,
             debug=cmd_opts.debug,
             extended=cmd_opts.extended_tracebacks,
-            sauce_username=cmd_opts.sauce_username,
-            sauce_acesskey=cmd_opts.sauce_acesskey,
+            sauce_labs=cmd_opts.sauce_labs,
             custom_options=cmd_opts.custom
         )
     finally:

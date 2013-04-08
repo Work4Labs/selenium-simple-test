@@ -60,8 +60,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None,
-             sauce_username=None, sauce_acesskey=None,
-             custom_options=None, extended=False):
+             sauce_labs=False, custom_options=None, extended=False):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -88,8 +87,8 @@ def runtests(test_names, test_dir='.', collect_only=False,
     suites = get_suites(test_names, test_dir, shared_directory, collect_only, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, failfast, debug,
-                        sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
-                        custom_options=custom_options, extended=extended,
+                        sauce_labs=sauce_labs, custom_options=custom_options,
+                        extended=extended
                         )
 
     alltests = TestSuite(suites)
@@ -238,8 +237,7 @@ def find_cases(test_names, test_dir):
 def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
-              sauce_username=None, sauce_acesskey=None,
-              custom_options=None, extended=False):
+              sauce_labs=False, custom_options=None, extended=False):
 
     suite = TestSuite()
 
@@ -254,9 +252,8 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                         test_dir, case, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
-                        sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
                         custom_options=custom_options, failfast=failfast,
-                        debug=debug, extended=extended
+                        sauce_labs=sauce_labs, debug=debug, extended=extended
                     )
                 )
         else:
@@ -265,9 +262,8 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                     test_dir, case, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
-                    sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
                     custom_options=custom_options, failfast=failfast,
-                    debug=debug, extended=extended
+                    sauce_labs=sauce_labs, debug=debug, extended=extended
                 )
             )
 
@@ -302,12 +298,9 @@ class SSTTestCase(testtools.TestCase):
     javascript_disabled = False
     assume_trusted_cert_issuer = False
     webdriver_remote_url = None
+    webdriver_class = None
     custom_options = None
     additional_capabilities = {}
-
-    custom_driver_class = None
-    sauce_username = None
-    sauce_acesskey = None
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -487,9 +480,8 @@ def _has_classes(test_dir, entry):
 def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
-             sauce_username=None, sauce_acesskey=None,
              custom_options=None, context=None, failfast=False,
-             debug=False, extended=False):
+             sauce_labs=False, debug=False, extended=False):
     # our naming convention for tests requires that script-based tests must
     # not begin with "test_*."  SSTTestCase class-based or other
     # unittest.TestCase based source files must begin with "test_*".
@@ -517,11 +509,10 @@ def get_case(test_dir, entry, browser_type, browser_version,
     this_test.session_name = session_name
     this_test.javascript_disabled = javascript_disabled
 
-    this_test.sauce_username = sauce_username
-    this_test.sauce_acesskey = sauce_acesskey
-    if sauce_username:
+    this_test.sauce_labs = sauce_labs
+    if sauce_labs:
         from .drivers.sauce.saucelabs_driver import SauceLabsDriver
-        this_test.custom_driver_class = SauceLabsDriver
+        this_test.webdriver_class = SauceLabsDriver
 
     this_test.screenshots_on = screenshots_on
     this_test.debug_post_mortem = debug
