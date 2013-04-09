@@ -33,6 +33,7 @@ from unittest2 import (
     SkipTest,
     TestSuite,
     TextTestRunner,
+    TextTestResult,
 )
 
 import testtools
@@ -124,7 +125,8 @@ def runtests(test_names, test_dir='.', collect_only=False,
         )
 
     else:
-        runner = TextTestRunner(verbosity=2, failfast=failfast)
+        runner = TextTestRunner(verbosity=2, failfast=failfast,
+                                resultclass=SSTTextTestResult)
 
     try:
         runner.run(alltests)
@@ -283,6 +285,52 @@ def use_xvfb_server(test, xvfb=None):
     xvfb.start()
     test.addCleanup(xvfb.stop)
     return xvfb
+
+
+class SSTSuite(TestSuite):
+    """Wrapper for TestSuite.
+    Created to allow setting properties on encapsulated test cases(s).
+    """
+
+    def set_test_case_properties(self, props):
+        SSTSuite.set_props_on_test_case_recursive(props, self._tests)
+
+    @classmethod
+    def set_props_on_test_case_recursive(cls, props, tests):
+        if not isinstance(tests, list):
+            return
+
+        for test in tests:
+            if isinstance(test, SSTTestCase):
+                for key, value in props.iteritems():
+                    setattr(test, key, value)
+            elif isinstance(test, cls):
+                cls.set_props_on_test_case_recursive(props, test._tests)
+
+
+class SSTTextTestResult(TextTestResult):
+    saucelabs_report_links = []
+
+    def addError(self, test, err):
+        super(TextTestResult, self).addError(test, err)
+        self.collect_report_links(test)
+
+    def addFailure(self, test, err):
+        super(TextTestResult, self).addFailure(test, err)
+        self.collect_report_links(test)
+
+    def collect_report_links(self, test):
+        if config.saucelabs_enabled:
+            self.saucelabs_report_links.append(test.browser.get_job_result_url())
+
+    def printErrors(self):
+        super(TextTestResult, self).printErrors()
+        if not len(self.saucelabs_report_links):
+            return
+        self.stream.writeln()
+        self.stream.writeln("SauceLabs error reports links:")
+        for link in self.saucelabs_report_links:
+            self.stream.writeln("  - %s" % link)
 
 
 class SSTTestCase(testtools.TestCase):
