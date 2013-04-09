@@ -312,6 +312,8 @@ class SSTTestCase(testtools.TestCase):
     debug_post_mortem = False
     extended_report = False
 
+    last_exception = None
+
     def add_additional_capabilities(self, additional_capabilities):
         """Can also be used to overload capabilities from inside a test."""
         self.additional_capabilities.update(additional_capabilities)
@@ -333,6 +335,7 @@ class SSTTestCase(testtools.TestCase):
             self.xvfb = use_xvfb_server(self)
         config.results_directory = self.results_directory
         _make_results_dir()
+        self.ensure_non_empty_session_name()
         self.start_browser()
         self.addCleanup(self.stop_browser)
         self.addOnException(self.count_exception)
@@ -344,20 +347,26 @@ class SSTTestCase(testtools.TestCase):
         if self.extended_report:
             self.addOnException(self.report_extensively)
 
+    def ensure_non_empty_session_name(self):
+        if not self.session_name:
+            self.session_name = str(self)
+
     def start_browser(self):
         self.browser, self.browsermob_proxy = start(
             self.browser_type, self.browser_version, self.browser_platform,
             self.session_name, self.javascript_disabled,
             self.assume_trusted_cert_issuer, self.webdriver_remote_url,
+            webdriver_class=self.webdriver_class,
             additional_capabilities=self.additional_capabilities)
 
-    def count_exception(self):
+    def count_exception(self, exception):
         self.error_count += 1
+        _, self.last_exception, _ = exception
 
     def stop_browser(self):
         # Notify saucelabs of the result
-        if self.sauce_labs:
-            self.browser.job_update(not self.error_count)
+        if config.saucelabs_enabled:
+            self.browser.job_update(not self.error_count, self.last_exception)
         stop()
 
     def take_screenshot_and_page_dump(self, exc_info):
@@ -481,42 +490,47 @@ def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              custom_options=None, context=None, failfast=False,
-             sauce_labs=False, debug=False, extended=False):
+             debug=False, extended=False):
     # our naming convention for tests requires that script-based tests must
     # not begin with "test_*."  SSTTestCase class-based or other
     # unittest.TestCase based source files must begin with "test_*".
     # we also scan the source file to see if it has class definitions,
     # since script base cases normally don't, but TestCase class-based
     # tests always will.
+
+    properties = {
+        'script_dir' : test_dir,
+        'script_name' : entry,
+        'browser_type' : browser_type,
+        'browser_version' : browser_version,
+        'browser_platform' : browser_platform,
+        'webdriver_remote_url' : webdriver_remote_url,
+        'custom_options' : custom_options,
+        # TODO: session_name should be the test class name, at least for saucelabs
+        'session_name' : session_name,
+        'javascript_disabled' : javascript_disabled,
+        'screenshots_on' : screenshots_on,
+        'debug_post_mortem' : debug,
+        'extended_report' : extended
+    }
+
+    if config.saucelabs_enabled:
+        from .drivers.sauce.saucelabs_driver import SauceLabsDriver
+        properties['webdriver_class'] = SauceLabsDriver
+
     if entry.startswith('test_') and _has_classes(test_dir, entry):
+        defaultTestLoader.suiteClass = SSTSuite
         # load just the individual file's tests
         this_test = defaultTestLoader.discover(test_dir, pattern=entry)
+        this_test.set_test_case_properties(properties)
     else:  # this is for script-based test
         context = {} if context is None else context
         name = entry[:-3]
         test_name = 'test_%s' % name
         this_test = SSTScriptTestCase(test_name, context)
-
-    this_test.script_dir = test_dir
-    this_test.script_name = entry
-    this_test.browser_type = browser_type
-    this_test.browser_version = browser_version
-    this_test.browser_platform = browser_platform
-    this_test.webdriver_remote_url = webdriver_remote_url
-    this_test.custom_options = custom_options
-
-    # TODO: session_name should be the test class name, at least for saucelabs
-    this_test.session_name = session_name
-    this_test.javascript_disabled = javascript_disabled
-
-    this_test.sauce_labs = sauce_labs
-    if sauce_labs:
-        from .drivers.sauce.saucelabs_driver import SauceLabsDriver
-        this_test.webdriver_class = SauceLabsDriver
-
-    this_test.screenshots_on = screenshots_on
-    this_test.debug_post_mortem = debug
-    this_test.extended_report = extended
+        # Set properties
+        for key, value in properties.iteritems():
+            setattr(this_test, key, value)
 
     return this_test
 

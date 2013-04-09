@@ -14,6 +14,7 @@ SAUCELABS_REST_PATH = "/rest/v1"
 class SauceLabsDriver(webdriver.Remote):
 
     def __init__(self, command_executor=None, desired_capabilities=None):
+        # Extract username and acces_key from the connector url
         regexp = re.compile(r"^https?:\/\/([0-9a-z_]+):([0-9a-z-]+)@.*$")
         match = regexp.search(command_executor)
         try:
@@ -25,18 +26,17 @@ class SauceLabsDriver(webdriver.Remote):
         self.basic_auth = base64.encodestring(
             '%s:%s' % (self.username, self.access_key))[:-1]
 
-        default_capabilities = webdriver.DesiredCapabilities.CHROME
-        default_capabilities['platform'] = 'Windows 2008'
-        default_capabilities['name'] = 'Regression_postJob_from_jobList'
-        default_capabilities['record-video'] = 'false'
-        default_capabilities['max-duration'] = '120'
+        default_capabilities = {
+            'record-video': 'false',
+            'max-duration': '120'
+        }
 
         # Extend the default capabilities with the custom ones
         default_capabilities.update(desired_capabilities)
 
         super(SauceLabsDriver, self).__init__(
             desired_capabilities=default_capabilities,
-            command_executor=self._get_connector_url()
+            command_executor=command_executor
         )
 
     def get_job_result_url(self):
@@ -56,11 +56,14 @@ class SauceLabsDriver(webdriver.Remote):
             return result.text
         return None
 
-    def job_update(self, result):
-        data = json.dumps({
+    def job_update(self, result, exception=None):
+        data = {
             'public': 'false',
             'passed': result
-        })
+        }
+        if exception:
+            data['custom-data'] = {'error' : str(exception)}
+        data = json.dumps(data)
 
         result = self._call_rest(
             'PUT',
