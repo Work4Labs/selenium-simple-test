@@ -38,6 +38,9 @@ The `sst.config` module has the following information::
     # is browsermob proxy enabled?
     config.browsermob_enabled
 
+    # is the test running on SauceLabs?
+    config.saucelabs_enabled
+
     # flags for the current test run
     config.flags
 
@@ -51,6 +54,7 @@ javascript_disabled = False
 shared_directory = None
 results_directory = None
 browsermob_enabled = False
+saucelabs_enabled = False
 flags = []
 __args__ = {}
 cache = {}

@@ -97,7 +97,7 @@ def main():
             failfast=cmd_opts.failfast,
             debug=cmd_opts.debug,
             extended=cmd_opts.extended_tracebacks,
-            sauce_labs=cmd_opts.sauce_labs,
+            saucelabs_enabled=cmd_opts.saucelabs_enabled,
             custom_options=cmd_opts.custom
         )
     finally:

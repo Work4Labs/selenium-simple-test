@@ -101,7 +101,7 @@ def get_common_options():
                       help='Collect/print cases without running tests')
     parser.add_option('-c', '--custom', action='append', dest='custom',
                       help='Custom parameters')
-    parser.add_option('-sl', '--sauce-labs', dest='sauce_labs',
+    parser.add_option('--sauce', dest='saucelabs_enabled',
                       action='store_true', default=False,
                       help='Activate the Saucelabs behavior')
     return parser

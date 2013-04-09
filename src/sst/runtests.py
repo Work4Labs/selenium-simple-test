@@ -60,7 +60,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None,
-             sauce_labs=False, custom_options=None, extended=False):
+             saucelabs_enabled=False, custom_options=None, extended=False):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -81,14 +81,15 @@ def runtests(test_names, test_dir='.', collect_only=False,
     config.results_directory = _get_full_path('results')
 
     config.browsermob_enabled = browsermob_enabled
+    config.saucelabs_enabled = saucelabs_enabled
 
     test_names = set(test_names)
 
-    suites = get_suites(test_names, test_dir, shared_directory, collect_only, browser_type, browser_version,
-                        browser_platform, session_name, javascript_disabled,
-                        webdriver_remote_url, screenshots_on, failfast, debug,
-                        sauce_labs=sauce_labs, custom_options=custom_options,
-                        extended=extended
+    suites = get_suites(test_names, test_dir, shared_directory, collect_only,
+                        browser_type, browser_version, browser_platform,
+                        session_name, javascript_disabled, webdriver_remote_url,
+                        screenshots_on, failfast, debug,
+                        custom_options=custom_options, extended=extended
                         )
 
     alltests = TestSuite(suites)
@@ -191,7 +192,6 @@ def find_shared_directory(test_dir, shared_directory):
 def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, browser_version,
                browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
-               sauce_username=None, sauce_acesskey=None,
                custom_options=None, extended=False
                ):
     return [
@@ -199,8 +199,8 @@ def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, bro
             test_names, root, collect_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
-            sauce_username=sauce_username, sauce_acesskey=sauce_acesskey,
-            custom_options=custom_options, extended=extended,
+            custom_options=custom_options,
+            extended=extended
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_dir and
@@ -214,7 +214,7 @@ def find_cases(test_names, test_dir):
     dir_list = os.listdir(test_dir)
     filtered_dir_list = set()
     if not test_names:
-        test_names = ['*',]
+        test_names = ['*', ]
     for name_pattern in test_names:
         if not name_pattern.endswith('.py'):
             name_pattern += '.py'
@@ -237,7 +237,7 @@ def find_cases(test_names, test_dir):
 def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
-              sauce_labs=False, custom_options=None, extended=False):
+              custom_options=None, extended=False):
 
     suite = TestSuite()
 
@@ -253,7 +253,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row,
                         custom_options=custom_options, failfast=failfast,
-                        sauce_labs=sauce_labs, debug=debug, extended=extended
+                        debug=debug, extended=extended
                     )
                 )
         else:
@@ -263,7 +263,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     custom_options=custom_options, failfast=failfast,
-                    sauce_labs=sauce_labs, debug=debug, extended=extended
+                    debug=debug, extended=extended
                 )
             )
 

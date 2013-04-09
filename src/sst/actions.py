@@ -179,7 +179,7 @@ def skip(reason=''):
 def start(browser_type=None, browser_version='',
           browser_platform='ANY', session_name='',
           javascript_disabled=False, assume_trusted_cert_issuer=False,
-          webdriver_remote=None, additional_capabilities=None
+          webdriver_remote=None, additional_capabilities=None,
           webdriver_class=None):
     """
     Starts Browser with a new session. Called for you at
