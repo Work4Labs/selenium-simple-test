@@ -44,6 +44,9 @@ The `sst.config` module has the following information::
     # flags for the current test run
     config.flags
 
+    # Command options passed to the current test run
+    config.cmd_opts
+
     # A per test cache. A dictionary that is cleared at the start of each test.
     config.cache
 """
@@ -55,6 +58,7 @@ shared_directory = None
 results_directory = None
 browsermob_enabled = False
 saucelabs_enabled = False
+cmd_opts = {}
 flags = []
 __args__ = {}
 cache = {}

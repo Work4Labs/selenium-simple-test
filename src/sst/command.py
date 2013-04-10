@@ -104,6 +104,19 @@ def get_common_options():
     parser.add_option('--sauce', dest='saucelabs_enabled',
                       action='store_true', default=False,
                       help='Activate the Saucelabs behavior')
+    parser.add_option('--email-address', dest='email_address',
+                      default=None,
+                      help='Receive email notifications to this address')
+    parser.add_option('--mailer', dest='mailer',
+                      default=None,
+                      help="""\
+The function to use to send emails.
+It must accept 4 parameters (send_from, send_to, subject, body):
+send_from: a tuple with the name and email address of the sender.
+send_to: a list of the recipient email addresses.
+subject: the email subject.
+body: a dict {"html": "html body", "text": "text body"} or a string.
+""")
     return parser
 
 
@@ -178,6 +191,11 @@ def get_opts(get_options):
         prog = os.path.split(__main__.__file__)[-1]
         print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
         sys.exit(1)
+    if cmd_opts.email_address and not cmd_opts.mailer:
+        print ('Error: you must supply a mailer function to send emails. '
+               'The function must accept 4 parameters '
+               '(send_from, send_to, subject, body).')
+        sys.exit(1)
 
     logging.basicConfig(format='    %(levelname)s:%(name)s:%(message)s')
     logger = logging.getLogger('SST')
@@ -191,4 +209,5 @@ def get_opts(get_options):
     with_flags = cmd_opts.with_flags
     config.flags = [flag.lower() for flag in
                     ([] if not with_flags else with_flags.split(','))]
+    config.cmd_opts = cmd_opts
     return (cmd_opts, args)
