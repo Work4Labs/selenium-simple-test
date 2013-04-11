@@ -105,7 +105,7 @@ def get_common_options():
                       action='store_true', default=False,
                       help='Activate the Saucelabs behavior')
     parser.add_option('--env', dest='env',
-                      default=None,
+                      default='-',
                       help='Environment, added as a prefix in emails subject')
     parser.add_option('--email-to', dest='email_to',
                       default=None,

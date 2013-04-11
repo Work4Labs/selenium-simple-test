@@ -338,7 +338,6 @@ class SSTTextTestResult(TextTestResult):
 
     def printErrors(self):
         super(SSTTextTestResult, self).printErrors()
-        print self.saucelabs_report_links
         if not len(self.saucelabs_report_links):
             return
         self.stream.writeln()
@@ -359,7 +358,7 @@ class SSTTextTestResult(TextTestResult):
         print content
         # send the mail
         mailer_module.send_mail(
-            ('SST notification', config.cmd_opts.email_from),
+            ('Selenium Test Runner', config.cmd_opts.email_from),
             [config.cmd_opts.email_to],
             '[%s] %s' % (config.cmd_opts.env, self.test_description),
             content
