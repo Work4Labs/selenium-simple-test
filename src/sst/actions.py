@@ -237,6 +237,11 @@ def start(browser_type=None, browser_version='',
         browser_class = webdriver_class if webdriver_class else webdriver.Remote
         browser = browser_class(desired_capabilities=desired_capabilities,
                                 command_executor=webdriver_remote)
+
+        # FIXME: Not a good way to share the browser object.
+        config.cache['browser'] = browser
+        config.cache['browsermob_proxy'] = browsermob_proxy
+
     return browser, browsermob_proxy
 
 
