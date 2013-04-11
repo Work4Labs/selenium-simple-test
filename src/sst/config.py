@@ -44,6 +44,9 @@ The `sst.config` module has the following information::
     # flags for the current test run
     config.flags
 
+    # flags for the current test run
+    config.email_notification_enabled
+
     # Command options passed to the current test run
     config.cmd_opts
 
@@ -57,6 +60,7 @@ javascript_disabled = False
 shared_directory = None
 results_directory = None
 browsermob_enabled = False
+email_notification_enabled = False
 saucelabs_enabled = False
 cmd_opts = {}
 flags = []

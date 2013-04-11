@@ -19,6 +19,7 @@
 
 import ast
 import codecs
+import cStringIO
 import datetime
 import fnmatch
 import HTMLTestRunner
@@ -125,7 +126,11 @@ def runtests(test_names, test_dir='.', collect_only=False,
         )
 
     else:
-        runner = TextTestRunner(verbosity=2, failfast=failfast,
+        if config.email_notification_enabled:
+            stream = cStringIO.StringIO()
+        else:
+            stream = sys.stderr
+        runner = TextTestRunner(verbosity=2, failfast=failfast, stream=stream,
                                 resultclass=SSTTextTestResult)
 
     try:
@@ -311,20 +316,29 @@ class SSTSuite(TestSuite):
 class SSTTextTestResult(TextTestResult):
     saucelabs_report_links = []
 
+    def startTest(self, test):
+        super(SSTTextTestResult, self).startTest(test)
+        # print 'content startTest: %s' % self.stream.getvalue()
+        self.test_description = self.getDescription(test)
+
     def addError(self, test, err):
-        super(TextTestResult, self).addError(test, err)
+        super(SSTTextTestResult, self).addError(test, err)
+        # print 'content addError: %s' % self.stream.getvalue()
         self.collect_report_links(test)
 
     def addFailure(self, test, err):
-        super(TextTestResult, self).addFailure(test, err)
+        super(SSTTextTestResult, self).addFailure(test, err)
+        # print 'content addFailure: %s' % self.stream.getvalue()
         self.collect_report_links(test)
 
     def collect_report_links(self, test):
-        if config.saucelabs_enabled:
+        # FIXME: the browser property is empty in SSTScriptCase. Why?
+        if config.saucelabs_enabled and test.browser:
             self.saucelabs_report_links.append(test.browser.get_job_result_url())
 
     def printErrors(self):
-        super(TextTestResult, self).printErrors()
+        super(SSTTextTestResult, self).printErrors()
+        print self.saucelabs_report_links
         if not len(self.saucelabs_report_links):
             return
         self.stream.writeln()
@@ -332,10 +346,30 @@ class SSTTextTestResult(TextTestResult):
         for link in self.saucelabs_report_links:
             self.stream.writeln("  - %s" % link)
 
+    def stopTestRun(self):
+        super(SSTTextTestResult, self).stopTestRun()
+        if config.email_notification_enabled:
+            self.send_notification_email()
+
+    def send_notification_email(self):
+        __import__(config.cmd_opts.mailer)
+        mailer_module = sys.modules[config.cmd_opts.mailer]
+        content = self.stream.getvalue()
+        # Let's print the output, just in case some is looking at the screen
+        print content
+        # send the mail
+        mailer_module.send_mail(
+            ('SST notification', config.cmd_opts.email_from),
+            [config.cmd_opts.email_to],
+            '[%s] %s' % (config.cmd_opts.env, self.test_description),
+            content
+        )
+
 
 class SSTTestCase(testtools.TestCase):
     """A test case that can use the sst framework."""
 
+    browser = None
     xvfb = None
     xserver_headless = False
 
@@ -408,6 +442,8 @@ class SSTTestCase(testtools.TestCase):
             additional_capabilities=self.additional_capabilities)
 
     def count_exception(self, exception):
+        '''Added to notify Saucelabs of the test result'''
+        # FIXME: There's probably a better way to achieve this.
         self.error_count += 1
         _, self.last_exception, _ = exception
 

@@ -104,9 +104,15 @@ def get_common_options():
     parser.add_option('--sauce', dest='saucelabs_enabled',
                       action='store_true', default=False,
                       help='Activate the Saucelabs behavior')
-    parser.add_option('--email-address', dest='email_address',
+    parser.add_option('--env', dest='env',
                       default=None,
-                      help='Receive email notifications to this address')
+                      help='Environment, added as a prefix in emails subject')
+    parser.add_option('--email-to', dest='email_to',
+                      default=None,
+                      help='Send email notifications to this address')
+    parser.add_option('--email-from', dest='email_from',
+                      default='',
+                      help='Send email notifications from this address')
     parser.add_option('--mailer', dest='mailer',
                       default=None,
                       help="""\
@@ -191,11 +197,18 @@ def get_opts(get_options):
         prog = os.path.split(__main__.__file__)[-1]
         print 'run "%s -h" or "%s --help" to see run options.' % (prog, prog)
         sys.exit(1)
-    if cmd_opts.email_address and not cmd_opts.mailer:
+    if cmd_opts.email_to and not cmd_opts.mailer:
         print ('Error: you must supply a mailer function to send emails. '
                'The function must accept 4 parameters '
                '(send_from, send_to, subject, body).')
         sys.exit(1)
+    if cmd_opts.mailer and cmd_opts.email_to:
+        try:
+            __import__(cmd_opts.mailer)
+            config.email_notification_enabled = True
+        except Exception as e:
+            print ('Error: Cannot load the mailer class: %s' % e)
+            sys.exit(1)
 
     logging.basicConfig(format='    %(levelname)s:%(name)s:%(message)s')
     logger = logging.getLogger('SST')
