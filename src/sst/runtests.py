@@ -398,6 +398,14 @@ class SSTTestCase(testtools.TestCase):
     def add_additional_capabilities(self, additional_capabilities):
         """Can also be used to overload capabilities from inside a test."""
         self.additional_capabilities.update(additional_capabilities)
+        if "browserName" in self.additional_capabilities:
+            self.browser_type = self.additional_capabilities["browserName"]
+        if "platform" in self.additional_capabilities:
+            self.browser_platform = self.additional_capabilities["platform"]
+        if "version" in self.additional_capabilities:
+            self.browser_version = self.additional_capabilities["version"]
+        if "javascriptEnabled" in self.additional_capabilities:
+            self.javascript_disabled = not self.additional_capabilities["javascriptEnabled"]
 
     def shortDescription(self):
         return None
