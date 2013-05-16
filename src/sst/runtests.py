@@ -347,7 +347,7 @@ class SSTTextTestResult(TextTestResult):
 
     def stopTestRun(self):
         super(SSTTextTestResult, self).stopTestRun()
-        if config.email_notification_enabled:
+        if config.email_notification_enabled and not self.wasSuccessful():
             self.send_notification_email()
 
     def send_notification_email(self):
