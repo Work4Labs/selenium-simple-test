@@ -347,6 +347,9 @@ class SSTTextTestResult(TextTestResult):
 
     def stopTestRun(self):
         super(SSTTextTestResult, self).stopTestRun()
+        content = self.stream.getvalue()
+        # Print the output after the test stopped
+        print content
         if config.email_notification_enabled and not self.wasSuccessful():
             self.send_notification_email()
 
@@ -354,8 +357,6 @@ class SSTTextTestResult(TextTestResult):
         __import__(config.cmd_opts.mailer)
         mailer_module = sys.modules[config.cmd_opts.mailer]
         content = self.stream.getvalue()
-        # Let's print the output, just in case some is looking at the screen
-        print content
         # send the mail
         mailer_module.send_mail(
             ('Selenium Test Runner', config.cmd_opts.email_from),
