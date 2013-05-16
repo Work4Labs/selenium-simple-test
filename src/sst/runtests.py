@@ -351,12 +351,11 @@ class SSTTextTestResult(TextTestResult):
         # Print the output after the test stopped
         print content
         if config.email_notification_enabled and not self.wasSuccessful():
-            self.send_notification_email()
+            self.send_notification_email(content)
 
-    def send_notification_email(self):
+    def send_notification_email(self, content):
         __import__(config.cmd_opts.mailer)
         mailer_module = sys.modules[config.cmd_opts.mailer]
-        content = self.stream.getvalue()
         # send the mail
         mailer_module.send_mail(
             ('Selenium Test Runner', config.cmd_opts.email_from),
