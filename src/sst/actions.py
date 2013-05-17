@@ -230,7 +230,8 @@ def start(browser_type=None, browser_version='',
                                 "platform": browser_platform.upper(),
                                 "version": browser_version,
                                 "javascriptEnabled": not javascript_disabled,
-                                "name": session_name}
+                                "name": session_name,
+                                "build": config.cmd_opts.env}
         if additional_capabilities:
             desired_capabilities.update(additional_capabilities)
 
