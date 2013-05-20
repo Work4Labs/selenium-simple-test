@@ -664,6 +664,18 @@ def assert_displayed(id_or_elem):
         _raise(message)
     return element
 
+def assert_not_displayed(id_or_elem):
+    """
+    Assert that the element is not displayed.
+
+    Takes an id or an element object.
+    Raises a failure exception if the element specified doesn't exist or is
+    displayed. Returns the element if it is not displayed."""
+    element = _get_elem(id_or_elem)
+    if element.is_displayed():
+        message = 'Element is displayed'
+        _raise(message)
+    return element
 
 def click_element(id_or_elem, wait=True):
     """
@@ -1502,6 +1514,18 @@ def clear_cookies():
     """Clear the cookies of current session."""
     logger.debug('Clearing browser session cookies')
     browser.delete_all_cookies()
+
+
+def clear_cookie(cookie):
+    """Clear a specific cookie."""
+    logger.debug('Clearing browser session cookie %s', cookie)
+    browser.delete_cookie(cookie)
+
+
+def add_cookie(cookie):
+    """Add a specific cookie."""
+    logger.debug('Adding browser session cookie %s', cookie)
+    browser.add_cookie(cookie)
 
 
 def set_window_size(width, height):
