@@ -793,12 +793,12 @@ def _get_name(obj):
 
 
 def _wait_for(condition, refresh_page, timeout, poll, *args, **kwargs):
-    logger.debug('Waiting for %r' % _get_name(condition))
+    msg = '%s(%r)' % (_get_name(condition), args[0] if args else '')
+    logger.debug('Waiting for %s' % msg)
     # Disable logging levels equal to or lower than INFO.
     logging.disable(logging.INFO)
     try:
         max_time = time.time() + timeout
-        msg = _get_name(condition)
         while True:
             #refresh the page if requested
             if refresh_page:
