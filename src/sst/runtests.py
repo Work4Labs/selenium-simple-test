@@ -347,10 +347,10 @@ class SSTTextTestResult(TextTestResult):
 
     def stopTestRun(self):
         super(SSTTextTestResult, self).stopTestRun()
-        content = self.stream.getvalue()
-        # Print the output after the test stopped
-        print content
         if config.email_notification_enabled and not self.wasSuccessful():
+            content = self.stream.getvalue()
+            # Print the output after the test stopped
+            print content
             self.send_notification_email(content)
 
     def send_notification_email(self, content):
