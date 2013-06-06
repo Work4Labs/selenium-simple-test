@@ -347,11 +347,15 @@ class SSTTextTestResult(TextTestResult):
 
     def stopTestRun(self):
         super(SSTTextTestResult, self).stopTestRun()
-        content = self.stream.getvalue()
-        # Print the output after the test stopped
-        print content
-        if config.email_notification_enabled and not self.wasSuccessful():
-            self.send_notification_email(content)
+        try:
+            content = self.stream.getvalue()
+            # Print the output after the test stopped
+            print content
+            if config.email_notification_enabled and not self.wasSuccessful():
+                self.send_notification_email(content)
+        except AttributeError:
+            print "Traceback could not be fetched"
+
 
     def send_notification_email(self, content):
         __import__(config.cmd_opts.mailer)
