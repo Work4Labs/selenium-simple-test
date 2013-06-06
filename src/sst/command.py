@@ -60,7 +60,7 @@ def get_common_options():
     parser.add_option('-r', dest='report_format',
                       default='console',
                       help='results report format (html, xml, console)')
-    parser.add_option('-b', dest='browser_type',
+    parser.add_option('--browser', '-b', dest='browser_type',
                       default='Firefox',
                       help=('select webdriver (Firefox, Chrome, '
                             'Ie, etc)'))
@@ -104,7 +104,7 @@ def get_common_options():
     parser.add_option('--sauce', dest='saucelabs_enabled',
                       action='store_true', default=False,
                       help='Activate the Saucelabs behavior')
-    parser.add_option('--env', dest='env',
+    parser.add_option('--env', '-e', dest='env',
                       default='-',
                       help='Environment, added as a prefix in emails subject')
     parser.add_option('--email-to', dest='email_to',
@@ -142,7 +142,7 @@ def get_run_options():
 
 def get_remote_options():
     parser = get_common_options()
-    parser.add_option('-p', dest='browser_platform',
+    parser.add_option('--platform', '-p', dest='browser_platform',
                       default='ANY',
                       help=('desired platform (XP, VISTA, LINUX, etc), '
                             'when using a remote Selenium RC'))
