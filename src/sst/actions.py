@@ -793,7 +793,8 @@ def _get_name(obj):
 
 
 def _wait_for(condition, refresh_page, timeout, poll, *args, **kwargs):
-    msg = '%s(%r)' % (_get_name(condition), args[0] if args else '')
+    msg = '%s(%r)' % (_get_name(condition),
+                      args[0] if args else kwargs if kwargs else '')
     logger.debug('Waiting for %s' % msg)
     # Disable logging levels equal to or lower than INFO.
     logging.disable(logging.INFO)
@@ -1075,6 +1076,7 @@ def get_elements(tag=None, css_class=None, id=None, text=None,
             if not selector_string:
                 msg = 'Could not identify element: no arguments provided'
                 _raise(msg)
+            logger.debug('Finding element: %s' % selector_string)
             elems = browser.find_elements_by_css_selector(selector_string)
     except (WebDriverException, NoSuchElementException) as e:
         msg = 'Element not found: %s' % e
