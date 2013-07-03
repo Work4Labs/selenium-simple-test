@@ -894,7 +894,7 @@ def _get_elem(id_or_elem):
 
 # Takes an optional 2nd input type for cases like textfield & password
 #    where types are similar
-def _elem_is_type(elem, name, *elem_types):
+def _elem_is_type(elem, name, elem_types):
     try:
         result = elem.get_attribute('type')
     except NoSuchAttributeException:
@@ -908,7 +908,8 @@ def _elem_is_type(elem, name, *elem_types):
 def assert_dropdown(id_or_elem):
     """Assert the specified element is a select drop-list."""
     elem = _get_elem(id_or_elem)
-    _elem_is_type(elem, id_or_elem, 'select-one')
+    #FIXME: we should have a dedicated function to be able to do a multiple select
+    _elem_is_type(elem, id_or_elem, ('select-one', 'select-multiple'))
     return elem
 
 
