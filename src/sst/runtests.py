@@ -334,7 +334,9 @@ class SSTTextTestResult(TextTestResult):
     def collect_report_links(self, test):
         # FIXME: the browser property is empty in SSTScriptCase. Why?
         if config.saucelabs_enabled and test.browser:
-            self.saucelabs_report_links.append(test.browser.get_job_result_url())
+            self.saucelabs_report_links.append((
+                self.test_description,
+                test.browser.get_job_result_url()))
 
     def printErrors(self):
         super(SSTTextTestResult, self).printErrors()
@@ -342,8 +344,8 @@ class SSTTextTestResult(TextTestResult):
             return
         self.stream.writeln()
         self.stream.writeln("SauceLabs error reports links:")
-        for link in self.saucelabs_report_links:
-            self.stream.writeln("  - %s" % link)
+        for description, link in self.saucelabs_report_links:
+            self.stream.writeln("  - %s\n      [%s]" % (description, link))
 
     def stopTestRun(self):
         super(SSTTextTestResult, self).stopTestRun()
