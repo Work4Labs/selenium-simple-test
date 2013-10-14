@@ -753,7 +753,7 @@ def assert_url_contains(text, regex=False):
             _raise(msg)
 
 
-_TIMEOUT = 10
+_TIMEOUT = 20
 _POLL = 0.1
 
 
