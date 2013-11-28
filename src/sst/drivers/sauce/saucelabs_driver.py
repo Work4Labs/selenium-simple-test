@@ -28,7 +28,7 @@ class SauceLabsDriver(webdriver.Remote):
 
         default_capabilities = {
             'record-video': 'false',
-            'max-duration': '180'
+            'max-duration': '240'
         }
 
         # Extend the default capabilities with the custom ones
