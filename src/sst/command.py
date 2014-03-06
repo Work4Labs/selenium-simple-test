@@ -113,6 +113,9 @@ def get_common_options():
     parser.add_option('--email-from', dest='email_from',
                       default='',
                       help='Send email notifications from this address')
+    parser.add_option('--multi-users', dest='multi_users',
+                      action='store_true', default=False,
+                      help='Activate multi_user config for parallel script execution')
     parser.add_option('--mailer', dest='mailer',
                       default=None,
                       help="""\

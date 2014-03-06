@@ -62,7 +62,8 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, browser_version='',
              browser_platform='ANY', session_name=None,
-             saucelabs_enabled=False, custom_options=None, extended=False):
+             saucelabs_enabled=False, custom_options=None, extended=False,
+             multi_users=False):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -90,7 +91,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
     suites = get_suites(test_names, test_dir, shared_directory, collect_only,
                         browser_type, browser_version, browser_platform,
                         session_name, javascript_disabled, webdriver_remote_url,
-                        screenshots_on, failfast, debug,
+                        screenshots_on, failfast, debug, multi_users=multi_users,
                         custom_options=custom_options, extended=extended
                         )
 
@@ -199,15 +200,15 @@ def find_shared_directory(test_dir, shared_directory):
 def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, browser_version,
                browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
-               custom_options=None, extended=False
+               custom_options=None, extended=False, multi_users=False
                ):
     return [
         get_suite(
             test_names, root, collect_only, browser_type, browser_version,
             browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
-            custom_options=custom_options,
-            extended=extended
+            multi_users=multi_users,
+            custom_options=custom_options, extended=extended
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
         if os.path.abspath(root) != shared_dir and
@@ -244,7 +245,7 @@ def find_cases(test_names, test_dir):
 def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
               browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
-              custom_options=None, extended=False):
+              custom_options=None, extended=False, multi_users=False):
 
     suite = TestSuite()
 
@@ -258,7 +259,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                     get_case(
                         test_dir, case, browser_type, browser_version,
                         browser_platform, session_name, javascript_disabled,
-                        webdriver_remote_url, screenshots_on, row,
+                        webdriver_remote_url, screenshots_on, row, multi_users=multi_users,
                         custom_options=custom_options, failfast=failfast,
                         debug=debug, extended=extended
                     )
@@ -270,7 +271,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     custom_options=custom_options, failfast=failfast,
-                    debug=debug, extended=extended
+                    debug=debug, extended=extended, multi_users=multi_users
                 )
             )
 
@@ -384,6 +385,7 @@ class SSTTestCase(testtools.TestCase):
     webdriver_class = None
     custom_options = None
     additional_capabilities = {}
+    multi_users = False
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -447,6 +449,7 @@ class SSTTestCase(testtools.TestCase):
             self.browser_type, self.browser_version, self.browser_platform,
             self.session_name, self.javascript_disabled,
             self.assume_trusted_cert_issuer, self.webdriver_remote_url,
+            multi_users=self.multi_users,
             webdriver_class=self.webdriver_class,
             additional_capabilities=self.additional_capabilities)
 
@@ -583,7 +586,7 @@ def get_case(test_dir, entry, browser_type, browser_version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              custom_options=None, context=None, failfast=False,
-             debug=False, extended=False):
+             debug=False, extended=False, multi_users=False):
     # our naming convention for tests requires that script-based tests must
     # not begin with "test_*."  SSTTestCase class-based or other
     # unittest.TestCase based source files must begin with "test_*".
@@ -604,7 +607,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
         'javascript_disabled' : javascript_disabled,
         'screenshots_on' : screenshots_on,
         'debug_post_mortem' : debug,
-        'extended_report' : extended
+        'extended_report' : extended,
+        'multi_users' : multi_users
     }
 
     if config.saucelabs_enabled:
