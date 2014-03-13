@@ -116,6 +116,9 @@ def get_common_options():
     parser.add_option('--multi-users', dest='multi_users',
                       action='store_true', default=False,
                       help='Activate multi_user config for parallel script execution')
+    parser.add_option('--skip_tracking', dest='skip_tracking',
+                      action='store_true', default=False,
+                      help='Skip log_user tracking in test scripts')
     parser.add_option('--mailer', dest='mailer',
                       default=None,
                       help="""\
