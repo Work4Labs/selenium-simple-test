@@ -135,7 +135,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
                                 resultclass=SSTTextTestResult)
 
     try:
-        runner.run(alltests)
+        return runner.run(alltests)
     except KeyboardInterrupt:
         print >> sys.stderr, 'Test run interrupted'
     finally:
