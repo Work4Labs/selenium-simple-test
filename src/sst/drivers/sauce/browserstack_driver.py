@@ -43,7 +43,7 @@ class BrowserStackDriver(webdriver.Remote):
         token = hmac.new('%s:%s' % (self.username, self.access_key),
                          self.session_id,
                          md5).hexdigest()
-        return 'https://%s/jobs/%s?auth=%s' % (BROWSERSTACK_DOMAIN,
+        return 'https://%s/automate/builds/%s/sessions/%s' % (BROWSERSTACK_DOMAIN,
                                                self.session_id,
                                                token)
 
