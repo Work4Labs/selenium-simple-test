@@ -617,8 +617,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
     }
 
     if config.saucelabs_enabled:
-        from .drivers.sauce.saucelabs_driver import SauceLabsDriver
-        properties['webdriver_class'] = SauceLabsDriver
+        from .drivers.sauce.browserstack_driver import BrowserStackDriver
+        properties['webdriver_class'] = BrowserStackDriver
 
     if entry.startswith('test_') and _has_classes(test_dir, entry):
         defaultTestLoader.suiteClass = SSTSuite
