@@ -20,6 +20,7 @@ class BrowserStackDriver(webdriver.Remote):
             raise Exception('Invalid command_executor: %s' % command_executor)
 
         default_capabilities = {
+            'browserstack.debug' : 'true',
             'record-video': 'false',
             'max-duration': '240'
         }
