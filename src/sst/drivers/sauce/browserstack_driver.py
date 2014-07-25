@@ -1,14 +1,10 @@
 from selenium import webdriver
-import hmac
-from hashlib import md5
+from requests.auth import HTTPBasicAuth
+import logging
 import re
 import requests
 import base64
 import json
-
-BROWSERSTACK_DOMAIN = "browserstack.com"
-SAUCELABS_CONNECTOR_PATH = "ondemand.saucelabs.com:80/wd/hub"
-SAUCELABS_REST_PATH = "/rest/v1"
 
 
 class BrowserStackDriver(webdriver.Remote):
@@ -22,9 +18,6 @@ class BrowserStackDriver(webdriver.Remote):
             self.access_key = match.group(2)
         except AttributeError:
             raise Exception('Invalid command_executor: %s' % command_executor)
-
-        self.basic_auth = base64.encodestring(
-            '%s:%s' % (self.username, self.access_key))[:-1]
 
         default_capabilities = {
             'record-video': 'false',
@@ -40,12 +33,8 @@ class BrowserStackDriver(webdriver.Remote):
         )
 
     def get_job_result_url(self):
-        token = hmac.new('%s:%s' % (self.username, self.access_key),
-                         self.session_id,
-                         md5).hexdigest()
-        return 'https://%s/automate/builds/%s/sessions/%s' % (BROWSERSTACK_DOMAIN,
-                                               self.session_id,
-                                               token)
+        r = requests.get(self._get_rest_url(), auth=HTTPBasicAuth(self.username, self.access_key))
+        return r.json()['automation_session']['browser_url']
 
     def job_read(self, job_id):
         result = self._call_rest(
@@ -57,20 +46,18 @@ class BrowserStackDriver(webdriver.Remote):
         return None
 
     def job_update(self, result, exception=None):
-        data = {
-            'public': 'false',
-            'passed': result
-        }
+        data = {'status':'completed'}
         if exception:
-            data['custom-data'] = {'error' : str(exception)}
+            data = {'status':'error'}
         data = json.dumps(data)
 
         result = self._call_rest(
-            'PUT',
-            '/jobs/%s' % self.session_id,
-            data
+            'put',
+            self._get_rest_url(),
+            data,
+            headers={'content-type': 'application/json'}
         )
-        return result.status_code == requests.codes.ok
+        return result
 
     def job_list(self, result):
         result = self._call_rest(
@@ -81,24 +68,13 @@ class BrowserStackDriver(webdriver.Remote):
             return result.text
         return None
 
-    def _get_ondemand_url(self):
-        return 'http://%s:%s@%s' % (self.username, self.access_key,
-                                    SAUCELABS_CONNECTOR_PATH)
-
     def _get_rest_url(self):
-        return 'http://%s/%s/%s' % (SAUCELABS_DOMAIN, SAUCELABS_REST_PATH,
-                                    self.username)
+        return 'https://www.browserstack.com/automate/sessions/%s.json' % self.session_id
 
-    def _call_rest(self, method, path, data=None):
-        url = self._get_rest_url() + '/' + path
-
+    def _call_rest(self, method, url, data=None, headers=None):
         try:
-            result = getattr(requests, method.lower())(
-                url,
-                data=data,
-                headers={"Authorization": "Basic %s" % self.basic_auth}
-            )
-            return result
-        except Exception:
-            # TODO: log something?
+            r = getattr(requests, method.lower())(url, data=data, headers=headers, auth=HTTPBasicAuth(self.username, self.access_key))
+            return r.status_code == requests.codes.ok
+        except Exception as e:
+            logging.error(e)
             return None
