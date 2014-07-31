@@ -21,7 +21,7 @@ class BrowserStackDriver(webdriver.Remote):
 
         default_capabilities = {
             'browserstack.debug' : 'true',
-            'record-video': 'false',
+            'acceptSslCert':'true',
             'max-duration': '240'
         }
 

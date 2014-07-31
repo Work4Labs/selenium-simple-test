@@ -60,7 +60,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              report_format='console', browser_type='Firefox',
              javascript_disabled=False, browsermob_enabled=False,
              shared_directory=None, screenshots_on=False, failfast=False,
-             debug=False, webdriver_remote_url=None, browser_version='',
+             debug=False, webdriver_remote_url=None, device='', version='',
              browser_platform='ANY', session_name=None,
              saucelabs_enabled=False, custom_options=None, extended=False,
              multi_users=False, skip_tracking=False):
@@ -89,7 +89,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
     test_names = set(test_names)
 
     suites = get_suites(test_names, test_dir, shared_directory, collect_only,
-                        browser_type, browser_version, browser_platform,
+                        browser_type, device, version, browser_platform,
                         session_name, javascript_disabled, webdriver_remote_url,
                         screenshots_on, failfast, debug, multi_users=multi_users,
                         skip_tracking=skip_tracking, custom_options=custom_options, extended=extended
@@ -197,16 +197,16 @@ def find_shared_directory(test_dir, shared_directory):
     return _get_full_path(shared_directory)
 
 
-def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, browser_version,
-               browser_platform, session_name, javascript_disabled,
+def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, device,
+               version, browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
                custom_options=None, extended=False, multi_users=False,
                skip_tracking=False
                ):
     return [
         get_suite(
-            test_names, root, collect_only, browser_type, browser_version,
-            browser_platform, session_name, javascript_disabled,
+            test_names, root, collect_only, browser_type, device,
+            version, browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
             multi_users=multi_users, skip_tracking=skip_tracking,
             custom_options=custom_options, extended=extended
@@ -243,8 +243,8 @@ def find_cases(test_names, test_dir):
     return found
 
 
-def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
-              browser_platform, session_name, javascript_disabled,
+def get_suite(test_names, test_dir, collect_only, browser_type, device,
+              version, browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
               custom_options=None, extended=False, multi_users=False,
               skip_tracking=False):
@@ -259,7 +259,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
                 # row is a dictionary of variables
                 suite.addTest(
                     get_case(
-                        test_dir, case, browser_type, browser_version,
+                        test_dir, case, browser_type, device, version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row, multi_users=multi_users,
                         custom_options=custom_options, failfast=failfast,
@@ -269,7 +269,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, browser_version,
         else:
             suite.addTest(
                 get_case(
-                    test_dir, case, browser_type, browser_version,
+                    test_dir, case, browser_type, device, version,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     custom_options=custom_options, failfast=failfast,
@@ -347,7 +347,7 @@ class SSTTextTestResult(TextTestResult):
         if not len(self.saucelabs_report_links):
             return
         self.stream.writeln()
-        self.stream.writeln("SauceLabs error reports links:")
+        self.stream.writeln("Selenium error report links:")
         for description, link in self.saucelabs_report_links:
             self.stream.writeln("  - %s\n      [%s]" % (description, link))
 
@@ -379,7 +379,8 @@ class SSTTestCase(testtools.TestCase):
     xserver_headless = False
 
     browser_type = 'Firefox'
-    browser_version = ''
+    device = ''
+    version = ''
     browser_platform = 'ANY'
     session_name = None
     javascript_disabled = False
@@ -409,10 +410,13 @@ class SSTTestCase(testtools.TestCase):
             self.browser_type = self.additional_capabilities["browserName"]
         if "platform" in self.additional_capabilities:
             self.browser_platform = self.additional_capabilities["platform"]
+        if "device" in self.additional_capabilities:
+            self.device = self.additional_capabilities["device"]
         if "version" in self.additional_capabilities:
-            self.browser_version = self.additional_capabilities["version"]
+            self.version = self.additional_capabilities["version"]
         if "javascriptEnabled" in self.additional_capabilities:
             self.javascript_disabled = not self.additional_capabilities["javascriptEnabled"]
+
 
     def shortDescription(self):
         return None
@@ -449,7 +453,7 @@ class SSTTestCase(testtools.TestCase):
 
     def start_browser(self):
         self.browser, self.browsermob_proxy = start(
-            self.browser_type, self.browser_version, self.browser_platform,
+            self.browser_type, self.device, self.version, self.browser_platform,
             self.session_name, self.javascript_disabled,
             self.assume_trusted_cert_issuer, self.webdriver_remote_url,
             multi_users=self.multi_users,
@@ -586,7 +590,7 @@ def _has_classes(test_dir, entry):
     return bool(found_classes)
 
 
-def get_case(test_dir, entry, browser_type, browser_version,
+def get_case(test_dir, entry, browser_type, device, version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              custom_options=None, context=None, failfast=False,
@@ -602,7 +606,8 @@ def get_case(test_dir, entry, browser_type, browser_version,
         'script_dir' : test_dir,
         'script_name' : entry,
         'browser_type' : browser_type,
-        'browser_version' : browser_version,
+        'device' : device,
+        'version' : version,
         'browser_platform' : browser_platform,
         'webdriver_remote_url' : webdriver_remote_url,
         'custom_options' : custom_options,

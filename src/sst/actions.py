@@ -176,7 +176,7 @@ def skip(reason=''):
     _test.skipTest(reason)
 
 
-def start(browser_type=None, browser_version='',
+def start(browser_type=None, device='', version='',
           browser_platform='ANY', session_name='',
           javascript_disabled=False, assume_trusted_cert_issuer=False,
           webdriver_remote=None, additional_capabilities=None,
@@ -228,7 +228,8 @@ def start(browser_type=None, browser_version='',
     else:
         desired_capabilities = {"browserName": browser_type.lower(),
                                 "platform": browser_platform.upper(),
-                                "version": browser_version,
+                                "version": version,
+                                "device": device,
                                 "javascriptEnabled": not javascript_disabled,
                                 "name": session_name,
                                 "build": config.cmd_opts.env}
