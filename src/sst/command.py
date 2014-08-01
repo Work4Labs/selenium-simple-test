@@ -152,9 +152,13 @@ def get_remote_options():
                       default='ANY',
                       help=('desired platform (XP, VISTA, LINUX, etc), '
                             'when using a remote Selenium RC'))
-    parser.add_option('-v', dest='browser_version',
+    parser.add_option('--device', dest='device',
                       default='',
                       help=('desired browser version, when using a '
+                            'remote Selenium'))
+    parser.add_option('-v', dest='version',
+                      default='',
+                      help=('desired version, when using a '
                             'remote Selenium'))
     parser.add_option('-n', dest='session_name',
                       default=None,
