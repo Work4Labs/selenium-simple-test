@@ -22,7 +22,8 @@ class BrowserStackDriver(webdriver.Remote):
         default_capabilities = {
             'browserstack.debug' : 'true',
             'acceptSslCert':'true',
-            'max-duration': '240'
+            'max-duration': '360'
+            #'realMobile': 'true'
         }
 
         # Extend the default capabilities with the custom ones
