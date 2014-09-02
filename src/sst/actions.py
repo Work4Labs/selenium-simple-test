@@ -1580,3 +1580,11 @@ def get_element_source(id_or_elem):
     """Gets the innerHTML source of an element."""
     elem = _get_elem(id_or_elem)
     return elem.get_attribute('innerHTML')
+
+def jquery_click(selector):
+    """
+    Triggers a click on the element corresponding to the selector.
+    This is useful on small screen devices to really click on the element, not on his position on the screen.
+    selector must correspond to only one element.
+    """
+    execute_script("$('%s').click()" % selector)
