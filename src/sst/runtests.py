@@ -82,8 +82,6 @@ def runtests(test_names, test_dir='.', collect_only=False,
     sys.path.append(shared_directory)
 
     config.results_directory = _get_full_path('results')
-
-    config.browsermob_enabled = browsermob_enabled
     config.saucelabs_enabled = saucelabs_enabled
 
     test_names = set(test_names)
@@ -318,7 +316,7 @@ class SSTSuite(TestSuite):
 
 
 class SSTTextTestResult(TextTestResult):
-    saucelabs_report_links = []
+    selenium_report_links = []
 
     def startTest(self, test):
         super(SSTTextTestResult, self).startTest(test)
@@ -337,18 +335,17 @@ class SSTTextTestResult(TextTestResult):
 
     def collect_report_links(self, test):
         # FIXME: the browser property is empty in SSTScriptCase. Why?
-        if config.saucelabs_enabled and test.browser:
-            self.saucelabs_report_links.append((
-                self.test_description,
-                test.browser.get_job_result_url()))
+        self.selenium_report_links.append((
+            self.test_description,
+            test.browser.get_job_result_url()))
 
     def printErrors(self):
         super(SSTTextTestResult, self).printErrors()
-        if not len(self.saucelabs_report_links):
+        if not len(self.selenium_report_links):
             return
         self.stream.writeln()
         self.stream.writeln("Selenium error report links:")
-        for description, link in self.saucelabs_report_links:
+        for description, link in self.selenium_report_links:
             self.stream.writeln("  - %s\n      [%s]" % (description, link))
 
     def stopTestRun(self):
@@ -468,9 +465,8 @@ class SSTTestCase(testtools.TestCase):
         _, self.last_exception, _ = exception
 
     def stop_browser(self):
-        # Notify saucelabs of the result
-        if config.saucelabs_enabled:
-            self.browser.job_update(not self.error_count, self.last_exception)
+        # Notify selenium service of the result
+        self.browser.job_update(not self.error_count, self.last_exception)
         stop()
 
     def take_screenshot_and_page_dump(self, exc_info):
@@ -622,6 +618,9 @@ def get_case(test_dir, entry, browser_type, device, version,
     }
 
     if config.saucelabs_enabled:
+        from .drivers.sauce.saucelabs_driver import SauceLabsDriver
+        properties['webdriver_class'] = SauceLabsDriver
+    else:
         from .drivers.sauce.browserstack_driver import BrowserStackDriver
         properties['webdriver_class'] = BrowserStackDriver
 
