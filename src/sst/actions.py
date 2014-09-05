@@ -1580,3 +1580,12 @@ def get_element_source(id_or_elem):
     """Gets the innerHTML source of an element."""
     elem = _get_elem(id_or_elem)
     return elem.get_attribute('innerHTML')
+
+def jquery_click(selector):
+    """
+    Triggers a click on the element corresponding to the selector.
+    This is useful when testing mobile tests on Browserstack.
+    Please see https://work4labs.atlassian.net/browse/OPS-3274 for more info.
+    """
+    get_element(selector)
+    execute_script("$('%s').click()" % selector)
