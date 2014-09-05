@@ -1584,7 +1584,8 @@ def get_element_source(id_or_elem):
 def jquery_click(selector):
     """
     Triggers a click on the element corresponding to the selector.
-    This is useful on small screen devices to really click on the element, not on his position on the screen.
-    selector must correspond to only one element.
+    This is useful when testing mobile tests on Browserstack.
+    Please see https://work4labs.atlassian.net/browse/OPS-3274 for more info.
     """
+    get_element(selector)
     execute_script("$('%s').click()" % selector)
