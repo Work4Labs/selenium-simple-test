@@ -180,7 +180,7 @@ def start(browser_type=None, device='', version='',
           browser_platform='ANY', session_name='',
           javascript_disabled=False, assume_trusted_cert_issuer=False,
           webdriver_remote=None, additional_capabilities=None,
-          webdriver_class=None, multi_users=False, skip_tracking=False):
+          webdriver_class=None, saucelabs_enabled=False, skip_tracking=False):
     """
     Starts Browser with a new session. Called for you at
     the start of each test script."""

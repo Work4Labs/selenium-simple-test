@@ -58,12 +58,12 @@ __all__ = ['runtests']
 
 def runtests(test_names, test_dir='.', collect_only=False,
              report_format='console', browser_type='Firefox',
-             javascript_disabled=False, browsermob_enabled=False,
+             javascript_disabled=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, device='', version='',
              browser_platform='ANY', session_name=None,
-             saucelabs_enabled=False, custom_options=None, extended=False,
-             multi_users=False, skip_tracking=False):
+             saucelabs_enabled=False, custom_options=None,
+             extended=False, skip_tracking=False):
 
     if test_dir == 'selftests':
         # XXXX horrible hardcoding
@@ -82,8 +82,6 @@ def runtests(test_names, test_dir='.', collect_only=False,
     sys.path.append(shared_directory)
 
     config.results_directory = _get_full_path('results')
-
-    config.browsermob_enabled = browsermob_enabled
     config.saucelabs_enabled = saucelabs_enabled
 
     test_names = set(test_names)
@@ -91,7 +89,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
     suites = get_suites(test_names, test_dir, shared_directory, collect_only,
                         browser_type, device, version, browser_platform,
                         session_name, javascript_disabled, webdriver_remote_url,
-                        screenshots_on, failfast, debug, multi_users=multi_users,
+                        screenshots_on, failfast, debug, saucelabs_enabled=saucelabs_enabled,
                         skip_tracking=skip_tracking, custom_options=custom_options, extended=extended
                         )
 
@@ -200,7 +198,7 @@ def find_shared_directory(test_dir, shared_directory):
 def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, device,
                version, browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
-               custom_options=None, extended=False, multi_users=False,
+               custom_options=None, extended=False, saucelabs_enabled=False,
                skip_tracking=False
                ):
     return [
@@ -208,7 +206,7 @@ def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, dev
             test_names, root, collect_only, browser_type, device,
             version, browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
-            multi_users=multi_users, skip_tracking=skip_tracking,
+            saucelabs_enabled=saucelabs_enabled, skip_tracking=skip_tracking,
             custom_options=custom_options, extended=extended
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
@@ -246,7 +244,7 @@ def find_cases(test_names, test_dir):
 def get_suite(test_names, test_dir, collect_only, browser_type, device,
               version, browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
-              custom_options=None, extended=False, multi_users=False,
+              custom_options=None, extended=False, saucelabs_enabled=False,
               skip_tracking=False):
 
     suite = TestSuite()
@@ -261,7 +259,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, device,
                     get_case(
                         test_dir, case, browser_type, device, version,
                         browser_platform, session_name, javascript_disabled,
-                        webdriver_remote_url, screenshots_on, row, multi_users=multi_users,
+                        webdriver_remote_url, screenshots_on, row, saucelabs_enabled=saucelabs_enabled,
                         custom_options=custom_options, failfast=failfast,
                         debug=debug, extended=extended, skip_tracking=skip_tracking
                     )
@@ -273,7 +271,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, device,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     custom_options=custom_options, failfast=failfast,
-                    debug=debug, extended=extended, multi_users=multi_users,
+                    debug=debug, extended=extended, saucelabs_enabled=saucelabs_enabled,
                     skip_tracking=skip_tracking
                 )
             )
@@ -318,7 +316,7 @@ class SSTSuite(TestSuite):
 
 
 class SSTTextTestResult(TextTestResult):
-    saucelabs_report_links = []
+    selenium_report_links = []
 
     def startTest(self, test):
         super(SSTTextTestResult, self).startTest(test)
@@ -337,18 +335,17 @@ class SSTTextTestResult(TextTestResult):
 
     def collect_report_links(self, test):
         # FIXME: the browser property is empty in SSTScriptCase. Why?
-        if config.saucelabs_enabled and test.browser:
-            self.saucelabs_report_links.append((
-                self.test_description,
-                test.browser.get_job_result_url()))
+        self.selenium_report_links.append((
+            self.test_description,
+            test.browser.get_job_result_url()))
 
     def printErrors(self):
         super(SSTTextTestResult, self).printErrors()
-        if not len(self.saucelabs_report_links):
+        if not len(self.selenium_report_links):
             return
         self.stream.writeln()
         self.stream.writeln("Selenium error report links:")
-        for description, link in self.saucelabs_report_links:
+        for description, link in self.selenium_report_links:
             self.stream.writeln("  - %s\n      [%s]" % (description, link))
 
     def stopTestRun(self):
@@ -389,7 +386,7 @@ class SSTTestCase(testtools.TestCase):
     webdriver_class = None
     custom_options = None
     additional_capabilities = {}
-    multi_users = False
+    saucelabs_enabled = False
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -456,8 +453,8 @@ class SSTTestCase(testtools.TestCase):
             self.browser_type, self.device, self.version, self.browser_platform,
             self.session_name, self.javascript_disabled,
             self.assume_trusted_cert_issuer, self.webdriver_remote_url,
-            multi_users=self.multi_users,
             skip_tracking=self.skip_tracking,
+            saucelabs_enabled=self.saucelabs_enabled,
             webdriver_class=self.webdriver_class,
             additional_capabilities=self.additional_capabilities)
 
@@ -468,9 +465,8 @@ class SSTTestCase(testtools.TestCase):
         _, self.last_exception, _ = exception
 
     def stop_browser(self):
-        # Notify saucelabs of the result
-        if config.saucelabs_enabled:
-            self.browser.job_update(not self.error_count, self.last_exception)
+        # Notify selenium service of the result
+        self.browser.job_update(not self.error_count, self.last_exception)
         stop()
 
     def take_screenshot_and_page_dump(self, exc_info):
@@ -594,7 +590,7 @@ def get_case(test_dir, entry, browser_type, device, version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              custom_options=None, context=None, failfast=False,
-             debug=False, extended=False, multi_users=False, skip_tracking=False):
+             debug=False, extended=False, saucelabs_enabled=False, skip_tracking=False):
     # our naming convention for tests requires that script-based tests must
     # not begin with "test_*."  SSTTestCase class-based or other
     # unittest.TestCase based source files must begin with "test_*".
@@ -617,11 +613,14 @@ def get_case(test_dir, entry, browser_type, device, version,
         'screenshots_on' : screenshots_on,
         'debug_post_mortem' : debug,
         'extended_report' : extended,
-        'multi_users' : multi_users,
+        'saucelabs_enabled' : saucelabs_enabled,
         'skip_tracking' : skip_tracking
     }
 
     if config.saucelabs_enabled:
+        from .drivers.sauce.saucelabs_driver import SauceLabsDriver
+        properties['webdriver_class'] = SauceLabsDriver
+    else:
         from .drivers.sauce.browserstack_driver import BrowserStackDriver
         properties['webdriver_class'] = BrowserStackDriver
 
