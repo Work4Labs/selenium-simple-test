@@ -95,10 +95,6 @@ def runtests(test_names, test_dir='.', collect_only=False,
 
     alltests = TestSuite(suites)
 
-    print ''
-    print '  %s test cases loaded\n' % alltests.countTestCases()
-    print '--------------------------------------------------------------'
-
     if not alltests.countTestCases():
         print 'Error: Did not find any tests'
         sys.exit(1)
@@ -350,6 +346,12 @@ class SSTTextTestResult(TextTestResult):
 
     def stopTestRun(self):
         super(SSTTextTestResult, self).stopTestRun()
+
+        # Print our own result lines
+        print '''
+# Machine-parsable result; {"total": %d, "errors":%d, "failures": %d, "skipped":%d}
+''' % (self.testsRun, len(self.errors), len(self.failures), len(self.skipped))
+
         if config.email_notification_enabled and not self.wasSuccessful():
             content = self.stream.getvalue()
             # Print the output after the test stopped
