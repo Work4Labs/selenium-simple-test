@@ -626,6 +626,9 @@ def get_case(test_dir, entry, browser_type, device, version,
     elif config.browserstack_enabled:
         from .drivers.sauce.browserstack_driver import BrowserStackDriver
         properties['webdriver_class'] = BrowserStackDriver
+    else:
+        from .drivers.sauce.vagrant_driver import VagrantDriver
+        properties['webdriver_class'] = VagrantDriver
 
     if entry.startswith('test_') and _has_classes(test_dir, entry):
         defaultTestLoader.suiteClass = SSTSuite
