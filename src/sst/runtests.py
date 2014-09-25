@@ -62,6 +62,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, device='', version='',
              browser_platform='ANY', session_name=None,
+             browserstack_enabled=False,
              saucelabs_enabled=False, custom_options=None,
              extended=False, skip_tracking=False):
 
@@ -622,7 +623,7 @@ def get_case(test_dir, entry, browser_type, device, version,
     if config.saucelabs_enabled:
         from .drivers.sauce.saucelabs_driver import SauceLabsDriver
         properties['webdriver_class'] = SauceLabsDriver
-    else:
+    elif config.browserstack_enabled:
         from .drivers.sauce.browserstack_driver import BrowserStackDriver
         properties['webdriver_class'] = BrowserStackDriver
 

@@ -62,6 +62,7 @@ results_directory = None
 browsermob_enabled = False
 email_notification_enabled = False
 saucelabs_enabled = False
+browserstack_enabled = False
 cmd_opts = {}
 flags = []
 __args__ = {}
