@@ -388,14 +388,7 @@ class SSTTestCase(testtools.TestCase):
     webdriver_remote_url = None
     webdriver_class = None
     custom_options = None
-    # We need those additional_capabilities to avoid chrome warning when tests are run locally
-    # See https://code.google.com/p/chromedriver/issues/detail?id=799
-    additional_capabilities = {
-        'chromeOptions': {
-            'args': ['test-type'],
-            'excludeSwitches': ["ignore-certificate-errors"]
-        }
-    }
+    additional_capabilities = {}
     saucelabs_enabled = False
     browserstack_enabled = False
 
