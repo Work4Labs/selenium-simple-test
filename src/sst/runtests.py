@@ -397,6 +397,7 @@ class SSTTestCase(testtools.TestCase):
         }
     }
     saucelabs_enabled = False
+    browserstack_enabled = False
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -459,6 +460,24 @@ class SSTTestCase(testtools.TestCase):
             self.session_name = str(self)
 
     def start_browser(self):
+        if self.browser_type == 'ANDROID' and not self.saucelabs_enabled and not self.browserstack_enabled:
+            self.add_additional_capabilities({
+                'chromeOptions': {
+                    'args': [
+                        'window-size=480,800',
+                        'user-agent="Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"',
+                        'test-type'
+                    ],
+                    'excludeSwitches': ['ignore-certificate-errors']
+                }
+            })
+        else:
+            self.add_additional_capabilities({
+                'chromeOptions': {
+                    'args': ['test-type'],
+                    'excludeSwitches': ["ignore-certificate-errors"]
+                }
+            })
         self.browser, self.browsermob_proxy = start(
             self.browser_type, self.device, self.version, self.browser_platform,
             self.session_name, self.javascript_disabled,
