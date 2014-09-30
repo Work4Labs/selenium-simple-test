@@ -104,6 +104,12 @@ def get_common_options():
     parser.add_option('--sauce', dest='saucelabs_enabled',
                       action='store_true', default=False,
                       help='Activate the Saucelabs behavior')
+    parser.add_option('--browserstack', dest='browserstack_enabled',
+                      action='store_true', default=False,
+                      help='Activate the Browserstack behavior')
+    parser.add_option('--vagrant', dest='vagrant_enabled',
+                      action='store_true', default=False,
+                      help='Activate the Vagrant behavior')
     parser.add_option('--env', '-e', dest='env',
                       default='-',
                       help='Environment, added as a prefix in emails subject')

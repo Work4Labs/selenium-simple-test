@@ -62,6 +62,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
              shared_directory=None, screenshots_on=False, failfast=False,
              debug=False, webdriver_remote_url=None, device='', version='',
              browser_platform='ANY', session_name=None,
+             browserstack_enabled=False, vagrant_enabled=False,
              saucelabs_enabled=False, custom_options=None,
              extended=False, skip_tracking=False):
 
@@ -83,6 +84,8 @@ def runtests(test_names, test_dir='.', collect_only=False,
 
     config.results_directory = _get_full_path('results')
     config.saucelabs_enabled = saucelabs_enabled
+    config.browserstack_enabled = browserstack_enabled
+    config.vagrant_enabled = vagrant_enabled
 
     test_names = set(test_names)
 
@@ -90,6 +93,7 @@ def runtests(test_names, test_dir='.', collect_only=False,
                         browser_type, device, version, browser_platform,
                         session_name, javascript_disabled, webdriver_remote_url,
                         screenshots_on, failfast, debug, saucelabs_enabled=saucelabs_enabled,
+                        browserstack_enabled=browserstack_enabled, vagrant_enabled=vagrant_enabled,
                         skip_tracking=skip_tracking, custom_options=custom_options, extended=extended
                         )
 
@@ -195,14 +199,15 @@ def get_suites(test_names, test_dir, shared_dir, collect_only, browser_type, dev
                version, browser_platform, session_name, javascript_disabled,
                webdriver_remote_url, screenshots_on, failfast, debug,
                custom_options=None, extended=False, saucelabs_enabled=False,
-               skip_tracking=False
+               browserstack_enabled=False, vagrant_enabled=False, skip_tracking=False
                ):
     return [
         get_suite(
             test_names, root, collect_only, browser_type, device,
             version, browser_platform, session_name, javascript_disabled,
             webdriver_remote_url, screenshots_on, failfast, debug,
-            saucelabs_enabled=saucelabs_enabled, skip_tracking=skip_tracking,
+            saucelabs_enabled=saucelabs_enabled, browserstack_enabled=browserstack_enabled,
+            vagrant_enabled=vagrant_enabled, skip_tracking=skip_tracking,
             custom_options=custom_options, extended=extended
         )
         for root, _, _ in os.walk(test_dir, followlinks=True)
@@ -241,7 +246,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, device,
               version, browser_platform, session_name, javascript_disabled,
               webdriver_remote_url, screenshots_on, failfast, debug,
               custom_options=None, extended=False, saucelabs_enabled=False,
-              skip_tracking=False):
+              browserstack_enabled=False, vagrant_enabled=False, skip_tracking=False):
 
     suite = TestSuite()
 
@@ -256,6 +261,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, device,
                         test_dir, case, browser_type, device, version,
                         browser_platform, session_name, javascript_disabled,
                         webdriver_remote_url, screenshots_on, row, saucelabs_enabled=saucelabs_enabled,
+                        browserstack_enabled=browserstack_enabled, vagrant_enabled=vagrant_enabled,
                         custom_options=custom_options, failfast=failfast,
                         debug=debug, extended=extended, skip_tracking=skip_tracking
                     )
@@ -267,6 +273,7 @@ def get_suite(test_names, test_dir, collect_only, browser_type, device,
                     browser_platform, session_name, javascript_disabled,
                     webdriver_remote_url, screenshots_on,
                     custom_options=custom_options, failfast=failfast,
+                    browserstack_enabled=browserstack_enabled, vagrant_enabled=vagrant_enabled,
                     debug=debug, extended=extended, saucelabs_enabled=saucelabs_enabled,
                     skip_tracking=skip_tracking
                 )
@@ -389,6 +396,7 @@ class SSTTestCase(testtools.TestCase):
     custom_options = None
     additional_capabilities = {}
     saucelabs_enabled = False
+    vagrant_enabled = False
 
     wait_timeout = 10
     wait_poll = 0.1
@@ -451,6 +459,25 @@ class SSTTestCase(testtools.TestCase):
             self.session_name = str(self)
 
     def start_browser(self):
+        if self.vagrant_enabled:
+            if self.browser_type == 'ANDROID':
+                self.add_additional_capabilities({
+                    'chromeOptions': {
+                        'args': [
+                            'window-size=480,800',
+                            'user-agent="Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"',
+                            'test-type'
+                        ],
+                        'excludeSwitches': ['ignore-certificate-errors']
+                    }
+                })
+            else:
+                self.add_additional_capabilities({
+                    'chromeOptions': {
+                        'args': ['test-type'],
+                        'excludeSwitches': ["ignore-certificate-errors"]
+                    }
+                })
         self.browser, self.browsermob_proxy = start(
             self.browser_type, self.device, self.version, self.browser_platform,
             self.session_name, self.javascript_disabled,
@@ -592,7 +619,8 @@ def get_case(test_dir, entry, browser_type, device, version,
              browser_platform, session_name, javascript_disabled,
              webdriver_remote_url, screenshots_on,
              custom_options=None, context=None, failfast=False,
-             debug=False, extended=False, saucelabs_enabled=False, skip_tracking=False):
+             debug=False, extended=False, saucelabs_enabled=False,
+             browserstack_enabled=False, vagrant_enabled=False, skip_tracking=False):
     # our naming convention for tests requires that script-based tests must
     # not begin with "test_*."  SSTTestCase class-based or other
     # unittest.TestCase based source files must begin with "test_*".
@@ -601,30 +629,35 @@ def get_case(test_dir, entry, browser_type, device, version,
     # tests always will.
 
     properties = {
-        'script_dir' : test_dir,
-        'script_name' : entry,
-        'browser_type' : browser_type,
-        'device' : device,
-        'version' : version,
-        'browser_platform' : browser_platform,
-        'webdriver_remote_url' : webdriver_remote_url,
-        'custom_options' : custom_options,
+        'script_dir': test_dir,
+        'script_name': entry,
+        'browser_type': browser_type,
+        'device': device,
+        'version': version,
+        'browser_platform': browser_platform,
+        'webdriver_remote_url': webdriver_remote_url,
+        'custom_options': custom_options,
         # TODO: session_name should be the test class name, at least for saucelabs
-        'session_name' : session_name,
-        'javascript_disabled' : javascript_disabled,
-        'screenshots_on' : screenshots_on,
-        'debug_post_mortem' : debug,
-        'extended_report' : extended,
-        'saucelabs_enabled' : saucelabs_enabled,
-        'skip_tracking' : skip_tracking
+        'session_name': session_name,
+        'javascript_disabled': javascript_disabled,
+        'screenshots_on': screenshots_on,
+        'debug_post_mortem': debug,
+        'extended_report': extended,
+        'saucelabs_enabled': saucelabs_enabled,
+        'browserstack_enabled': browserstack_enabled,
+        'vagrant_enabled': vagrant_enabled,
+        'skip_tracking': skip_tracking
     }
 
     if config.saucelabs_enabled:
         from .drivers.sauce.saucelabs_driver import SauceLabsDriver
         properties['webdriver_class'] = SauceLabsDriver
-    else:
+    elif config.browserstack_enabled:
         from .drivers.sauce.browserstack_driver import BrowserStackDriver
         properties['webdriver_class'] = BrowserStackDriver
+    elif config.vagrant_enabled:
+        from .drivers.sauce.vagrant_driver import VagrantDriver
+        properties['webdriver_class'] = VagrantDriver
 
     if entry.startswith('test_') and _has_classes(test_dir, entry):
         defaultTestLoader.suiteClass = SSTSuite
