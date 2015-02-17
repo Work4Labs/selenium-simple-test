@@ -460,6 +460,9 @@ class SSTTestCase(testtools.TestCase):
 
     def start_browser(self):
         if self.vagrant_enabled:
+            self.add_additional_capabilities({'acceptSslCerts': True})
+            print 'Reminder: SSL certificates are auto-accepted, only use --vagrant in a testing environment.'
+
             if self.browser_type == 'ANDROID':
                 self.add_additional_capabilities({
                     'chromeOptions': {
