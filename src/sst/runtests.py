@@ -460,9 +460,6 @@ class SSTTestCase(testtools.TestCase):
 
     def start_browser(self):
         if self.vagrant_enabled:
-            self.add_additional_capabilities({'acceptSslCerts': True})
-            print 'Reminder: SSL certificates are auto-accepted, only use --vagrant in a testing environment.'
-
             if self.browser_type == 'ANDROID':
                 self.add_additional_capabilities({
                     'chromeOptions': {
@@ -470,17 +467,17 @@ class SSTTestCase(testtools.TestCase):
                             'window-size=480,800',
                             'user-agent="Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19"',
                             'test-type'
-                        ],
-                        'excludeSwitches': ['ignore-certificate-errors']
+                        ]
                     }
                 })
             else:
                 self.add_additional_capabilities({
                     'chromeOptions': {
-                        'args': ['test-type'],
-                        'excludeSwitches': ["ignore-certificate-errors"]
+                        'args': ['test-type']
                     }
                 })
+        print 'Reminder: SSL certificates are auto-accepted, only use --vagrant in a testing environment.'
+
         self.browser, self.browsermob_proxy = start(
             self.browser_type, self.device, self.version, self.browser_platform,
             self.session_name, self.javascript_disabled,
@@ -500,6 +497,7 @@ class SSTTestCase(testtools.TestCase):
         # Notify selenium service of the result
         self.browser.job_update(not self.error_count, self.last_exception)
         stop()
+        print
 
     def take_screenshot_and_page_dump(self, exc_info):
         # FIXME: Urgh, config.results_directory is a global set in
