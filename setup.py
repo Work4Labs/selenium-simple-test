@@ -20,7 +20,7 @@
 
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 import sys
 
 
@@ -31,7 +31,7 @@ from sst import __version__
 
 
 NAME = 'sst'
-PACKAGES = ['sst', 'sst.drivers', 'sst.scripts']
+PACKAGES = find_packages("src", exclude=["*test*"])
 DESCRIPTION = 'SST - Web Test Framework'
 URL = 'http://testutils.org/sst'
 LICENSE = 'Apache'
