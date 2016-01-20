@@ -473,7 +473,8 @@ class SSTTestCase(testtools.TestCase):
             else:
                 self.add_additional_capabilities({
                     'chromeOptions': {
-                        'args': ['test-type']
+                        'args': ['test-type'],
+                        'prefs': {'profile.managed_default_content_settings.notifications': 1}
                     }
                 })
         print 'Reminder: SSL certificates are auto-accepted, only use --vagrant in a testing environment.'
