@@ -483,7 +483,7 @@ class SSTTestCase(testtools.TestCase):
                             },
                         },
                     },
-                }}
+                }
             })
         print 'Reminder: SSL certificates are auto-accepted, only use --vagrant in a testing environment.'
 
